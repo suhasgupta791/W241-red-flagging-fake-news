@@ -1395,15 +1395,15 @@ ggplot(mutate(data_mod, Ethnicity = fct_infreq(Ethnicity))) + geom_bar(aes(x = E
 ![](Final_project_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
 
 ``` r
-compute_robust_ci<- function(mod,clustering = FALSE,data=NA) { 
+compute_robust_ci<- function(mod,type="HC",clustering = FALSE,data=NA) { 
   coefs <- names(mod$coefficients)
   if (clustering){
     # calculate robust clustered standard errors 
-    robust_se <- sqrt(diag(vcovCL(mod,cluster = data))) 
+    robust_se <- sqrt(diag(vcovCL(mod,cluster = data,type=type))) 
   }
   else{
     # calculate robust standard errors without clustering
-    robust_se <- sqrt(diag(vcovHC(mod)))  
+    robust_se <- sqrt(diag(vcovHC(mod,type=type)))  
   }
   ci_ll <- NA
   ci_ul <- NA
@@ -1415,15 +1415,15 @@ compute_robust_ci<- function(mod,clustering = FALSE,data=NA) {
     return(ci_custom)
 }
 
-compute_robust_se<- function(mod,clustering = FALSE,data=NA) { 
+compute_robust_se<- function(mod,type="HC",clustering = FALSE,data=NA) { 
   coefs <- names(mod$coefficients)
   if (clustering){
     # calculate robust clustered standard errors 
-    robust_se <- sqrt(diag(vcovCL(mod,cluster = data))) 
+    robust_se <- sqrt(diag(vcovCL(mod,cluster = data,type=type))) 
   }
   else{
     # calculate robust standard errors without clustering
-    robust_se <- sqrt(diag(vcovHC(mod)))  
+    robust_se <- sqrt(diag(vcovHC(mod,type=type)))  
   }
   
     return(robust_se)
@@ -1431,73 +1431,110 @@ compute_robust_se<- function(mod,clustering = FALSE,data=NA) {
 ```
 
 ``` r
-mod <- lm(score ~ assignment+factor(Gender)+factor(Party)+factor(Age_bin)+ factor(Ethnicity)+factor(Education), data_mod)
-se_custom <- compute_robust_se(mod)
-stargazer(mod,type="text")
+mod1 <- lm(score ~ assignment, data_mod)
+mod2 <- lm(score ~ assignment+factor(Party)*factor(Gender)+factor(Ethnicity)*factor(Gender)+factor(Age_bin), data_mod)
+ci_custom1 <- compute_robust_ci(mod1,type="HC1")
+ci_custom2 <- compute_robust_ci(mod2,type="HC1")
+
+stargazer(mod1,mod2, type="text",ci.custom=list(ci_custom1,ci_custom2))
 ```
 
     ## 
-    ## =================================================================
-    ##                                           Dependent variable:    
-    ##                                       ---------------------------
-    ##                                                  score           
-    ## -----------------------------------------------------------------
-    ## assignment                                      0.507**          
-    ##                                                 (0.240)          
-    ##                                                                  
-    ## factor(Gender)Male                               0.002           
-    ##                                                 (0.246)          
-    ##                                                                  
-    ## factor(Gender)Unanswered                       -2.848**          
-    ##                                                 (1.165)          
-    ##                                                                  
-    ## factor(Party)Other                               0.202           
-    ##                                                 (0.495)          
-    ##                                                                  
-    ## factor(Party)Republican                          0.015           
-    ##                                                 (0.261)          
-    ##                                                                  
-    ## factor(Age_bin)21-40                            -0.010           
-    ##                                                 (1.275)          
-    ##                                                                  
-    ## factor(Age_bin)41-60                            -0.348           
-    ##                                                 (1.305)          
-    ##                                                                  
-    ## factor(Age_bin)61+                              -0.309           
-    ##                                                 (1.443)          
-    ##                                                                  
-    ## factor(Ethnicity)Black / African                 0.483           
-    ##                                                 (0.658)          
-    ##                                                                  
-    ## factor(Ethnicity)Caucasian                       0.046           
-    ##                                                 (0.569)          
-    ##                                                                  
-    ## factor(Ethnicity)Hispanic / Latinx               0.349           
-    ##                                                 (0.615)          
-    ##                                                                  
-    ## factor(Ethnicity)Native American                 0.683           
-    ##                                                 (0.627)          
-    ##                                                                  
-    ## factor(Ethnicity)Other                           0.518           
-    ##                                                 (1.038)          
-    ##                                                                  
-    ## factor(Education)Graduate degree                 0.186           
-    ##                                                 (0.264)          
-    ##                                                                  
-    ## factor(Education)High school graduate           -0.641           
-    ##                                                 (0.639)          
-    ##                                                                  
-    ## factor(Education)Some college                   -0.789*          
-    ##                                                 (0.456)          
-    ##                                                                  
-    ## Constant                                       4.304***          
-    ##                                                 (1.429)          
-    ##                                                                  
-    ## -----------------------------------------------------------------
-    ## Observations                                      101            
-    ## R2                                               0.209           
-    ## Adjusted R2                                      0.058           
-    ## Residual Std. Error                         1.119 (df = 84)      
-    ## F Statistic                               1.384 (df = 16; 84)    
-    ## =================================================================
-    ## Note:                                 *p<0.1; **p<0.05; ***p<0.01
+    ## ===================================================================================================
+    ##                                                                       Dependent variable:          
+    ##                                                             ---------------------------------------
+    ##                                                                              score                 
+    ##                                                                     (1)                 (2)        
+    ## ---------------------------------------------------------------------------------------------------
+    ## assignment                                                        0.409*              0.564**      
+    ##                                                               (-0.036, 0.854)     (0.060, 1.069)   
+    ##                                                                                                    
+    ## factor(Party)Other                                                                    -0.146       
+    ##                                                                                   (-1.053, 0.761)  
+    ##                                                                                                    
+    ## factor(Party)Republican                                                                0.375       
+    ##                                                                                   (-0.465, 1.216)  
+    ##                                                                                                    
+    ## factor(Gender)Male                                                                     0.000       
+    ##                                                                                 (-0.00000, 0.00000)
+    ##                                                                                                    
+    ## factor(Gender)Unanswered                                                             -2.751**      
+    ##                                                                                  (-3.458, -2.044)  
+    ##                                                                                                    
+    ## factor(Ethnicity)Black / African                                                      -0.266       
+    ##                                                                                   (-1.565, 1.034)  
+    ##                                                                                                    
+    ## factor(Ethnicity)Caucasian                                                            -0.182       
+    ##                                                                                   (-1.423, 1.058)  
+    ##                                                                                                    
+    ## factor(Ethnicity)Hispanic / Latinx                                                    -0.005       
+    ##                                                                                   (-1.279, 1.269)  
+    ##                                                                                                    
+    ## factor(Ethnicity)Native American                                                       0.542       
+    ##                                                                                   (-0.960, 2.044)  
+    ##                                                                                                    
+    ## factor(Ethnicity)Other                                                                 0.067       
+    ##                                                                                   (-0.993, 1.127)  
+    ##                                                                                                    
+    ## factor(Age_bin)21-40                                                                   1.175       
+    ##                                                                                   (-0.277, 2.628)  
+    ##                                                                                                    
+    ## factor(Age_bin)41-60                                                                   0.854       
+    ##                                                                                   (-0.642, 2.350)  
+    ##                                                                                                    
+    ## factor(Age_bin)61+                                                                     1.030       
+    ##                                                                                   (-0.572, 2.632)  
+    ##                                                                                                    
+    ## factor(Party)Other:factor(Gender)Male                                                 -0.073       
+    ##                                                                                   (-1.493, 1.348)  
+    ##                                                                                                    
+    ## factor(Party)Republican:factor(Gender)Male                                            -0.570       
+    ##                                                                                   (-1.757, 0.617)  
+    ##                                                                                                    
+    ## factor(Party)Other:factor(Gender)Unanswered                                                        
+    ##                                                                                                    
+    ##                                                                                                    
+    ## factor(Party)Republican:factor(Gender)Unanswered                                                   
+    ##                                                                                                    
+    ##                                                                                                    
+    ## factor(Gender)Male:factor(Ethnicity)Black / African                                    1.073       
+    ##                                                                                   (0.061, 2.084)   
+    ##                                                                                                    
+    ## factor(Gender)Unanswered:factor(Ethnicity)Black / African                                          
+    ##                                                                                                    
+    ##                                                                                                    
+    ## factor(Gender)Male:factor(Ethnicity)Caucasian                                          0.189       
+    ##                                                                                   (-3.110, 3.489)  
+    ##                                                                                                    
+    ## factor(Gender)Unanswered:factor(Ethnicity)Caucasian                                                
+    ##                                                                                                    
+    ##                                                                                                    
+    ## factor(Gender)Male:factor(Ethnicity)Hispanic / Latinx                                  0.340       
+    ##                                                                                   (-3.217, 3.897)  
+    ##                                                                                                    
+    ## factor(Gender)Unanswered:factor(Ethnicity)Hispanic / Latinx                                        
+    ##                                                                                                    
+    ##                                                                                                    
+    ## factor(Gender)Male:factor(Ethnicity)Native American                                   -0.098       
+    ##                                                                                   (-3.651, 3.454)  
+    ##                                                                                                    
+    ## factor(Gender)Unanswered:factor(Ethnicity)Native American                                          
+    ##                                                                                                    
+    ##                                                                                                    
+    ## factor(Gender)Male:factor(Ethnicity)Other                                                          
+    ##                                                                                                    
+    ##                                                                                                    
+    ## factor(Gender)Unanswered:factor(Ethnicity)Other                                                    
+    ##                                                                                                    
+    ##                                                                                                    
+    ## Constant                                                         4.451***              3.193       
+    ##                                                               (4.139, 4.763)      (1.757, 4.629)   
+    ##                                                                                                    
+    ## ---------------------------------------------------------------------------------------------------
+    ## Observations                                                        101                 101        
+    ## R2                                                                 0.032               0.183       
+    ## Adjusted R2                                                        0.022              -0.009       
+    ## Residual Std. Error                                           1.140 (df = 99)     1.158 (df = 81)  
+    ## F Statistic                                                 3.250* (df = 1; 99) 0.955 (df = 19; 81)
+    ## ===================================================================================================
+    ## Note:                                                                   *p<0.1; **p<0.05; ***p<0.01

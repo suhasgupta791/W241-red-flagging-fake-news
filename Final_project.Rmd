@@ -381,15 +381,15 @@ ggplot(mutate(data_mod, Ethnicity = fct_infreq(Ethnicity))) + geom_bar(aes(x = E
 ```
 
 ```{r}
-compute_robust_ci<- function(mod,clustering = FALSE,data=NA) { 
+compute_robust_ci<- function(mod,type="HC",clustering = FALSE,data=NA) { 
   coefs <- names(mod$coefficients)
   if (clustering){
     # calculate robust clustered standard errors 
-    robust_se <- sqrt(diag(vcovCL(mod,cluster = data))) 
+    robust_se <- sqrt(diag(vcovCL(mod,cluster = data,type=type))) 
   }
   else{
     # calculate robust standard errors without clustering
-    robust_se <- sqrt(diag(vcovHC(mod)))  
+    robust_se <- sqrt(diag(vcovHC(mod,type=type)))  
   }
   ci_ll <- NA
   ci_ul <- NA
@@ -401,15 +401,15 @@ compute_robust_ci<- function(mod,clustering = FALSE,data=NA) {
     return(ci_custom)
 }
 
-compute_robust_se<- function(mod,clustering = FALSE,data=NA) { 
+compute_robust_se<- function(mod,type="HC",clustering = FALSE,data=NA) { 
   coefs <- names(mod$coefficients)
   if (clustering){
     # calculate robust clustered standard errors 
-    robust_se <- sqrt(diag(vcovCL(mod,cluster = data))) 
+    robust_se <- sqrt(diag(vcovCL(mod,cluster = data,type=type))) 
   }
   else{
     # calculate robust standard errors without clustering
-    robust_se <- sqrt(diag(vcovHC(mod)))  
+    robust_se <- sqrt(diag(vcovHC(mod,type=type)))  
   }
   
     return(robust_se)
@@ -417,9 +417,14 @@ compute_robust_se<- function(mod,clustering = FALSE,data=NA) {
 ```
 
 ```{r}
-mod <- lm(score ~ assignment+factor(Gender)+factor(Party)+factor(Age_bin)+ factor(Ethnicity)+factor(Education), data_mod)
-se_custom <- compute_robust_se(mod)
-stargazer(mod,type="text")
+mod1 <- lm(score ~ assignment, data_mod)
+mod2 <- lm(score ~ assignment+factor(Party)*factor(Gender)+factor(Ethnicity)*factor(Gender)+factor(Age_bin), data_mod)
+ci_custom1 <- compute_robust_ci(mod1,type="HC1")
+ci_custom2 <- compute_robust_ci(mod2,type="HC1")
+
+stargazer(mod1,mod2, type="text",ci.custom=list(ci_custom1,ci_custom2))
+
 ```
+
 
 
