@@ -11,26 +11,415 @@ knit: (function(inputFile, encoding) {
     })
 ---
 
+
+```{r}
+# load packages
+library(data.table)
+library(foreign)
+library(sandwich)
+library(lmtest)
+library(stargazer)
+library(lfe)
+library(car)
+library(ggplot2)
+library(data.table)
+library(knitr)
+library(rgeolocate)
+library(data.table)
+library(knitr)
+library(lmtest)
+library(ri2)
+library(dplyr)
+library(forcats)
+```
+
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+options(digits=5)
 ```
 
-## R Markdown
+## Null & Alternate Hypothesis 
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+- _NULL Hypothesis_ : **Make people aware of the prevalence of fake news has no effect on its believabiliy**
+- _Alternate Hypothesis_ : **General flags about fake news reduce its believability**
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+## Calculating the sample size
 
-```{r cars}
-summary(cars)
+In this section, we calculate the minimum required sample size for our experiment. 
+
+The statistical power of an experiment is the experiment's abilitiy to reject the NULL hypothesis when a specific alternate hypothesis is true.
+
+$$ \alpha = P(\text{reject}\ H_0 | H_0) $$
+
+
+where $\alpha$ is the significance level. We select a significance level of $\alpha = 0.05$ as a tolerance for Type I errors in our experiment. 
+
+Now that we have chosen our significance level, we would like to minimize the probability of Type II error. i.e. we would like to **maximize** the power of our test against the relevan alternative. Mathematically, power is 
+
+$$ power = 1 - P_r(\text{Type II Error}) = P_r(\text{reject}\ H_0 | H_1 \text{is true}) $$
+
+- We would set the required power of our experiment to be **80%** for this study as a reasonable expectation.
+- To calculate the power for the test, we need to conjecture an expected ATE and the standard deviation for the outcome in the experiment. 
+- The outcome is a rating on a scale of 0-10 on how successfull the red flag was in reducing the believability of the fake/misleading social media post. We would like our experiment to be able detect a difference in means of minimum 2 points on this scale. 
+- We do expect the measured values for this rating to vary significantly as we poll subjects with different political opinions, life experiences and political affiliations. To be on the conservative side, we would like to have enough power in our experiment to minimize Type II errors when the std. deviation is at least 2.5 times the minimum detectable treatment effect. 
+
+
+```{r}
+power_sim <- function(ate,sig_level=0.05,power=0.8,alternate_hyp="two.sided", sd = 1){
+    result <- NA
+    sims <- seq(1e-5,sd,by=0.1)
+    for(i in seq_along(sims)){
+        result[i] <- power.t.test(d=ate, 
+                               sig.level=sig_level, 
+                               power=power,
+                               sd=sims[i],
+                               alternative=alternate_hyp)$n
+        }
+    return(result)
+    }
+sd <- 3
+expected_ate <- 0.5
+x <- seq(1e-5,sd, by = 0.1)
+samples <- power_sim(ate=expected_ate,sd = sd)
+plot(x = x, y=samples,col = 'blue',
+     xlab="Std. Dev",
+     ylab = 'Number of subjects',
+     main = "Sample size vs. expected variance in outcome (Power = 0.8)")
+abline(v=1.0,col='black',lwd=1)
 ```
 
-## Including Plots
+The above plot shows that we need a minimum sample size of 100 to achieve a power of 0.8 when the outcome variable has a standard deviation 1.0 times the treatment effect. The plot below, validates that the absolute value of minimum treatment effect doesn't change the sample size requirement significantly and that this is determined mostly by the expected variance in the measurement data.
 
-You can also embed plots, for example:
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r}
+power_sim_by_ate <- function(ate_vector,sig_level=0.05,power=0.8,alternate_hyp="two.sided",sd = 1){
+    result <- NA
+    for(i in seq_along(ate_vector)){
+        result[i] <- power.t.test(d=ate_vector[i], 
+                               sig.level=sig_level, 
+                               power=power,
+                               sd=sd,
+                               alternative=alternate_hyp)$n
+        }
+    return(result)
+    }
+sd <- 1
+expected_ate <- 3
+x <- seq(1e-5,expected_ate,by=0.01)
+samples <- power_sim_by_ate(ate=x,sd = sd)
+
+plot(x = x, y=samples,col = 'blue',
+     xlab= "Desired treatment effect",
+     ylab = 'Number of samples',ylim=c(0,100),
+     main = "Sample size vs. minimum detectable treatment effect (Power = 0.8)")
+abline(v=0.5,col='black',lwd=1)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+## Covariate questions in the survey
+
+- Age 
+- Political affiliation 
+- Registered Voter / non-voter 
+- race
+- are you active on social media?  
+- education (< high school, high school , undergrad, grad)
+
+## Covariates in regression  (not in survey) 
+
+- Mturk subject
+- location of subject
+
+## Experimental Design 
+
+### 2 x 2
+
+- treatment : 
+     - banner or no banner 
+     - tweet is false or true
+
+- block by party affiliation and gender 
+
+### Treatment  & control assginment 
+ - how to randomly assign while blocking for above
+
+## Regression Models
+
+
+### Outcome: Score on how many headlines were correctly identified by subjects (equally balanced True and False posts)
+
+1. Baseline model 
+
+ outcome ~ general_flag on survey page
+ 
+2. Model with co-variates 
+
+outcome ~ red_flag * gender + red_flag * political_affiliation  + factor(age_group) + factor(education) + red_flag * location + registered_voter + race + social_media_active
+
+3. Model with treatment-covariate interactions  
+
+    - Test if fake news red flagging affects democrats and republicans differently 
+    - Test if fake news red flagging affects different age groups differently 
+    - Test if fake news red flagging affects voters and non voters differently 
+
+### Pilot data analysis
+
+```{r}
+pilot_dataset <- fread('./data/pilot/pilot_data_07262020.csv')
+head(pilot_dataset)
+names(pilot_dataset)
+```
+
+
+```{r}
+data_pruned <- pilot_dataset[ 3:nrow(pilot_dataset),]
+data_pruned[, c(6,7)] <- lapply(data_pruned[, c(6,7)], as.numeric)
+
+question_col_names <- c('8B','9B','10B','11B','12B','13B','14B','15B','16B','17B',
+                        '8A','9A','10A','11A','12A','13A','14A','15A','16A','17A')
+
+
+# replace all empty strings with NA
+for(i in c(26:length(names(data_pruned)))){
+    data_pruned[[i]][data_pruned[[i]]==''] <- NA
+}
+
+# Check the data
+head(data_pruned[, 26:length(names(data_pruned))])
+
+# Set assignment group variable (treatment = 1 , conrol = 0)
+data_pruned[, assignment := ifelse(is.na(data_pruned[,'8B']),0,1)]
+head(data_pruned[, 26:length(names(data_pruned))])
+
+
+```
+
+
+```{r}
+head(data_pruned)
+```
+
+```{r}
+
+# Compute the score against answer guide
+answer_guide <- c('Yes','Yes','No','Yes','No','No','Yes','Yes','No','No',
+                  'Yes','Yes','No','Yes','No','No','Yes','Yes','No','No')
+
+compute_scores <- function(dataset,answer_guide){
+    for(i in 1:nrow(data_pruned)){
+    dataset[i,"score"] <- sum(dataset[i,26:45] == answer_guide,na.rm=TRUE)
+    }
+    return(dataset)
+}
+
+
+data_w_scores <- compute_scores(data_pruned,answer_guide)
+head(data_w_scores)
+```
+
+
+```{r}
+# Compute the SD and point estimates with pilot data
+sd_pilot <- data_w_scores[, sd(score)]
+sd_pilot
+d <- data_w_scores[, .(scores=mean(score)), by = assignment]
+mod <- lm(score ~ assignment, data_w_scores)
+ate <- diff(d$scores)
+ate
+stargazer(mod, type="text")
+```
+
+```{r}
+## Power calculation 
+power.t.test(d=ate,sig.level=0.95,power=0.8,sd=sd,alternative="two.sided")
+```
+
+```{r}
+# Modify the column names for better readability
+data_mod <- rename(data_w_scores, 
+       Gender = Q1,
+       Reg_Voter = Q2,
+       Age_bin = Q3,
+       Party = Q4,
+       Education = Q5,
+       Ethnicity = Q6,
+       Soc_Med_Active = Q7
+        )
+head(data_mod[,19:27])
+```
+
+### MTurk data
+
+Mturk survey 1 was done with a higher reward and no check for BOTs. The survey subject count was 100 and responses were obtained within 24 hours due to the high reward (5-8 min task paid $1.5). 
+
+```{r}
+mturk1_dataset <- fread('./data/Mturk_1/Mturk_1_data.csv')
+head(mturk1_dataset)
+```
+
+```{r}
+data_pruned <- mturk1_dataset[ 3:nrow(mturk1_dataset),]
+data_pruned[, c(6,7)] <- lapply(data_pruned[, c(6,7)], as.numeric)
+question_col_names <- c('8B','9B','10B','11B','12B','13B','14B','15B','16B','17B',
+                        '8A','9A','10A','11A','12A','13A','14A','15A','16A','17A')
+for(i in c(26:length(names(data_pruned)))){
+    data_pruned[[i]][data_pruned[[i]]==''] <- NA
+}
+
+# Check the data
+# head(data_pruned[, 26:length(names(data_pruned))])
+
+# Set assignment group variable (treatment = 1 , control = 0)
+data_pruned[, assignment := ifelse(is.na(data_pruned[,'8B']),0,1)]
+head(data_pruned[, 26:length(names(data_pruned))])
+```
+
+```{r}
+answer_guide <- c('Yes','Yes','No','Yes','No','No','Yes','Yes','No','No',
+                  'Yes','Yes','No','Yes','No','No','Yes','Yes','No','No')
+
+compute_scores <- function(dataset,answer_guide){
+    for(i in 1:nrow(data_pruned)){
+    dataset[i,"score"] <- sum(dataset[i,26:length(names(dataset))] == answer_guide,na.rm=TRUE)
+    }
+    return(dataset)
+}
+
+data_w_scores <- compute_scores(data_pruned,answer_guide)
+head(data_w_scores[,31:length(names(data_w_scores))])
+```
+
+```{r}
+sd <- data_w_scores[, sd(score)]
+sd
+d <- data_w_scores[, .(scores=mean(score)), by = assignment]
+mod <- lm(score ~ assignment, data_w_scores)
+ate <- diff(d$scores)
+ate
+stargazer(mod, type="text")
+
+```
+
+```{r}
+## Power calculation 
+power.t.test(d=ate,sig.level=0.95,n=nrow(data_w_scores),sd=sd,alternative="two.sided")
+```
+
+### EDA with Mturk data set 1
+
+```{r}
+data_w_scores[, .(score_mean = mean(score)), by=assignment]
+```
+```{r}
+data_mod <- rename(data_w_scores, 
+       Gender = Q1,
+       Reg_Voter = Q2,
+       Age_bin = Q3,
+       Party = Q4,
+       Education = Q5,
+       Ethnicity = Q6,
+       Soc_Med_Active = Q7
+        )
+
+data_mod$Gender[data_mod$Gender==''] <- 'Unanswered'
+
+names(data_mod)
+```
+
+
+**Nearly everyone in the Mturk survey considered themselved active on social media**
+
+```{r}
+ggplot(data_mod) + geom_bar(aes(x = Soc_Med_Active))
+```
+
+**Also nearly everyone said that they were registered as a voter currently**
+
+```{r}
+ggplot(data_mod) + geom_bar(aes(x = Reg_Voter))
+```
+
+**The randomization worked well in the survey software and we had an equal allocation to treatment and control groups in the experiment**
+
+```{r}
+ggplot(data_mod) + geom_bar(aes(x = assignment))
+```
+
+**There does seem to be a slight skew in the distribution of participant's gender towards the Male gender (One subject did not answer the gender question)**
+
+```{r}
+ggplot(data_mod) + geom_bar(aes(x = Gender))
+```
+
+**Within each gender category, we see that the party affiliation is approximately evenly distributed.**
+
+```{r}
+data_mod[, .N, by=.(Gender,Party)]
+ggplot(data_mod) + geom_bar(aes(x = Gender,fill=Party))
+```
+
+**Our dataset does appear to consist mostly of people with atleast a college degree or higher and the participants mostly belong to the 21-40 age bucket.**
+
+```{r}
+ggplot(data_mod) + geom_bar(aes(x = Education,fill=Age_bin))
+```
+
+
+```{r}
+ggplot(mutate(data_mod, Age = fct_infreq(Age_bin))) + geom_bar(aes(x = Age_bin))
+```
+
+```{r}
+data_mod[, .N, by=.(Party,Age_bin)]
+```
+
+In terms of ethinicity of the randomly sampled subjects, the majority were Caucasian followed by approximately equal counts of Hispanic and Native americans, followed by african americans and asians.
+
+```{r}
+data_mod[, .N, by=Ethnicity]
+ggplot(mutate(data_mod, Ethnicity = fct_infreq(Ethnicity))) + geom_bar(aes(x = Ethnicity))
+```
+
+```{r}
+compute_robust_ci<- function(mod,clustering = FALSE,data=NA) { 
+  coefs <- names(mod$coefficients)
+  if (clustering){
+    # calculate robust clustered standard errors 
+    robust_se <- sqrt(diag(vcovCL(mod,cluster = data))) 
+  }
+  else{
+    # calculate robust standard errors without clustering
+    robust_se <- sqrt(diag(vcovHC(mod)))  
+  }
+  ci_ll <- NA
+  ci_ul <- NA
+  for(i in 1:length(coefs)){
+    ci_ll[i] <- mod$coefficients[[coefs[i]]] - 1.96 * robust_se[i]
+    ci_ul[i] <- mod$coefficients[[coefs[i]]] + 1.96 * robust_se[i]
+  }
+    ci_custom <- matrix(c(ci_ll,ci_ul), nrow = length(coefs), byrow = FALSE)
+    return(ci_custom)
+}
+
+compute_robust_se<- function(mod,clustering = FALSE,data=NA) { 
+  coefs <- names(mod$coefficients)
+  if (clustering){
+    # calculate robust clustered standard errors 
+    robust_se <- sqrt(diag(vcovCL(mod,cluster = data))) 
+  }
+  else{
+    # calculate robust standard errors without clustering
+    robust_se <- sqrt(diag(vcovHC(mod)))  
+  }
+  
+    return(robust_se)
+}
+```
+
+```{r}
+mod <- lm(score ~ assignment+factor(Gender)+factor(Party)+factor(Age_bin)+ factor(Ethnicity)+factor(Education), data_mod)
+se_custom <- compute_robust_se(mod)
+stargazer(mod,type="text")
+```
+
+
