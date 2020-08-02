@@ -60,6 +60,12 @@ library(car)
 library(ggplot2)
 library(data.table)
 library(knitr)
+library(kableExtra)
+```
+
+    ## Warning: package 'kableExtra' was built under R version 4.0.2
+
+``` r
 library(rgeolocate)
 ```
 
@@ -86,6 +92,10 @@ library(dplyr)
 
     ## 
     ## Attaching package: 'dplyr'
+
+    ## The following object is masked from 'package:kableExtra':
+    ## 
+    ##     group_rows
 
     ## The following object is masked from 'package:car':
     ## 
@@ -266,292 +276,85 @@ registered\_voter + race + social\_media\_active
       - Test if fake news red flagging affects voters and non voters
         differently
 
+### Hypothesis
+
+The primary hypothesis and effect that we have set out to test is the
+following:
+
+**H1: Reminding subjects about possiblity of misleading tweets using a
+genral warning will reduce the perceived accuracy of false headlines
+relative to a no-warning scenario.**
+
+We also want to check the spillover effect of this general warning about
+fake news on people’s trust in true news/headlines.
+
+**H2: Reminding subjects about possiblity of misleading tweets using a
+genral warning will also reduce their trust in true headlines/news
+relative to a no-warning scenario.**
+
+### Experimental Method
+
+#### Participants
+
+The study was conducted online through survey forms created using the
+Qualtric Survey service provided to us by the Unversity of California,
+Berkeley. There were two types of pariticipants recruited for this study
+:
+
+1.  Participants recruited using the Amazon Mechanical Turk service
+
+<!-- end list -->
+
+  - Although samples from Mturk are not nationally respresentative,
+    results from the study closely match those obtained from other
+    samples(e.g., Berinsky et al. 2012; Coppock 2016; Horton et
+    al. 2011; Mullinix et al. 2015)
+  - Non-US residents, were not allowed to participate.
+
+<!-- end list -->
+
+2.  Participants recruited through experimenters’ personal and
+    professional network using personal contacts, direct messages,
+    social media network and email.
+
+***\< Fill in the text about sample distribution from the data
+analysis\>***
+
+#### Procedure
+
+The experiment design used individual random assignment to place
+subjects in treatment and control. Table 1 shows the distribution of
+subject randomly assigned to treatment and control for each of the
+participant group described above. The survey would display warning
+before presenting the test questions to a subjects if the subject was
+placed in the treatment group. If the subject was placed in the control
+group, then no warning would be displayed on the questions. We focused
+on posts made on the social media platform *Twitter* as the source for
+all headlines used in the survey. The tweets were mainly from three
+broad categories 1) US politics 2) Climate change and general belief in
+science 3) Random facts about US. After each headline, the question
+asked the participant whether they believe the information in the
+headline is true or not. The scoring was based on the total number of
+correct responses (responses that match the group truth about each
+headline).
+
+``` r
+col1 <- c("Treatment","Control")
+col2 <- c("General Warning","No Warning")
+col3 <- c("X","Y")
+dt<- data.table(col1,col2,col3)
+
+colnames(dt) <- c("Assignment Group", "Flag", "N")
+kable(dt,"latex",booktabs=T)
+```
+
 ### Pilot data analysis
 
 ``` r
 pilot_dataset <- fread('./data/pilot/pilot_data_07262020.csv')
-head(pilot_dataset)
+#head(pilot_dataset)
+#names(pilot_dataset)
 ```
-
-    ##                                                       StartDate
-    ## 1:                                                   Start Date
-    ## 2: {""ImportId"":""startDate"",""timeZone"":""America/Denver""}
-    ## 3:                                          2020-07-17 18:52:45
-    ## 4:                                          2020-07-17 19:46:06
-    ## 5:                                          2020-07-17 19:48:21
-    ## 6:                                          2020-07-17 20:01:07
-    ##                                                       EndDate
-    ## 1:                                                   End Date
-    ## 2: {""ImportId"":""endDate"",""timeZone"":""America/Denver""}
-    ## 3:                                        2020-07-17 18:59:24
-    ## 4:                                        2020-07-17 19:48:33
-    ## 5:                                        2020-07-17 19:59:28
-    ## 6:                                        2020-07-17 20:04:12
-    ##                       Status                    IPAddress
-    ## 1:             Response Type                   IP Address
-    ## 2: {""ImportId"":""status""} {""ImportId"":""ipAddress""}
-    ## 3:                IP Address                 73.93.90.157
-    ## 4:                IP Address                98.234.117.52
-    ## 5:                IP Address               71.244.172.196
-    ## 6:                IP Address                 173.67.9.152
-    ##                       Progress       Duration (in seconds)
-    ## 1:                    Progress       Duration (in seconds)
-    ## 2: {""ImportId"":""progress""} {""ImportId"":""duration""}
-    ## 3:                         100                         399
-    ## 4:                         100                         147
-    ## 5:                         100                         666
-    ## 6:                         100                         185
-    ##                       Finished
-    ## 1:                    Finished
-    ## 2: {""ImportId"":""finished""}
-    ## 3:                        True
-    ## 4:                        True
-    ## 5:                        True
-    ## 6:                        True
-    ##                                                       RecordedDate
-    ## 1:                                                   Recorded Date
-    ## 2: {""ImportId"":""recordedDate"",""timeZone"":""America/Denver""}
-    ## 3:                                             2020-07-17 18:59:25
-    ## 4:                                             2020-07-17 19:48:34
-    ## 5:                                             2020-07-17 19:59:28
-    ## 6:                                             2020-07-17 20:04:13
-    ##                      ResponseId                    RecipientLastName
-    ## 1:                  Response ID                  Recipient Last Name
-    ## 2: {""ImportId"":""_recordId""} {""ImportId"":""recipientLastName""}
-    ## 3:            R_u8Geu0CykTxNh6h                                     
-    ## 4:            R_2EgXOU7K2nTlgqG                                     
-    ## 5:            R_1NgJqwlFgUpLjT1                                     
-    ## 6:            R_33woiiDhvnhBZZR                                     
-    ##                       RecipientFirstName                    RecipientEmail
-    ## 1:                  Recipient First Name                   Recipient Email
-    ## 2: {""ImportId"":""recipientFirstName""} {""ImportId"":""recipientEmail""}
-    ## 3:                                                                        
-    ## 4:                                                                        
-    ## 5:                                                                        
-    ## 6:                                                                        
-    ##                           ExternalReference                    LocationLatitude
-    ## 1:                  External Data Reference                   Location Latitude
-    ## 2: {""ImportId"":""externalDataReference""} {""ImportId"":""locationLatitude""}
-    ## 3:                                                              37.777099609375
-    ## 4:                                                             36.5802001953125
-    ## 5:                                                          39.1269073486328125
-    ## 6:                                                          39.1269073486328125
-    ##                       LocationLongitude                    DistributionChannel
-    ## 1:                   Location Longitude                   Distribution Channel
-    ## 2: {""ImportId"":""locationLongitude""} {""ImportId"":""distributionChannel""}
-    ## 3:               -122.40599822998046875                              anonymous
-    ## 4:                  -121.84429931640625                              anonymous
-    ## 5:                     -76.697998046875                              anonymous
-    ## 6:                     -76.697998046875                              anonymous
-    ##                       UserLanguage
-    ## 1:                   User Language
-    ## 2: {""ImportId"":""userLanguage""}
-    ## 3:                              EN
-    ## 4:                              EN
-    ## 5:                              EN
-    ## 6:                              EN
-    ##                                           Q_RecaptchaScore
-    ## 1:                                        Q_RecaptchaScore
-    ## 2:                     {""ImportId"":""Q_RecaptchaScore""}
-    ## 3: 0.90000000000000002220446049250313080847263336181640625
-    ## 4: 0.90000000000000002220446049250313080847263336181640625
-    ## 5: 0.90000000000000002220446049250313080847263336181640625
-    ## 6: 0.90000000000000002220446049250313080847263336181640625
-    ##                                                                                                                                                                                                                                                                                                                                                                Q1
-    ## 1: Thank you for participating in this survey - we greatly appreciate it! The survey should take less than 10 minutes to complete. \n\n\n\nThe first series of questions are solely for data analysis purposes. We will not collect any personally identifiable information and the survey is completely anonymous.\n\n\n\n\n\nWhich gender do you identify with?
-    ## 2:                                                                                                                                                                                                                                                                                                                                        {""ImportId"":""QID7""}
-    ## 3:                                                                                                                                                                                                                                                                                                                                                         Female
-    ## 4:                                                                                                                                                                                                                                                                                                                                                         Female
-    ## 5:                                                                                                                                                                                                                                                                                                                                                         Female
-    ## 6:                                                                                                                                                                                                                                                                                                                                                         Female
-    ##                             Q2                      Q3
-    ## 1: Are you a registered voter? What is your age group?
-    ## 2:     {""ImportId"":""QID8""} {""ImportId"":""QID9""}
-    ## 3:                         Yes                   21-40
-    ## 4:                         Yes                   21-40
-    ## 5:                         Yes                   21-40
-    ## 6:                         Yes                   21-40
-    ##                                      Q4
-    ## 1: What is your politicial affiliation?
-    ## 2:             {""ImportId"":""QID10""}
-    ## 3:                             Democrat
-    ## 4:                                Other
-    ## 5:                                     
-    ## 6:                             Democrat
-    ##                                          Q5                                 Q6
-    ## 1: What is your highest level of education? What ethnicity do you identify as?
-    ## 2:                 {""ImportId"":""QID19""}           {""ImportId"":""QID20""}
-    ## 3:                          Graduate degree                              Asian
-    ## 4:                          Graduate degree                          Caucasian
-    ## 5:                           College degree                          Caucasian
-    ## 6:                           College degree                  Hispanic / Latinx
-    ##                                                                  Q7
-    ## 1: Do you consider yourself to be active on social media platforms?
-    ## 2:                                         {""ImportId"":""QID18""}
-    ## 3:                                                              Yes
-    ## 4:                                                               No
-    ## 5:                                                               No
-    ## 6:                                                               No
-    ##                                                                                                                                                                                                                                                             8B
-    ## 1: Disclaimer: Content on social media may contain false or misleading information. Please exercise your best judgment when evaluating the accuracy of content viewed on social media. \n\n\n\n \n\nDo you believe that the content of the above post is true?
-    ## 2:                                                                                                                                                                                                                                    {""ImportId"":""QID14""}
-    ## 3:                                                                                                                                                                                                                                                            
-    ## 4:                                                                                                                                                                                                                                                         Yes
-    ## 5:                                                                                                                                                                                                                                                            
-    ## 6:                                                                                                                                                                                                                                                          No
-    ##                                                                                                                                                                                                                                                                              9B
-    ## 1: Disclaimer: Content on social media may contain false or misleading information. Please exercise your best judgment when evaluating the accuracy of content viewed on social media. \n\n\n\n\n\n\n\n\n\n \n\n \n\nDo you believe that the content of the above post is true?
-    ## 2:                                                                                                                                                                                                                                                     {""ImportId"":""QID23""}
-    ## 3:                                                                                                                                                                                                                                                                             
-    ## 4:                                                                                                                                                                                                                                                                          Yes
-    ## 5:                                                                                                                                                                                                                                                                             
-    ## 6:                                                                                                                                                                                                                                                                          Yes
-    ##                                                                                                                                                                                                                                                                    10B
-    ## 1: Disclaimer: Content on social media may contain false or misleading information. Please exercise your best judgment when evaluating the accuracy of content viewed on social media.\n\n\n\n\n\n \n\n \n\nDo you believe that the content of the above post is true?
-    ## 2:                                                                                                                                                                                                                                            {""ImportId"":""QID24""}
-    ## 3:                                                                                                                                                                                                                                                                    
-    ## 4:                                                                                                                                                                                                                                                                  No
-    ## 5:                                                                                                                                                                                                                                                                    
-    ## 6:                                                                                                                                                                                                                                                                  No
-    ##                                                                                                                                                                                                                                                                    11B
-    ## 1: Disclaimer: Content on social media may contain false or misleading information. Please exercise your best judgment when evaluating the accuracy of content viewed on social media.\n\n\n\n\n\n \n\n \n\nDo you believe that the content of the above post is true?
-    ## 2:                                                                                                                                                                                                                                            {""ImportId"":""QID25""}
-    ## 3:                                                                                                                                                                                                                                                                    
-    ## 4:                                                                                                                                                                                                                                                                 Yes
-    ## 5:                                                                                                                                                                                                                                                                    
-    ## 6:                                                                                                                                                                                                                                                                 Yes
-    ##                                                                                                                                                                                                                                                                    12B
-    ## 1: Disclaimer: Content on social media may contain false or misleading information. Please exercise your best judgment when evaluating the accuracy of content viewed on social media.\n\n\n\n\n\n \n\n \n\nDo you believe that the content of the above post is true?
-    ## 2:                                                                                                                                                                                                                                            {""ImportId"":""QID26""}
-    ## 3:                                                                                                                                                                                                                                                                    
-    ## 4:                                                                                                                                                                                                                                                                 Yes
-    ## 5:                                                                                                                                                                                                                                                                    
-    ## 6:                                                                                                                                                                                                                                                                  No
-    ##                                                                                                                                                                                                                                                                    13B
-    ## 1: Disclaimer: Content on social media may contain false or misleading information. Please exercise your best judgment when evaluating the accuracy of content viewed on social media.\n\n\n\n\n\n \n\n \n\nDo you believe that the content of the above post is true?
-    ## 2:                                                                                                                                                                                                                                            {""ImportId"":""QID27""}
-    ## 3:                                                                                                                                                                                                                                                                    
-    ## 4:                                                                                                                                                                                                                                                                  No
-    ## 5:                                                                                                                                                                                                                                                                    
-    ## 6:                                                                                                                                                                                                                                                                  No
-    ##                                                                                                                                                                                                                                                                    14B
-    ## 1: Disclaimer: Content on social media may contain false or misleading information. Please exercise your best judgment when evaluating the accuracy of content viewed on social media.\n\n\n\n\n\n \n\n \n\nDo you believe that the content of the above post is true?
-    ## 2:                                                                                                                                                                                                                                            {""ImportId"":""QID28""}
-    ## 3:                                                                                                                                                                                                                                                                    
-    ## 4:                                                                                                                                                                                                                                                                 Yes
-    ## 5:                                                                                                                                                                                                                                                                    
-    ## 6:                                                                                                                                                                                                                                                                 Yes
-    ##                                                                                                                                                                                                                                                                    15B
-    ## 1: Disclaimer: Content on social media may contain false or misleading information. Please exercise your best judgment when evaluating the accuracy of content viewed on social media.\n\n\n\n\n\n \n\n \n\nDo you believe that the content of the above post is true?
-    ## 2:                                                                                                                                                                                                                                            {""ImportId"":""QID29""}
-    ## 3:                                                                                                                                                                                                                                                                    
-    ## 4:                                                                                                                                                                                                                                                                  No
-    ## 5:                                                                                                                                                                                                                                                                    
-    ## 6:                                                                                                                                                                                                                                                                 Yes
-    ##                                                                                                                                                                                                                                                                    16B
-    ## 1: Disclaimer: Content on social media may contain false or misleading information. Please exercise your best judgment when evaluating the accuracy of content viewed on social media.\n\n\n\n\n\n \n\n \n\nDo you believe that the content of the above post is true?
-    ## 2:                                                                                                                                                                                                                                            {""ImportId"":""QID30""}
-    ## 3:                                                                                                                                                                                                                                                                    
-    ## 4:                                                                                                                                                                                                                                                                  No
-    ## 5:                                                                                                                                                                                                                                                                    
-    ## 6:                                                                                                                                                                                                                                                                  No
-    ##                                                                                                                                                                                                                                                                    17B
-    ## 1: Disclaimer: Content on social media may contain false or misleading information. Please exercise your best judgment when evaluating the accuracy of content viewed on social media.\n\n\n\n\n\n \n\n \n\nDo you believe that the content of the above post is true?
-    ## 2:                                                                                                                                                                                                                                            {""ImportId"":""QID31""}
-    ## 3:                                                                                                                                                                                                                                                                    
-    ## 4:                                                                                                                                                                                                                                                                  No
-    ## 5:                                                                                                                                                                                                                                                                    
-    ## 6:                                                                                                                                                                                                                                                                  No
-    ##                                                            8A
-    ## 1: Do you believe that the content of the above post is true?
-    ## 2:                                   {""ImportId"":""QID32""}
-    ## 3:                                                        Yes
-    ## 4:                                                           
-    ## 5:                                                        Yes
-    ## 6:                                                           
-    ##                                                            9A
-    ## 1: Do you believe that the content of the above post is true?
-    ## 2:                                   {""ImportId"":""QID33""}
-    ## 3:                                                        Yes
-    ## 4:                                                           
-    ## 5:                                                        Yes
-    ## 6:                                                           
-    ##                                                           10A
-    ## 1: Do you believe that the content of the above post is true?
-    ## 2:                                   {""ImportId"":""QID34""}
-    ## 3:                                                         No
-    ## 4:                                                           
-    ## 5:                                                         No
-    ## 6:                                                           
-    ##                                                           11A
-    ## 1: Do you believe that the content of the above post is true?
-    ## 2:                                   {""ImportId"":""QID35""}
-    ## 3:                                                        Yes
-    ## 4:                                                           
-    ## 5:                                                        Yes
-    ## 6:                                                           
-    ##                                                           12A
-    ## 1: Do you believe that the content of the above post is true?
-    ## 2:                                   {""ImportId"":""QID36""}
-    ## 3:                                                        Yes
-    ## 4:                                                           
-    ## 5:                                                         No
-    ## 6:                                                           
-    ##                                                           13A
-    ## 1: Do you believe that the content of the above post is true?
-    ## 2:                                   {""ImportId"":""QID37""}
-    ## 3:                                                         No
-    ## 4:                                                           
-    ## 5:                                                         No
-    ## 6:                                                           
-    ##                                                           14A
-    ## 1: Do you believe that the content of the above post is true?
-    ## 2:                                   {""ImportId"":""QID38""}
-    ## 3:                                                        Yes
-    ## 4:                                                           
-    ## 5:                                                         No
-    ## 6:                                                           
-    ##                                                           15A
-    ## 1: Do you believe that the content of the above post is true?
-    ## 2:                                   {""ImportId"":""QID39""}
-    ## 3:                                                        Yes
-    ## 4:                                                           
-    ## 5:                                                        Yes
-    ## 6:                                                           
-    ##                                                           16A
-    ## 1: Do you believe that the content of the above post is true?
-    ## 2:                                   {""ImportId"":""QID40""}
-    ## 3:                                                         No
-    ## 4:                                                           
-    ## 5:                                                         No
-    ## 6:                                                           
-    ##                                                           17A
-    ## 1: Do you believe that the content of the above post is true?
-    ## 2:                                   {""ImportId"":""QID41""}
-    ## 3:                                                         No
-    ## 4:                                                           
-    ## 5:                                                         No
-    ## 6:
-
-``` r
-names(pilot_dataset)
-```
-
-    ##  [1] "StartDate"             "EndDate"               "Status"               
-    ##  [4] "IPAddress"             "Progress"              "Duration (in seconds)"
-    ##  [7] "Finished"              "RecordedDate"          "ResponseId"           
-    ## [10] "RecipientLastName"     "RecipientFirstName"    "RecipientEmail"       
-    ## [13] "ExternalReference"     "LocationLatitude"      "LocationLongitude"    
-    ## [16] "DistributionChannel"   "UserLanguage"          "Q_RecaptchaScore"     
-    ## [19] "Q1"                    "Q2"                    "Q3"                   
-    ## [22] "Q4"                    "Q5"                    "Q6"                   
-    ## [25] "Q7"                    "8B"                    "9B"                   
-    ## [28] "10B"                   "11B"                   "12B"                  
-    ## [31] "13B"                   "14B"                   "15B"                  
-    ## [34] "16B"                   "17B"                   "8A"                   
-    ## [37] "9A"                    "10A"                   "11A"                  
-    ## [40] "12A"                   "13A"                   "14A"                  
-    ## [43] "15A"                   "16A"                   "17A"
 
 ``` r
 data_pruned <- pilot_dataset[ 3:nrow(pilot_dataset),]
@@ -765,7 +568,7 @@ sd_pilot <- data_w_scores[, sd(score)]
 sd_pilot
 ```
 
-    ## [1] 1.3434
+    ## [1] 1.3
 
 ``` r
 d <- data_w_scores[, .(scores=mean(score)), by = assignment]
@@ -774,7 +577,7 @@ ate <- diff(d$scores)
 ate
 ```
 
-    ## [1] -0.27381
+    ## [1] -0.27
 
 ``` r
 stargazer(mod, type="text")
@@ -786,18 +589,18 @@ stargazer(mod, type="text")
     ##                     ---------------------------
     ##                                score           
     ## -----------------------------------------------
-    ## assignment                    -0.274           
-    ##                               (0.536)          
+    ## assignment                    -0.270           
+    ##                               (0.540)          
     ##                                                
-    ## Constant                     7.857***          
-    ##                               (0.364)          
+    ## Constant                     7.900***          
+    ##                               (0.360)          
     ##                                                
     ## -----------------------------------------------
     ## Observations                    26             
     ## R2                             0.011           
     ## Adjusted R2                   -0.030           
-    ## Residual Std. Error       1.364 (df = 24)      
-    ## F Statistic             0.261 (df = 1; 24)     
+    ## Residual Std. Error       1.400 (df = 24)      
+    ## F Statistic             0.260 (df = 1; 24)     
     ## ===============================================
     ## Note:               *p<0.1; **p<0.05; ***p<0.01
 
@@ -809,8 +612,8 @@ power.t.test(d=ate,sig.level=0.95,power=0.8,sd=sd,alternative="two.sided")
     ## 
     ##      Two-sample t test power calculation 
     ## 
-    ##               n = 21.818
-    ##           delta = 0.27381
+    ##               n = 22
+    ##           delta = 0.27
     ##              sd = 1
     ##       sig.level = 0.95
     ##           power = 0.8
@@ -847,270 +650,88 @@ head(data_mod[,19:27])
     ## 5:            Yes <NA> <NA>
     ## 6:             No <NA> <NA>
 
-### MTurk data
-
-Mturk survey 1 was done with a higher reward and no check for BOTs. The
-survey subject count was 100 and responses were obtained within 24 hours
-due to the high reward (5-8 min task paid $1.5).
+## Define functions
 
 ``` r
-mturk1_dataset <- fread('./data/Mturk_1/Mturk_1_data.csv')
-head(mturk1_dataset)
+prune_data <- function(dataset){
+    data_pruned <- dataset[ 3:nrow(dataset),]
+    data_pruned[, c(6,7)] <- lapply(data_pruned[, c(6,7)], as.numeric)
+    question_col_names <- c('8B','9B','10B','11B','12B','13B','14B','15B','16B','17B',
+                            '8A','9A','10A','11A','12A','13A','14A','15A','16A','17A')
+    # Set NA for empty empty strings in question columns (either in treatment or control but not both)
+    for(i in c(31:length(names(data_pruned)))){
+        data_pruned[[i]][data_pruned[[i]]==''] <- NA
+    }
+    # Set assignment group variable (treatment = 1 , control = 0)
+    data_pruned[, assignment := ifelse(is.na(data_pruned[,'8B']),0,1)]
+  
+    return(data_pruned)
+}
+
+compute_score <- function(dataset,answer_guide){
+  # compute full score  
+  for(i in 1:nrow(dataset)){
+          dataset[i,"score"] <- sum(dataset[i,31:50] == answer_guide,na.rm=TRUE)
+          dataset[i, "score_false"] <- sum(dataset[i,c(33,35,36,39,40,43,45,46,49,50)] == answer_guide[c(3,5,6,9,10,13,15,16,19,20)], na.rm=TRUE)
+          dataset[i, "score_true"] <- sum(dataset[i,c(31,32,34,37,38,41,42,44,47,48)] == answer_guide[c(1,2,4,7,8,11,12,14,17,18)], na.rm=TRUE)
+    }
+  return(dataset)
+}
+
+rename_cols <- function(dataset){
+    dt <- rename(dataset, 
+     Gender = Q1,
+     Reg_Voter = Q2,
+     Age_bin = Q3,
+     Party = Q4,
+     Education = Q5,
+     Ethnicity = Q6,
+     Soc_Med_Active = Q7,
+     Voted_2012 = Q38,
+     Voted_2016 = Q39,
+     Marital_status = Q37,
+     Income = Q36,
+     Language = Q40
+    
+      )
+  
+     dt$Gender[dataset$Gender == ''] <-"Unanswered"
+     return(dt)
+}
 ```
 
-    ##        StartDate       EndDate        Status       IPAddress Progress
-    ## 1:    Start Date      End Date Response Type      IP Address Progress
-    ## 2: 7/24/20 22:43 7/24/20 22:45    IP Address    99.75.53.174      100
-    ## 3: 7/24/20 22:43 7/24/20 22:45    IP Address   68.33.126.140      100
-    ## 4: 7/24/20 22:43 7/24/20 22:45    IP Address   98.19.217.229      100
-    ## 5: 7/24/20 22:43 7/24/20 22:45    IP Address  174.85.199.139      100
-    ## 6: 7/24/20 22:43 7/24/20 22:45    IP Address 209.159.199.248      100
-    ##    Duration (in seconds) Finished  RecordedDate        ResponseId
-    ## 1: Duration (in seconds) Finished Recorded Date       Response ID
-    ## 2:                   124     True 7/24/20 22:45 R_3wSF9NPrJQkHDjj
-    ## 3:                   112     True 7/24/20 22:45 R_2wHbTKc7249gZQY
-    ## 4:                    99     True 7/24/20 22:45 R_2Et95GjQbJ9BgaR
-    ## 5:                   142     True 7/24/20 22:45 R_3LimuwbiSdyNO53
-    ## 6:                   152     True 7/24/20 22:45 R_1rwQr9otPszxd5D
-    ##      RecipientLastName   RecipientFirstName  RecipientEmail
-    ## 1: Recipient Last Name Recipient First Name Recipient Email
-    ## 2:                                                         
-    ## 3:                                                         
-    ## 4:                                                         
-    ## 5:                                                         
-    ## 6:                                                         
-    ##          ExternalReference  LocationLatitude  LocationLongitude
-    ## 1: External Data Reference Location Latitude Location Longitude
-    ## 2:                               42.02209473       -88.17050171
-    ## 3:                               38.86700439       -76.81729889
-    ## 4:                               34.45120239       -84.15299988
-    ## 5:                               34.34539795       -86.27400208
-    ## 6:                               44.14149475       -103.2052002
-    ##     DistributionChannel  UserLanguage Q_RecaptchaScore
-    ## 1: Distribution Channel User Language Q_RecaptchaScore
-    ## 2:            anonymous            EN              0.9
-    ## 3:            anonymous            EN              0.9
-    ## 4:            anonymous            EN              0.7
-    ## 5:            anonymous            EN              0.9
-    ## 6:            anonymous            EN              0.9
-    ##                                                                                                                                                                                                                                                                                                                                                                Q1
-    ## 1: Thank you for participating in this survey - we greatly appreciate it! The survey should take less than 10 minutes to complete. \n\n\n\nThe first series of questions are solely for data analysis purposes. We will not collect any personally identifiable information and the survey is completely anonymous.\n\n\n\n\n\nWhich gender do you identify with?
-    ## 2:                                                                                                                                                                                                                                                                                                                                                           Male
-    ## 3:                                                                                                                                                                                                                                                                                                                                                         Female
-    ## 4:                                                                                                                                                                                                                                                                                                                                                         Female
-    ## 5:                                                                                                                                                                                                                                                                                                                                                         Female
-    ## 6:                                                                                                                                                                                                                                                                                                                                                           Male
-    ##                             Q2                                Q38
-    ## 1: Are you a registered voter? Did you vote in the 2012 election?
-    ## 2:                          No                                 No
-    ## 3:                         Yes                                Yes
-    ## 4:                         Yes                                Yes
-    ## 5:                         Yes                                Yes
-    ## 6:                         Yes                                Yes
-    ##                                   Q39                           Q37
-    ## 1: Did you vote in the 2016 election? What is your marital status ?
-    ## 2:                                 No                        Single
-    ## 3:                                Yes                       Married
-    ## 4:                                Yes                       Married
-    ## 5:                                Yes                       Married
-    ## 6:                                Yes                        Single
-    ##                                                Q40
-    ## 1: What is your primary language of communication?
-    ## 2:                                         English
-    ## 3:                                         English
-    ## 4:                                         English
-    ## 5:                                         English
-    ## 6:                                         English
-    ##                                      Q36                      Q3
-    ## 1: What is your annual household income? What is your age group?
-    ## 2:                              < $60000                   21-40
-    ## 3:                     $150000 - $250000                   21-40
-    ## 4:                      $60000 - $150000                   21-40
-    ## 5:                              < $60000                   21-40
-    ## 6:                              < $60000                   21-40
-    ##                                      Q4
-    ## 1: What is your politicial affiliation?
-    ## 2:                                Other
-    ## 3:                             Democrat
-    ## 4:                           Republican
-    ## 5:                                Other
-    ## 6:                                Other
-    ##                                          Q5                                 Q6
-    ## 1: What is your highest level of education? What ethnicity do you identify as?
-    ## 2:                             Some college                              Asian
-    ## 3:                          Graduate degree                          Caucasian
-    ## 4:                           College degree                  Hispanic / Latinx
-    ## 5:                             Some college                          Caucasian
-    ## 6:                     High school graduate                          Caucasian
-    ##                                                                  Q7
-    ## 1: Do you consider yourself to be active on social media platforms?
-    ## 2:                                                              Yes
-    ## 3:                                                              Yes
-    ## 4:                                                              Yes
-    ## 5:                                                              Yes
-    ## 6:                                                              Yes
-    ##                                                                                                                                                                                                                                                             8B
-    ## 1: Disclaimer: Content on social media may contain false or misleading information. Please exercise your best judgment when evaluating the accuracy of content viewed on social media. \n\n\n\n \n\nDo you believe that the content of the above post is true?
-    ## 2:                                                                                                                                                                                                                                                          No
-    ## 3:                                                                                                                                                                                                                                                            
-    ## 4:                                                                                                                                                                                                                                                            
-    ## 5:                                                                                                                                                                                                                                                            
-    ## 6:                                                                                                                                                                                                                                                          No
-    ##                                                                                                                                                                                                                                                                              9B
-    ## 1: Disclaimer: Content on social media may contain false or misleading information. Please exercise your best judgment when evaluating the accuracy of content viewed on social media. \n\n\n\n\n\n\n\n\n\n \n\n \n\nDo you believe that the content of the above post is true?
-    ## 2:                                                                                                                                                                                                                                                                          Yes
-    ## 3:                                                                                                                                                                                                                                                                             
-    ## 4:                                                                                                                                                                                                                                                                             
-    ## 5:                                                                                                                                                                                                                                                                             
-    ## 6:                                                                                                                                                                                                                                                                          Yes
-    ##                                                                                                                                                                                                                                                                    10B
-    ## 1: Disclaimer: Content on social media may contain false or misleading information. Please exercise your best judgment when evaluating the accuracy of content viewed on social media.\n\n\n\n\n\n \n\n \n\nDo you believe that the content of the above post is true?
-    ## 2:                                                                                                                                                                                                                                                                  No
-    ## 3:                                                                                                                                                                                                                                                                    
-    ## 4:                                                                                                                                                                                                                                                                    
-    ## 5:                                                                                                                                                                                                                                                                    
-    ## 6:                                                                                                                                                                                                                                                                  No
-    ##                                                                                                                                                                                                                                                                    11B
-    ## 1: Disclaimer: Content on social media may contain false or misleading information. Please exercise your best judgment when evaluating the accuracy of content viewed on social media.\n\n\n\n\n\n \n\n \n\nDo you believe that the content of the above post is true?
-    ## 2:                                                                                                                                                                                                                                                                 Yes
-    ## 3:                                                                                                                                                                                                                                                                    
-    ## 4:                                                                                                                                                                                                                                                                    
-    ## 5:                                                                                                                                                                                                                                                                    
-    ## 6:                                                                                                                                                                                                                                                                 Yes
-    ##                                                                                                                                                                                                                                                                    12B
-    ## 1: Disclaimer: Content on social media may contain false or misleading information. Please exercise your best judgment when evaluating the accuracy of content viewed on social media.\n\n\n\n\n\n \n\n \n\nDo you believe that the content of the above post is true?
-    ## 2:                                                                                                                                                                                                                                                                  No
-    ## 3:                                                                                                                                                                                                                                                                    
-    ## 4:                                                                                                                                                                                                                                                                    
-    ## 5:                                                                                                                                                                                                                                                                    
-    ## 6:                                                                                                                                                                                                                                                                 Yes
-    ##                                                                                                                                                                                                                                                                    13B
-    ## 1: Disclaimer: Content on social media may contain false or misleading information. Please exercise your best judgment when evaluating the accuracy of content viewed on social media.\n\n\n\n\n\n \n\n \n\nDo you believe that the content of the above post is true?
-    ## 2:                                                                                                                                                                                                                                                                  No
-    ## 3:                                                                                                                                                                                                                                                                    
-    ## 4:                                                                                                                                                                                                                                                                    
-    ## 5:                                                                                                                                                                                                                                                                    
-    ## 6:                                                                                                                                                                                                                                                                  No
-    ##                                                                                                                                                                                                                                                                    14B
-    ## 1: Disclaimer: Content on social media may contain false or misleading information. Please exercise your best judgment when evaluating the accuracy of content viewed on social media.\n\n\n\n\n\n \n\n \n\nDo you believe that the content of the above post is true?
-    ## 2:                                                                                                                                                                                                                                                                 Yes
-    ## 3:                                                                                                                                                                                                                                                                    
-    ## 4:                                                                                                                                                                                                                                                                    
-    ## 5:                                                                                                                                                                                                                                                                    
-    ## 6:                                                                                                                                                                                                                                                                 Yes
-    ##                                                                                                                                                                                                                                                                    15B
-    ## 1: Disclaimer: Content on social media may contain false or misleading information. Please exercise your best judgment when evaluating the accuracy of content viewed on social media.\n\n\n\n\n\n \n\n \n\nDo you believe that the content of the above post is true?
-    ## 2:                                                                                                                                                                                                                                                                 Yes
-    ## 3:                                                                                                                                                                                                                                                                    
-    ## 4:                                                                                                                                                                                                                                                                    
-    ## 5:                                                                                                                                                                                                                                                                    
-    ## 6:                                                                                                                                                                                                                                                                  No
-    ##                                                                                                                                                                                                                                                                    16B
-    ## 1: Disclaimer: Content on social media may contain false or misleading information. Please exercise your best judgment when evaluating the accuracy of content viewed on social media.\n\n\n\n\n\n \n\n \n\nDo you believe that the content of the above post is true?
-    ## 2:                                                                                                                                                                                                                                                                  No
-    ## 3:                                                                                                                                                                                                                                                                    
-    ## 4:                                                                                                                                                                                                                                                                    
-    ## 5:                                                                                                                                                                                                                                                                    
-    ## 6:                                                                                                                                                                                                                                                                  No
-    ##                                                                                                                                                                                                                                                                    17B
-    ## 1: Disclaimer: Content on social media may contain false or misleading information. Please exercise your best judgment when evaluating the accuracy of content viewed on social media.\n\n\n\n\n\n \n\n \n\nDo you believe that the content of the above post is true?
-    ## 2:                                                                                                                                                                                                                                                                  No
-    ## 3:                                                                                                                                                                                                                                                                    
-    ## 4:                                                                                                                                                                                                                                                                    
-    ## 5:                                                                                                                                                                                                                                                                    
-    ## 6:                                                                                                                                                                                                                                                                  No
-    ##                                                            8A
-    ## 1: Do you believe that the content of the above post is true?
-    ## 2:                                                           
-    ## 3:                                                        Yes
-    ## 4:                                                        Yes
-    ## 5:                                                         No
-    ## 6:                                                           
-    ##                                                            9A
-    ## 1: Do you believe that the content of the above post is true?
-    ## 2:                                                           
-    ## 3:                                                         No
-    ## 4:                                                        Yes
-    ## 5:                                                        Yes
-    ## 6:                                                           
-    ##                                                           10A
-    ## 1: Do you believe that the content of the above post is true?
-    ## 2:                                                           
-    ## 3:                                                        Yes
-    ## 4:                                                        Yes
-    ## 5:                                                         No
-    ## 6:                                                           
-    ##                                                           11A
-    ## 1: Do you believe that the content of the above post is true?
-    ## 2:                                                           
-    ## 3:                                                        Yes
-    ## 4:                                                         No
-    ## 5:                                                        Yes
-    ## 6:                                                           
-    ##                                                           12A
-    ## 1: Do you believe that the content of the above post is true?
-    ## 2:                                                           
-    ## 3:                                                        Yes
-    ## 4:                                                         No
-    ## 5:                                                        Yes
-    ## 6:                                                           
-    ##                                                           13A
-    ## 1: Do you believe that the content of the above post is true?
-    ## 2:                                                           
-    ## 3:                                                        Yes
-    ## 4:                                                        Yes
-    ## 5:                                                         No
-    ## 6:                                                           
-    ##                                                           14A
-    ## 1: Do you believe that the content of the above post is true?
-    ## 2:                                                           
-    ## 3:                                                         No
-    ## 4:                                                         No
-    ## 5:                                                        Yes
-    ## 6:                                                           
-    ##                                                           15A
-    ## 1: Do you believe that the content of the above post is true?
-    ## 2:                                                           
-    ## 3:                                                        Yes
-    ## 4:                                                        Yes
-    ## 5:                                                        Yes
-    ## 6:                                                           
-    ##                                                           16A
-    ## 1: Do you believe that the content of the above post is true?
-    ## 2:                                                           
-    ## 3:                                                        Yes
-    ## 4:                                                         No
-    ## 5:                                                         No
-    ## 6:                                                           
-    ##                                                           17A   SC0
-    ## 1: Do you believe that the content of the above post is true? Score
-    ## 2:                                                                9
-    ## 3:                                                        Yes     3
-    ## 4:                                                        Yes     5
-    ## 5:                                                         No     8
-    ## 6:                                                                7
+#### Import data
+
+Study 1: Mturk survey 1 was done with a higher reward and no check for
+BOTs. The survey subject count was 104 and responses were obtained
+within 24 hours due to the high reward (5-8 min task paid $1.5).
+
+Study 2: Mturk survey 2 was done with a higher reward and no check for
+BOTs. The survey subject count was 132 and responses were obtained over
+a period of 5 days
+
+Study3: Personal and professional network of the experimenters
 
 ``` r
-data_pruned <- mturk1_dataset[ 3:nrow(mturk1_dataset),]
-data_pruned[, c(6,7)] <- lapply(data_pruned[, c(6,7)], as.numeric)
+study1_data <- fread('./data/Mturk_nocaptcha/data.csv')
+study2_data <- fread('./data/Mturk_captcha/data.csv')
+study3_data <- fread("./data/NonMturk_wCaptcha/data.csv")
+# head(study1_data)
+# head(study2_data)
+# head(study3_data)
+# names(study1_data)[31:51]
+# names(study2_data)[31:51]
+# names(study3_data)[31:51]
+```
+
+#### Modify data
+
+``` r
+study1_data_pruned <- prune_data(study1_data)
 ```
 
     ## Warning in lapply(data_pruned[, c(6, 7)], as.numeric): NAs introduced by
     ## coercion
-
-``` r
-question_col_names <- c('8B','9B','10B','11B','12B','13B','14B','15B','16B','17B',
-                        '8A','9A','10A','11A','12A','13A','14A','15A','16A','17A')
-for(i in c(26:length(names(data_pruned)))){
-    data_pruned[[i]][data_pruned[[i]]==''] <- NA
-}
-
-# Check the data
-# head(data_pruned[, 26:length(names(data_pruned))])
-
-# Set assignment group variable (treatment = 1 , control = 0)
-data_pruned[, assignment := ifelse(is.na(data_pruned[,'8B']),0,1)]
-```
 
     ## Warning in `[.data.table`(data_pruned, , `:=`(assignment,
     ## ifelse(is.na(data_pruned[, : Invalid .internal.selfref detected and fixed by
@@ -1123,178 +744,335 @@ data_pruned[, assignment := ifelse(is.na(data_pruned[,'8B']),0,1)]
     ## cause can be fixed or this message improved.
 
 ``` r
-head(data_pruned[, 26:length(names(data_pruned))])
+study2_data_pruned <- prune_data(study2_data)
 ```
 
-    ##       Q3         Q4                   Q5                Q6  Q7   8B   9B  10B
-    ## 1: 21-40   Democrat      Graduate degree         Caucasian Yes <NA> <NA> <NA>
-    ## 2: 21-40 Republican       College degree Hispanic / Latinx Yes <NA> <NA> <NA>
-    ## 3: 21-40      Other         Some college         Caucasian Yes <NA> <NA> <NA>
-    ## 4: 21-40      Other High school graduate         Caucasian Yes   No  Yes   No
-    ## 5: 21-40   Democrat       College degree         Caucasian Yes <NA> <NA> <NA>
-    ## 6: 41-60 Republican       College degree         Caucasian Yes   No  Yes   No
+    ## Warning in lapply(data_pruned[, c(6, 7)], as.numeric): NAs introduced by
+    ## coercion
+    
+    ## Warning in lapply(data_pruned[, c(6, 7)], as.numeric): Invalid .internal.selfref
+    ## detected and fixed by taking a (shallow) copy of the data.table so that :=
+    ## can add this new column by reference. At an earlier point, this data.table
+    ## has been copied by R (or was created manually using structure() or similar).
+    ## Avoid names<- and attr<- which in R currently (and oddly) may copy the whole
+    ## data.table. Use set* syntax instead to avoid copying: ?set, ?setnames and ?
+    ## setattr. If this message doesn't help, please report your use case to the
+    ## data.table issue tracker so the root cause can be fixed or this message
+    ## improved.
+
+``` r
+study3_data_pruned <- prune_data(study3_data)
+```
+
+    ## Warning in lapply(data_pruned[, c(6, 7)], as.numeric): NAs introduced by
+    ## coercion
+    
+    ## Warning in lapply(data_pruned[, c(6, 7)], as.numeric): Invalid .internal.selfref
+    ## detected and fixed by taking a (shallow) copy of the data.table so that :=
+    ## can add this new column by reference. At an earlier point, this data.table
+    ## has been copied by R (or was created manually using structure() or similar).
+    ## Avoid names<- and attr<- which in R currently (and oddly) may copy the whole
+    ## data.table. Use set* syntax instead to avoid copying: ?set, ?setnames and ?
+    ## setattr. If this message doesn't help, please report your use case to the
+    ## data.table issue tracker so the root cause can be fixed or this message
+    ## improved.
+
+``` r
+# Rename the covariate columns
+study1_data_mod <- rename_cols(study1_data_pruned)
+study2_data_mod <- rename_cols(study2_data_pruned)
+study3_data_mod <- rename_cols(study3_data_pruned)
+
+# Add score columns 
+answer_guide <- c('Yes','Yes','No','Yes','No','No','Yes','Yes','No','No',  
+                  'Yes','Yes','No','Yes','No','No','Yes','Yes','No','No') 
+
+study1_data_mod <- compute_score(study1_data_mod, answer_guide = answer_guide )
+study2_data_mod <- compute_score(study2_data_mod, answer_guide = answer_guide )
+study3_data_mod <- compute_score(study3_data_mod, answer_guide = answer_guide )
+
+# Add indicator variables
+study1_data_mod[, Mturk := 1]
+study1_data_mod[, captcha := 0]
+
+study2_data_mod[, Mturk := 1]
+study2_data_mod[, captcha := 1]
+
+
+study3_data_mod[, Mturk := 0]
+study3_data_mod[, captcha := 1]
+
+# Check the data
+# head(study1_data_mod[, 31:length(names(study1_data_mod))])
+head(study2_data_mod)
+```
+
+    ##              StartDate             EndDate     Status      IPAddress Progress
+    ## 1: 2020-07-25 20:18:27 2020-07-25 20:20:31 IP Address 47.196.110.241      100
+    ## 2: 2020-07-25 20:20:14 2020-07-25 20:21:01 IP Address   68.191.33.60      100
+    ## 3: 2020-07-25 20:21:00 2020-07-25 20:23:03 IP Address 136.24.243.198      100
+    ## 4: 2020-07-25 20:23:24 2020-07-25 20:27:34 IP Address   76.91.179.34      100
+    ## 5: 2020-07-25 20:30:35 2020-07-25 20:34:52 IP Address 73.189.103.206      100
+    ## 6: 2020-07-25 20:42:25 2020-07-25 20:45:25 IP Address 67.188.112.154      100
+    ##    Duration (in seconds) Finished        RecordedDate        ResponseId
+    ## 1:                   124       NA 2020-07-25 20:20:32 R_2zpQP14fLuuhfoW
+    ## 2:                    47       NA 2020-07-25 20:21:01 R_2YGr5mSM9w5R549
+    ## 3:                   122       NA 2020-07-25 20:23:03 R_2OGVuLEQeP89B0y
+    ## 4:                   250       NA 2020-07-25 20:27:35 R_1IpizIjkU9jHhYL
+    ## 5:                   256       NA 2020-07-25 20:34:53 R_2uKyuFbRClKReQG
+    ## 6:                   179       NA 2020-07-25 20:45:25 R_1nTTrweksgEQjuh
+    ##    RecipientLastName RecipientFirstName RecipientEmail ExternalReference
+    ## 1:                                                                      
+    ## 2:                                                                      
+    ## 3:                                                                      
+    ## 4:                                                                      
+    ## 5:                                                                      
+    ## 6:                                                                      
+    ##       LocationLatitude      LocationLongitude DistributionChannel UserLanguage
+    ## 1:  27.944793701171875  -82.24089813232421875           anonymous           EN
+    ## 2: 41.3318939208984375  -73.23670196533203125           anonymous           EN
+    ## 3: 37.7642059326171875 -122.39929962158203125           anonymous           EN
+    ## 4: 34.0312957763671875 -118.31240081787109375           anonymous           EN
+    ## 5: 37.4774932861328125    -122.45050048828125           anonymous           EN
+    ## 6: 37.3896942138671875 -122.08319854736328125           anonymous           EN
+    ##                                           Q_RecaptchaScore Gender Reg_Voter
+    ## 1: 0.90000000000000002220446049250313080847263336181640625   Male       Yes
+    ## 2: 0.90000000000000002220446049250313080847263336181640625   Male       Yes
+    ## 3: 0.90000000000000002220446049250313080847263336181640625 Female       Yes
+    ## 4: 0.90000000000000002220446049250313080847263336181640625   Male       Yes
+    ## 5: 0.90000000000000002220446049250313080847263336181640625   Male       Yes
+    ## 6: 0.90000000000000002220446049250313080847263336181640625 Female       Yes
+    ##    Voted_2012 Voted_2016 Marital_status Language            Income Age_bin
+    ## 1:         No        Yes         Single  English          < $60000   21-40
+    ## 2:         No         No         Single  Spanish         > $250000   21-40
+    ## 3:        Yes        Yes         Single  English          < $60000   21-40
+    ## 4:        Yes        Yes         Single  English  $60000 - $150000   21-40
+    ## 5:        Yes        Yes        Married  English  $60000 - $150000   41-60
+    ## 6:         No        Yes         Single  English $150000 - $250000   21-40
+    ##       Party            Education       Ethnicity Soc_Med_Active   8B   9B  10B
+    ## 1: Democrat High school graduate       Caucasian            Yes <NA> <NA> <NA>
+    ## 2: Democrat High school graduate Black / African            Yes <NA> <NA> <NA>
+    ## 3: Democrat       College degree           Asian             No  Yes  Yes   No
+    ## 4: Democrat         Some college Black / African            Yes <NA> <NA> <NA>
+    ## 5: Democrat       College degree           Asian            Yes   No  Yes   No
+    ## 6: Democrat       College degree       Caucasian            Yes <NA> <NA> <NA>
     ##     11B  12B  13B  14B  15B  16B  17B   8A   9A  10A  11A  12A  13A  14A  15A
-    ## 1: <NA> <NA> <NA> <NA> <NA> <NA> <NA>  Yes   No  Yes  Yes  Yes  Yes   No  Yes
-    ## 2: <NA> <NA> <NA> <NA> <NA> <NA> <NA>  Yes  Yes  Yes   No   No  Yes   No  Yes
-    ## 3: <NA> <NA> <NA> <NA> <NA> <NA> <NA>   No  Yes   No  Yes  Yes   No  Yes  Yes
-    ## 4:  Yes  Yes   No  Yes   No   No   No <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA>
-    ## 5: <NA> <NA> <NA> <NA> <NA> <NA> <NA>   No  Yes   No   No   No   No   No   No
-    ## 6:  Yes  Yes   No   No  Yes   No  Yes <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA>
-    ##     16A  17A SC0 assignment
-    ## 1:  Yes  Yes   3          0
-    ## 2:   No  Yes   5          0
-    ## 3:   No   No   8          0
-    ## 4: <NA> <NA>   7          1
-    ## 5:   No   No   6          0
-    ## 6: <NA> <NA>   6          1
+    ## 1: <NA> <NA> <NA> <NA> <NA> <NA> <NA>  Yes  Yes  Yes  Yes   No   No  Yes  Yes
+    ## 2: <NA> <NA> <NA> <NA> <NA> <NA> <NA>   No   No   No   No   No   No  Yes   No
+    ## 3:  Yes   No   No  Yes  Yes   No   No <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA>
+    ## 4: <NA> <NA> <NA> <NA> <NA> <NA> <NA>   No  Yes   No   No   No   No  Yes  Yes
+    ## 5:  Yes   No  Yes  Yes  Yes  Yes   No <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA>
+    ## 6: <NA> <NA> <NA> <NA> <NA> <NA> <NA>  Yes  Yes   No   No  Yes   No  Yes   No
+    ##     16A  17A SC0 assignment score score_false score_true Mturk captcha
+    ## 1:   No   No   9          0     9           4          5     1       1
+    ## 2:   No  Yes   5          0     5           4          1     1       1
+    ## 3: <NA> <NA>  10          1    10           5          5     1       1
+    ## 4:   No   No   8          0     8           5          3     1       1
+    ## 5: <NA> <NA>   7          1     7           3          4     1       1
+    ## 6:   No   No   7          0     7           4          3     1       1
 
 ``` r
-answer_guide <- c('Yes','Yes','No','Yes','No','No','Yes','Yes','No','No',
-                  'Yes','Yes','No','Yes','No','No','Yes','Yes','No','No')
-
-compute_scores <- function(dataset,answer_guide){
-    for(i in 1:nrow(data_pruned)){
-    dataset[i,"score"] <- sum(dataset[i,26:length(names(dataset))] == answer_guide,na.rm=TRUE)
-    }
-    return(dataset)
-}
-
-data_w_scores <- compute_scores(data_pruned,answer_guide)
-head(data_w_scores[,31:length(names(data_w_scores))])
+# head(study3_data_mod)
 ```
 
-    ##      8B   9B  10B  11B  12B  13B  14B  15B  16B  17B   8A   9A  10A  11A  12A
-    ## 1: <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA>  Yes   No  Yes  Yes  Yes
-    ## 2: <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA>  Yes  Yes  Yes   No   No
-    ## 3: <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA>   No  Yes   No  Yes  Yes
-    ## 4:   No  Yes   No  Yes  Yes   No  Yes   No   No   No <NA> <NA> <NA> <NA> <NA>
-    ## 5: <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA>   No  Yes   No   No   No
-    ## 6:   No  Yes   No  Yes  Yes   No   No  Yes   No  Yes <NA> <NA> <NA> <NA> <NA>
-    ##     13A  14A  15A  16A  17A SC0 assignment score
-    ## 1:  Yes   No  Yes  Yes  Yes   3          0     3
-    ## 2:  Yes   No  Yes   No  Yes   5          0     5
-    ## 3:   No  Yes  Yes   No   No   8          0     4
-    ## 4: <NA> <NA> <NA> <NA> <NA>   7          1     5
-    ## 5:   No   No   No   No   No   6          0     6
-    ## 6: <NA> <NA> <NA> <NA> <NA>   6          1     2
+#### Combine data sets from all studies
 
 ``` r
-sd <- data_w_scores[, sd(score)]
-sd
+# combine data set 
+data_full <- rbind(study1_data_mod,study2_data_mod,study3_data_mod)
+head(data_full)
 ```
 
-    ## [1] 1.1527
+    ##        StartDate       EndDate     Status       IPAddress Progress
+    ## 1: 7/24/20 22:43 7/24/20 22:45 IP Address   68.33.126.140      100
+    ## 2: 7/24/20 22:43 7/24/20 22:45 IP Address   98.19.217.229      100
+    ## 3: 7/24/20 22:43 7/24/20 22:45 IP Address  174.85.199.139      100
+    ## 4: 7/24/20 22:43 7/24/20 22:45 IP Address 209.159.199.248      100
+    ## 5: 7/24/20 22:43 7/24/20 22:46 IP Address    68.63.20.188      100
+    ## 6: 7/24/20 22:43 7/24/20 22:46 IP Address   24.13.196.131      100
+    ##    Duration (in seconds) Finished  RecordedDate        ResponseId
+    ## 1:                   112       NA 7/24/20 22:45 R_2wHbTKc7249gZQY
+    ## 2:                    99       NA 7/24/20 22:45 R_2Et95GjQbJ9BgaR
+    ## 3:                   142       NA 7/24/20 22:45 R_3LimuwbiSdyNO53
+    ## 4:                   152       NA 7/24/20 22:45 R_1rwQr9otPszxd5D
+    ## 5:                   136       NA 7/24/20 22:46 R_4Jyqc4Ld2c4PwMF
+    ## 6:                   172       NA 7/24/20 22:46 R_33jTNIqQiSmFSX3
+    ##    RecipientLastName RecipientFirstName RecipientEmail ExternalReference
+    ## 1:                                                                      
+    ## 2:                                                                      
+    ## 3:                                                                      
+    ## 4:                                                                      
+    ## 5:                                                                      
+    ## 6:                                                                      
+    ##    LocationLatitude LocationLongitude DistributionChannel UserLanguage
+    ## 1:      38.86700439      -76.81729889           anonymous           EN
+    ## 2:      34.45120239      -84.15299988           anonymous           EN
+    ## 3:      34.34539795      -86.27400208           anonymous           EN
+    ## 4:      44.14149475      -103.2052002           anonymous           EN
+    ## 5:      30.49079895      -84.31580353           anonymous           EN
+    ## 6:      42.18449402      -88.32659912           anonymous           EN
+    ##    Q_RecaptchaScore Gender Reg_Voter Voted_2012 Voted_2016 Marital_status
+    ## 1:              0.9 Female       Yes        Yes        Yes        Married
+    ## 2:              0.7 Female       Yes        Yes        Yes        Married
+    ## 3:              0.9 Female       Yes        Yes        Yes        Married
+    ## 4:              0.9   Male       Yes        Yes        Yes         Single
+    ## 5:              0.9   Male       Yes        Yes        Yes         Single
+    ## 6:              0.9   Male       Yes        Yes        Yes        Married
+    ##    Language            Income Age_bin      Party            Education
+    ## 1:  English $150000 - $250000   21-40   Democrat      Graduate degree
+    ## 2:  English  $60000 - $150000   21-40 Republican       College degree
+    ## 3:  English          < $60000   21-40      Other         Some college
+    ## 4:  English          < $60000   21-40      Other High school graduate
+    ## 5:  English          < $60000   21-40   Democrat       College degree
+    ## 6:  English  $60000 - $150000   41-60 Republican       College degree
+    ##            Ethnicity Soc_Med_Active   8B   9B  10B  11B  12B  13B  14B  15B
+    ## 1:         Caucasian            Yes <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA>
+    ## 2: Hispanic / Latinx            Yes <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA>
+    ## 3:         Caucasian            Yes <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA>
+    ## 4:         Caucasian            Yes   No  Yes   No  Yes  Yes   No  Yes   No
+    ## 5:         Caucasian            Yes <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA>
+    ## 6:         Caucasian            Yes   No  Yes   No  Yes  Yes   No   No  Yes
+    ##     16B  17B   8A   9A  10A  11A  12A  13A  14A  15A  16A  17A SC0 assignment
+    ## 1: <NA> <NA>  Yes   No  Yes  Yes  Yes  Yes   No  Yes  Yes  Yes   3          0
+    ## 2: <NA> <NA>  Yes  Yes  Yes   No   No  Yes   No  Yes   No  Yes   5          0
+    ## 3: <NA> <NA>   No  Yes   No  Yes  Yes   No  Yes  Yes   No   No   8          0
+    ## 4:   No   No <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA>   7          1
+    ## 5: <NA> <NA>   No  Yes   No   No   No   No   No   No   No   No   6          0
+    ## 6:   No  Yes <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA>   6          1
+    ##    score score_false score_true Mturk captcha
+    ## 1:     3           0          3     1       0
+    ## 2:     5           2          3     1       0
+    ## 3:     8           4          4     1       0
+    ## 4:     7           4          3     1       0
+    ## 5:     6           5          1     1       0
+    ## 6:     6           3          3     1       0
+
+### EDA
+
+Figure 1 summarizes the score of subjects in each assignment group
+(treatment/control) and for true and false
+tweets.
 
 ``` r
-d <- data_w_scores[, .(scores=mean(score)), by = assignment]
-mod <- lm(score ~ assignment, data_w_scores)
+dt <- data_full[, .(mean_total_score = mean(score),mean_true_score = mean(score_true),mean_false_score = mean(score_false)), by=assignment]
+dt
+```
+
+    ##    assignment mean_total_score mean_true_score mean_false_score
+    ## 1:          0              7.2             3.6              3.5
+    ## 2:          1              7.0             3.4              3.6
+
+``` r
+p <- ggplot(dt, aes(x = assignment, y = mean_total_score)) + 
+  geom_bar(stat="identity", fill="steelblue") + 
+  geom_text(aes(label = mean_total_score), size=3.5, color="white", vjust=1.5) + 
+  ggtitle("Average score for all tweets by assignment group") +
+  ylab("Average Total Score") + 
+  xlab("Assignment Group \n (0 : Control | 1: Treatment)") + 
+  theme_minimal()
+
+
+p + scale_x_discrete(limits=c(0, 1))
+```
+
+![](Final_project_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+
+``` r
+dfm <- melt(dt[,c('assignment','mean_true_score','mean_false_score')],id.vars = 1)
+dfm <- rename(dfm, 
+       Assignment = assignment,
+       Score_Type = variable,
+       Score = value)
+p <- ggplot(dfm,aes(x = Assignment,y = Score)) + 
+    geom_bar(aes(fill = Score_Type),stat = "identity",position = "dodge")
+
+
+p <- ggplot(dfm,aes(x = Assignment,y = Score)) + 
+    geom_bar(aes(fill = Score_Type),stat = "identity",position = "dodge") + 
+  ggtitle("Average score for all tweets by assignment group") +
+  ylab("Average Total Score") + 
+  xlab("Assignment Group \n (0 : Control | 1: Treatment)") + 
+  theme_minimal()
+
+
+p + scale_x_discrete(limits=c(0, 1))
+```
+
+![](Final_project_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+
+The figure above shows that there is some improvement in scores for
+false tweets in the presence of a general flag but there is also a
+descrease in the score for true tweets in the presence of this flag.
+
+``` r
+sd <- data_full[, sd(score)]
+d <- data_full[, .(scores=mean(score)), by = assignment]
+mod1 <- lm(score ~ assignment, data_full)
+mod2 <- lm(score ~ assignment+Mturk, data_full)
+mod3 <- lm(score ~ assignment+Mturk+captcha, data_full)
 ate <- diff(d$scores)
-ate
-```
-
-    ## [1] 0.40902
-
-``` r
-stargazer(mod, type="text")
+stargazer(mod1,mod2,mod3, type="text",ci=TRUE)
 ```
 
     ## 
-    ## ===============================================
-    ##                         Dependent variable:    
-    ##                     ---------------------------
-    ##                                score           
-    ## -----------------------------------------------
-    ## assignment                    0.409*           
-    ##                               (0.227)          
-    ##                                                
-    ## Constant                     4.451***          
-    ##                               (0.160)          
-    ##                                                
-    ## -----------------------------------------------
-    ## Observations                    101            
-    ## R2                             0.032           
-    ## Adjusted R2                    0.022           
-    ## Residual Std. Error       1.140 (df = 99)      
-    ## F Statistic             3.250* (df = 1; 99)    
-    ## ===============================================
-    ## Note:               *p<0.1; **p<0.05; ***p<0.01
+    ## ======================================================================================
+    ##                                            Dependent variable:                        
+    ##                     ------------------------------------------------------------------
+    ##                                                   score                               
+    ##                             (1)                  (2)                     (3)          
+    ## --------------------------------------------------------------------------------------
+    ## assignment                -0.120                -0.120                 -0.120         
+    ##                       (-0.480, 0.240)      (-0.480, 0.230)         (-0.440, 0.200)    
+    ##                                                                                       
+    ## Mturk                                         -0.820***                -0.140         
+    ##                                            (-1.200, -0.410)        (-0.540, 0.260)    
+    ##                                                                                       
+    ## captcha                                                               1.600***        
+    ##                                                                    (1.200, 1.900)     
+    ##                                                                                       
+    ## Constant                 7.200***              7.800***               6.200***        
+    ##                       (6.900, 7.400)        (7.400, 8.200)         (5.700, 6.700)     
+    ##                                                                                       
+    ## --------------------------------------------------------------------------------------
+    ## Observations                313                  313                     313          
+    ## R2                         0.001                0.049                   0.220         
+    ## Adjusted R2               -0.002                0.043                   0.210         
+    ## Residual Std. Error  1.600 (df = 311)      1.600 (df = 310)       1.400 (df = 309)    
+    ## F Statistic         0.420 (df = 1; 311) 8.100*** (df = 2; 310) 29.000*** (df = 3; 309)
+    ## ======================================================================================
+    ## Note:                                                      *p<0.1; **p<0.05; ***p<0.01
 
 ``` r
 ## Power calculation 
-power.t.test(d=ate,sig.level=0.95,n=nrow(data_w_scores),sd=sd,alternative="two.sided")
+power.t.test(d=ate,sig.level=0.95,n=nrow(data_full),sd=sd,alternative="two.sided")
 ```
 
     ## 
     ##      Two-sample t test power calculation 
     ## 
-    ##               n = 101
-    ##           delta = 0.40902
-    ##              sd = 1.1527
+    ##               n = 313
+    ##           delta = 0.12
+    ##              sd = 1.6
     ##       sig.level = 0.95
-    ##           power = 0.99303
+    ##           power = 0.8
     ##     alternative = two.sided
     ## 
     ## NOTE: n is number in *each* group
 
-### EDA with Mturk data set 1
+**A large portion of survey subjects said that they considered
+themselves to be active on social media**
 
 ``` r
-data_w_scores[, .(score_mean = mean(score)), by=assignment]
-```
-
-    ##    assignment score_mean
-    ## 1:          0      4.451
-    ## 2:          1      4.860
-
-``` r
-data_mod <- rename(data_w_scores, 
-       Gender = Q1,
-       Reg_Voter = Q2,
-       Age_bin = Q3,
-       Party = Q4,
-       Education = Q5,
-       Ethnicity = Q6,
-       Soc_Med_Active = Q7
-        )
-
-data_mod$Gender[data_mod$Gender==''] <- 'Unanswered'
-
-names(data_mod)
-```
-
-    ##  [1] "StartDate"             "EndDate"               "Status"               
-    ##  [4] "IPAddress"             "Progress"              "Duration (in seconds)"
-    ##  [7] "Finished"              "RecordedDate"          "ResponseId"           
-    ## [10] "RecipientLastName"     "RecipientFirstName"    "RecipientEmail"       
-    ## [13] "ExternalReference"     "LocationLatitude"      "LocationLongitude"    
-    ## [16] "DistributionChannel"   "UserLanguage"          "Q_RecaptchaScore"     
-    ## [19] "Gender"                "Reg_Voter"             "Q38"                  
-    ## [22] "Q39"                   "Q37"                   "Q40"                  
-    ## [25] "Q36"                   "Age_bin"               "Party"                
-    ## [28] "Education"             "Ethnicity"             "Soc_Med_Active"       
-    ## [31] "8B"                    "9B"                    "10B"                  
-    ## [34] "11B"                   "12B"                   "13B"                  
-    ## [37] "14B"                   "15B"                   "16B"                  
-    ## [40] "17B"                   "8A"                    "9A"                   
-    ## [43] "10A"                   "11A"                   "12A"                  
-    ## [46] "13A"                   "14A"                   "15A"                  
-    ## [49] "16A"                   "17A"                   "SC0"                  
-    ## [52] "assignment"            "score"
-
-**Nearly everyone in the Mturk survey considered themselved active on
-social media**
-
-``` r
-ggplot(data_mod) + geom_bar(aes(x = Soc_Med_Active))
+ggplot(data_full) + geom_bar(aes(x = Soc_Med_Active))
 ```
 
 ![](Final_project_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
 
-**Also nearly everyone said that they were registered as a voter
-currently**
+**Alse, majority of survey subjects said that they were registered as a
+voter**
 
 ``` r
-ggplot(data_mod) + geom_bar(aes(x = Reg_Voter))
+ggplot(data_full) + geom_bar(aes(x = Reg_Voter))
 ```
 
 ![](Final_project_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
@@ -1303,7 +1081,7 @@ ggplot(data_mod) + geom_bar(aes(x = Reg_Voter))
 equal allocation to treatment and control groups in the experiment**
 
 ``` r
-ggplot(data_mod) + geom_bar(aes(x = assignment))
+ggplot(data_full) + geom_bar(aes(x = assignment))
 ```
 
 ![](Final_project_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
@@ -1313,7 +1091,7 @@ participant’s gender towards the Male gender (One subject did not
 answer the gender question)**
 
 ``` r
-ggplot(data_mod) + geom_bar(aes(x = Gender))
+ggplot(data_full) + geom_bar(aes(x = Gender))
 ```
 
 ![](Final_project_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
@@ -1322,20 +1100,20 @@ ggplot(data_mod) + geom_bar(aes(x = Gender))
 approximately evenly distributed.**
 
 ``` r
-data_mod[, .N, by=.(Gender,Party)]
+data_full[, .N, by=.(Gender,Party)]
 ```
 
-    ##        Gender      Party  N
-    ## 1:     Female   Democrat 17
-    ## 2:     Female Republican 20
-    ## 3:     Female      Other  4
-    ## 4:       Male      Other  4
-    ## 5:       Male   Democrat 29
-    ## 6:       Male Republican 26
-    ## 7: Unanswered   Democrat  1
+    ##    Gender      Party  N
+    ## 1: Female   Democrat 90
+    ## 2: Female Republican 37
+    ## 3: Female      Other 21
+    ## 4:   Male      Other 34
+    ## 5:   Male   Democrat 82
+    ## 6:   Male Republican 47
+    ## 7:          Democrat  2
 
 ``` r
-ggplot(data_mod) + geom_bar(aes(x = Gender,fill=Party))
+ggplot(data_full) + geom_bar(aes(x = Gender,fill=Party))
 ```
 
 ![](Final_project_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
@@ -1346,13 +1124,13 @@ age
 bucket.**
 
 ``` r
-ggplot(data_mod) + geom_bar(aes(x = Education,fill=Age_bin))
+ggplot(data_full) + geom_bar(aes(x = Education,fill=Age_bin))
 ```
 
 ![](Final_project_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
 
 ``` r
-ggplot(mutate(data_mod, Age = fct_infreq(Age_bin))) + geom_bar(aes(x = Age_bin))
+ggplot(mutate(data_full, Age = fct_infreq(Age_bin))) + geom_bar(aes(x = Age_bin))
 ```
 
 ![](Final_project_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
@@ -1361,35 +1139,35 @@ ggplot(mutate(data_mod, Age = fct_infreq(Age_bin))) + geom_bar(aes(x = Age_bin))
 data_mod[, .N, by=.(Party,Age_bin)]
 ```
 
-    ##         Party Age_bin  N
-    ## 1:   Democrat   21-40 40
-    ## 2: Republican   21-40 33
-    ## 3:      Other   21-40  5
-    ## 4: Republican   41-60 10
-    ## 5:      Other   41-60  3
-    ## 6:   Democrat   41-60  5
-    ## 7:   Democrat     61+  1
-    ## 8: Republican     61+  3
-    ## 9:   Democrat    0-20  1
+    ##         Party Age_bin N
+    ## 1:   Democrat   21-40 7
+    ## 2:      Other   21-40 7
+    ## 3:              21-40 2
+    ## 4: Republican     61+ 1
+    ## 5: Republican   21-40 4
+    ## 6:   Democrat    0-20 2
+    ## 7:      Other     61+ 1
+    ## 8: Republican    0-20 1
+    ## 9:   Democrat   41-60 1
 
 In terms of ethinicity of the randomly sampled subjects, the majority
 were Caucasian followed by approximately equal counts of Hispanic and
 Native americans, followed by african americans and asians.
 
 ``` r
-data_mod[, .N, by=Ethnicity]
+data_full[, .N, by=Ethnicity]
 ```
 
-    ##            Ethnicity  N
-    ## 1:         Caucasian 58
-    ## 2: Hispanic / Latinx 14
-    ## 3:   Native American 13
-    ## 4:   Black / African  9
-    ## 5:             Asian  5
-    ## 6:             Other  2
+    ##            Ethnicity   N
+    ## 1:         Caucasian 192
+    ## 2: Hispanic / Latinx  21
+    ## 3:   Native American  14
+    ## 4:   Black / African  21
+    ## 5:             Asian  58
+    ## 6:             Other   7
 
 ``` r
-ggplot(mutate(data_mod, Ethnicity = fct_infreq(Ethnicity))) + geom_bar(aes(x = Ethnicity))
+ggplot(mutate(data_full, Ethnicity = fct_infreq(Ethnicity))) + geom_bar(aes(x = Ethnicity))
 ```
 
 ![](Final_project_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
@@ -1431,110 +1209,110 @@ compute_robust_se<- function(mod,type="HC",clustering = FALSE,data=NA) {
 ```
 
 ``` r
-mod1 <- lm(score ~ assignment, data_mod)
-mod2 <- lm(score ~ assignment+factor(Party)*factor(Gender)+factor(Ethnicity)*factor(Gender)+factor(Age_bin), data_mod)
-ci_custom1 <- compute_robust_ci(mod1,type="HC1")
-ci_custom2 <- compute_robust_ci(mod2,type="HC1")
+mod1 <- lm(score ~ assignment, data_full)
+mod2 <- lm(score ~ assignment+factor(Party)*factor(Gender)+factor(Ethnicity)*factor(Gender)+factor(Age_bin), data_full)
+ci_custom1 <- compute_robust_ci(mod1,type="HC3")
+ci_custom2 <- compute_robust_ci(mod2,type="HC3")
 
 stargazer(mod1,mod2, type="text",ci.custom=list(ci_custom1,ci_custom2))
 ```
 
     ## 
     ## ===================================================================================================
-    ##                                                                       Dependent variable:          
-    ##                                                             ---------------------------------------
-    ##                                                                              score                 
-    ##                                                                     (1)                 (2)        
+    ##                                                                     Dependent variable:            
+    ##                                                         -------------------------------------------
+    ##                                                                            score                   
+    ##                                                                 (1)                   (2)          
     ## ---------------------------------------------------------------------------------------------------
-    ## assignment                                                        0.409*              0.564**      
-    ##                                                               (-0.036, 0.854)     (0.060, 1.069)   
+    ## assignment                                                    -0.120                -0.140         
+    ##                                                           (-0.480, 0.240)       (-0.490, 0.210)    
     ##                                                                                                    
-    ## factor(Party)Other                                                                    -0.146       
-    ##                                                                                   (-1.053, 0.761)  
+    ## factor(Party)Other                                                                  0.760**        
+    ##                                                                                 (0.110, 1.400)     
     ##                                                                                                    
-    ## factor(Party)Republican                                                                0.375       
-    ##                                                                                   (-0.465, 1.216)  
+    ## factor(Party)Republican                                                            -0.580**        
+    ##                                                                                (-1.100, -0.023)    
     ##                                                                                                    
-    ## factor(Gender)Male                                                                     0.000       
-    ##                                                                                 (-0.00000, 0.00000)
+    ## factor(Gender)Female                                                                 0.650         
+    ##                                                                                 (-2.400, 3.700)    
     ##                                                                                                    
-    ## factor(Gender)Unanswered                                                             -2.751**      
-    ##                                                                                  (-3.458, -2.044)  
+    ## factor(Gender)Male                                                                   0.130         
+    ##                                                                                 (-2.900, 3.200)    
     ##                                                                                                    
-    ## factor(Ethnicity)Black / African                                                      -0.266       
-    ##                                                                                   (-1.565, 1.034)  
+    ## factor(Ethnicity)Black / African                                                    -0.430         
+    ##                                                                                 (-1.400, 0.580)    
     ##                                                                                                    
-    ## factor(Ethnicity)Caucasian                                                            -0.182       
-    ##                                                                                   (-1.423, 1.058)  
+    ## factor(Ethnicity)Caucasian                                                          -1.000         
+    ##                                                                                 (-5.300, 3.300)    
     ##                                                                                                    
-    ## factor(Ethnicity)Hispanic / Latinx                                                    -0.005       
-    ##                                                                                   (-1.279, 1.269)  
+    ## factor(Ethnicity)Hispanic / Latinx                                                  -0.380         
+    ##                                                                                 (-1.400, 0.610)    
     ##                                                                                                    
-    ## factor(Ethnicity)Native American                                                       0.542       
-    ##                                                                                   (-0.960, 2.044)  
+    ## factor(Ethnicity)Native American                                                    -0.770         
+    ##                                                                                 (-2.000, 0.450)    
     ##                                                                                                    
-    ## factor(Ethnicity)Other                                                                 0.067       
-    ##                                                                                   (-0.993, 1.127)  
+    ## factor(Ethnicity)Other                                                              -0.180         
+    ##                                                                                 (-2.000, 1.700)    
     ##                                                                                                    
-    ## factor(Age_bin)21-40                                                                   1.175       
-    ##                                                                                   (-0.277, 2.628)  
+    ## factor(Age_bin)21-40                                                                -0.250         
+    ##                                                                                 (-1.400, 0.940)    
     ##                                                                                                    
-    ## factor(Age_bin)41-60                                                                   0.854       
-    ##                                                                                   (-0.642, 2.350)  
+    ## factor(Age_bin)41-60                                                                -0.280         
+    ##                                                                                 (-1.500, 0.940)    
     ##                                                                                                    
-    ## factor(Age_bin)61+                                                                     1.030       
-    ##                                                                                   (-0.572, 2.632)  
+    ## factor(Age_bin)61+                                                                  -0.680         
+    ##                                                                                 (-2.100, 0.770)    
     ##                                                                                                    
-    ## factor(Party)Other:factor(Gender)Male                                                 -0.073       
-    ##                                                                                   (-1.493, 1.348)  
+    ## factor(Party)Other:factor(Gender)Female                                             -0.360         
+    ##                                                                                 (-1.400, 0.660)    
     ##                                                                                                    
-    ## factor(Party)Republican:factor(Gender)Male                                            -0.570       
-    ##                                                                                   (-1.757, 0.617)  
+    ## factor(Party)Republican:factor(Gender)Female                                        -0.440         
+    ##                                                                                 (-1.300, 0.410)    
     ##                                                                                                    
-    ## factor(Party)Other:factor(Gender)Unanswered                                                        
-    ##                                                                                                    
-    ##                                                                                                    
-    ## factor(Party)Republican:factor(Gender)Unanswered                                                   
+    ## factor(Party)Other:factor(Gender)Male                                                              
     ##                                                                                                    
     ##                                                                                                    
-    ## factor(Gender)Male:factor(Ethnicity)Black / African                                    1.073       
-    ##                                                                                   (0.061, 2.084)   
-    ##                                                                                                    
-    ## factor(Gender)Unanswered:factor(Ethnicity)Black / African                                          
+    ## factor(Party)Republican:factor(Gender)Male                                                         
     ##                                                                                                    
     ##                                                                                                    
-    ## factor(Gender)Male:factor(Ethnicity)Caucasian                                          0.189       
-    ##                                                                                   (-3.110, 3.489)  
+    ## factor(Gender)Female:factor(Ethnicity)Black / African                               -0.530         
+    ##                                                                                 (-2.100, 1.100)    
     ##                                                                                                    
-    ## factor(Gender)Unanswered:factor(Ethnicity)Caucasian                                                
-    ##                                                                                                    
-    ##                                                                                                    
-    ## factor(Gender)Male:factor(Ethnicity)Hispanic / Latinx                                  0.340       
-    ##                                                                                   (-3.217, 3.897)  
-    ##                                                                                                    
-    ## factor(Gender)Unanswered:factor(Ethnicity)Hispanic / Latinx                                        
+    ## factor(Gender)Male:factor(Ethnicity)Black / African                                                
     ##                                                                                                    
     ##                                                                                                    
-    ## factor(Gender)Male:factor(Ethnicity)Native American                                   -0.098       
-    ##                                                                                   (-3.651, 3.454)  
+    ## factor(Gender)Female:factor(Ethnicity)Caucasian                                      0.630         
+    ##                                                                                 (-3.700, 4.900)    
     ##                                                                                                    
-    ## factor(Gender)Unanswered:factor(Ethnicity)Native American                                          
+    ## factor(Gender)Male:factor(Ethnicity)Caucasian                                        1.200         
+    ##                                                                                 (-3.100, 5.500)    
     ##                                                                                                    
+    ## factor(Gender)Female:factor(Ethnicity)Hispanic / Latinx                             -1.000         
+    ##                                                                                 (-2.700, 0.610)    
+    ##                                                                                                    
+    ## factor(Gender)Male:factor(Ethnicity)Hispanic / Latinx                                              
+    ##                                                                                                    
+    ##                                                                                                    
+    ## factor(Gender)Female:factor(Ethnicity)Native American                               -0.710         
+    ##                                                                                 (-2.600, 1.200)    
+    ##                                                                                                    
+    ## factor(Gender)Male:factor(Ethnicity)Native American                                                
+    ##                                                                                                    
+    ##                                                                                                    
+    ## factor(Gender)Female:factor(Ethnicity)Other                                         -1.100         
+    ##                                                                                 (-3.600, 1.500)    
     ##                                                                                                    
     ## factor(Gender)Male:factor(Ethnicity)Other                                                          
     ##                                                                                                    
     ##                                                                                                    
-    ## factor(Gender)Unanswered:factor(Ethnicity)Other                                                    
-    ##                                                                                                    
-    ##                                                                                                    
-    ## Constant                                                         4.451***              3.193       
-    ##                                                               (4.139, 4.763)      (1.757, 4.629)   
+    ## Constant                                                     7.200***              7.400***        
+    ##                                                           (6.900, 7.400)        (4.100, 11.000)    
     ##                                                                                                    
     ## ---------------------------------------------------------------------------------------------------
-    ## Observations                                                        101                 101        
-    ## R2                                                                 0.032               0.183       
-    ## Adjusted R2                                                        0.022              -0.009       
-    ## Residual Std. Error                                           1.140 (df = 99)     1.158 (df = 81)  
-    ## F Statistic                                                 3.250* (df = 1; 99) 0.955 (df = 19; 81)
+    ## Observations                                                    313                   313          
+    ## R2                                                             0.001                 0.170         
+    ## Adjusted R2                                                   -0.002                 0.110         
+    ## Residual Std. Error                                      1.600 (df = 311)      1.500 (df = 291)    
+    ## F Statistic                                             0.420 (df = 1; 311) 2.800*** (df = 21; 291)
     ## ===================================================================================================
     ## Note:                                                                   *p<0.1; **p<0.05; ***p<0.01

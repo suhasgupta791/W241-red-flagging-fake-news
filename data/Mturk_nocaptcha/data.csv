@@ -1,0 +1,214 @@
+﻿StartDate,EndDate,Status,IPAddress,Progress,Duration (in seconds),Finished,RecordedDate,ResponseId,RecipientLastName,RecipientFirstName,RecipientEmail,ExternalReference,LocationLatitude,LocationLongitude,DistributionChannel,UserLanguage,Q_RecaptchaScore,Q1,Q2,Q38,Q39,Q37,Q40,Q36,Q3,Q4,Q5,Q6,Q7,8B,9B,10B,11B,12B,13B,14B,15B,16B,17B,8A,9A,10A,11A,12A,13A,14A,15A,16A,17A,SC0
+Start Date,End Date,Response Type,IP Address,Progress,Duration (in seconds),Finished,Recorded Date,Response ID,Recipient Last Name,Recipient First Name,Recipient Email,External Data Reference,Location Latitude,Location Longitude,Distribution Channel,User Language,Q_RecaptchaScore,"Thank you for participating in this survey - we greatly appreciate it! The survey should take less than 10 minutes to complete. 
+
+
+
+The first series of questions are solely for data analysis purposes. We will not collect any personally identifiable information and the survey is completely anonymous.
+
+
+
+
+
+Which gender do you identify with?",Are you a registered voter?,Did you vote in the 2012 election?,Did you vote in the 2016 election?,What is your marital status ?,What is your primary language of communication?,What is your annual household income?,What is your age group?,What is your politicial affiliation?,What is your highest level of education?,What ethnicity do you identify as?,Do you consider yourself to be active on social media platforms?,"Disclaimer: Content on social media may contain false or misleading information. Please exercise your best judgment when evaluating the accuracy of content viewed on social media. 
+
+
+
+ 
+
+Do you believe that the content of the above post is true?","Disclaimer: Content on social media may contain false or misleading information. Please exercise your best judgment when evaluating the accuracy of content viewed on social media. 
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+
+Do you believe that the content of the above post is true?","Disclaimer: Content on social media may contain false or misleading information. Please exercise your best judgment when evaluating the accuracy of content viewed on social media.
+
+
+
+
+
+ 
+
+ 
+
+Do you believe that the content of the above post is true?","Disclaimer: Content on social media may contain false or misleading information. Please exercise your best judgment when evaluating the accuracy of content viewed on social media.
+
+
+
+
+
+ 
+
+ 
+
+Do you believe that the content of the above post is true?","Disclaimer: Content on social media may contain false or misleading information. Please exercise your best judgment when evaluating the accuracy of content viewed on social media.
+
+
+
+
+
+ 
+
+ 
+
+Do you believe that the content of the above post is true?","Disclaimer: Content on social media may contain false or misleading information. Please exercise your best judgment when evaluating the accuracy of content viewed on social media.
+
+
+
+
+
+ 
+
+ 
+
+Do you believe that the content of the above post is true?","Disclaimer: Content on social media may contain false or misleading information. Please exercise your best judgment when evaluating the accuracy of content viewed on social media.
+
+
+
+
+
+ 
+
+ 
+
+Do you believe that the content of the above post is true?","Disclaimer: Content on social media may contain false or misleading information. Please exercise your best judgment when evaluating the accuracy of content viewed on social media.
+
+
+
+
+
+ 
+
+ 
+
+Do you believe that the content of the above post is true?","Disclaimer: Content on social media may contain false or misleading information. Please exercise your best judgment when evaluating the accuracy of content viewed on social media.
+
+
+
+
+
+ 
+
+ 
+
+Do you believe that the content of the above post is true?","Disclaimer: Content on social media may contain false or misleading information. Please exercise your best judgment when evaluating the accuracy of content viewed on social media.
+
+
+
+
+
+ 
+
+ 
+
+Do you believe that the content of the above post is true?",Do you believe that the content of the above post is true?,Do you believe that the content of the above post is true?,Do you believe that the content of the above post is true?,Do you believe that the content of the above post is true?,Do you believe that the content of the above post is true?,Do you believe that the content of the above post is true?,Do you believe that the content of the above post is true?,Do you believe that the content of the above post is true?,Do you believe that the content of the above post is true?,Do you believe that the content of the above post is true?,Score
+7/24/20 22:43,7/24/20 22:45,IP Address,99.75.53.174,100,124,True,7/24/20 22:45,R_3wSF9NPrJQkHDjj,,,,,42.02209473,-88.17050171,anonymous,EN,0.9,Male,No,No,No,Single,English,< $60000,21-40,Other,Some college,Asian,Yes,No,Yes,No,Yes,No,No,Yes,Yes,No,No,,,,,,,,,,,9
+7/24/20 22:43,7/24/20 22:45,IP Address,68.33.126.140,100,112,True,7/24/20 22:45,R_2wHbTKc7249gZQY,,,,,38.86700439,-76.81729889,anonymous,EN,0.9,Female,Yes,Yes,Yes,Married,English,$150000 - $250000,21-40,Democrat,Graduate degree,Caucasian,Yes,,,,,,,,,,,Yes,No,Yes,Yes,Yes,Yes,No,Yes,Yes,Yes,3
+7/24/20 22:43,7/24/20 22:45,IP Address,98.19.217.229,100,99,True,7/24/20 22:45,R_2Et95GjQbJ9BgaR,,,,,34.45120239,-84.15299988,anonymous,EN,0.7,Female,Yes,Yes,Yes,Married,English,$60000 - $150000,21-40,Republican,College degree,Hispanic / Latinx,Yes,,,,,,,,,,,Yes,Yes,Yes,No,No,Yes,No,Yes,No,Yes,5
+7/24/20 22:43,7/24/20 22:45,IP Address,174.85.199.139,100,142,True,7/24/20 22:45,R_3LimuwbiSdyNO53,,,,,34.34539795,-86.27400208,anonymous,EN,0.9,Female,Yes,Yes,Yes,Married,English,< $60000,21-40,Other,Some college,Caucasian,Yes,,,,,,,,,,,No,Yes,No,Yes,Yes,No,Yes,Yes,No,No,8
+7/24/20 22:43,7/24/20 22:45,IP Address,209.159.199.248,100,152,True,7/24/20 22:45,R_1rwQr9otPszxd5D,,,,,44.14149475,-103.2052002,anonymous,EN,0.9,Male,Yes,Yes,Yes,Single,English,< $60000,21-40,Other,High school graduate,Caucasian,Yes,No,Yes,No,Yes,Yes,No,Yes,No,No,No,,,,,,,,,,,7
+7/24/20 22:43,7/24/20 22:46,IP Address,68.63.20.188,100,136,True,7/24/20 22:46,R_4Jyqc4Ld2c4PwMF,,,,,30.49079895,-84.31580353,anonymous,EN,0.9,Male,Yes,Yes,Yes,Single,English,< $60000,21-40,Democrat,College degree,Caucasian,Yes,,,,,,,,,,,No,Yes,No,No,No,No,No,No,No,No,6
+7/24/20 22:43,7/24/20 22:46,IP Address,24.13.196.131,100,172,True,7/24/20 22:46,R_33jTNIqQiSmFSX3,,,,,42.18449402,-88.32659912,anonymous,EN,0.9,Male,Yes,Yes,Yes,Married,English,$60000 - $150000,41-60,Republican,College degree,Caucasian,Yes,No,Yes,No,Yes,Yes,No,No,Yes,No,Yes,,,,,,,,,,,6
+7/24/20 22:43,7/24/20 22:46,IP Address,67.149.68.150,100,170,True,7/24/20 22:46,R_32Xc1Hk8QC8jQWq,,,,,40.04570007,-83.07209778,anonymous,EN,0.9,Male,Yes,Yes,Yes,Single,English,< $60000,21-40,Democrat,Some college,Caucasian,Yes,Yes,No,No,No,Yes,No,Yes,Yes,No,No,,,,,,,,,,,7
+7/24/20 22:43,7/24/20 22:46,IP Address,181.215.29.243,100,186,True,7/24/20 22:46,R_2w4gaZsuQaSZLgx,,,,,38.96960449,-77.38610077,anonymous,EN,0.9,Female,Yes,Yes,Yes,Married,English,< $60000,21-40,Republican,Graduate degree,Native American,Yes,No,Yes,Yes,No,Yes,No,Yes,Yes,Yes,No,,,,,,,,,,,5
+7/24/20 22:43,7/24/20 22:47,IP Address,72.231.23.235,100,243,True,7/24/20 22:47,R_25sWOGcEcdNb0kK,,,,,40.67579651,-73.81629944,anonymous,EN,0.9,Male,Yes,Yes,Yes,Married,English,$60000 - $150000,21-40,Republican,Graduate degree,Black / African,Yes,,,,,,,,,,,No,Yes,No,No,Yes,Yes,Yes,No,No,No,5
+7/24/20 22:45,7/24/20 22:47,IP Address,73.103.37.34,100,134,True,7/24/20 22:47,R_21vL1jQdmGj37BA,,,,,40.39900208,-86.85749817,anonymous,EN,0.7,Female,Yes,Yes,Yes,Married,English,$60000 - $150000,21-40,Republican,Graduate degree,Caucasian,Yes,,,,,,,,,,,No,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,4
+7/24/20 22:44,7/24/20 22:47,IP Address,72.214.170.135,100,200,True,7/24/20 22:47,R_WrD2Ix76cjYieCR,,,,,39.36439514,-94.36340332,anonymous,EN,0.9,Male,Yes,Yes,Yes,Married,English,$60000 - $150000,21-40,Republican,College degree,Caucasian,Yes,,,,,,,,,,,Yes,No,No,Yes,Yes,No,Yes,Yes,No,Yes,7
+7/24/20 22:45,7/24/20 22:47,IP Address,208.82.99.28,100,151,True,7/24/20 22:47,R_2OUqKHFdeUGVzlg,,,,,37.32090759,-121.9125977,anonymous,EN,0.9,Male,Yes,Yes,Yes,Married,English,< $60000,21-40,Republican,Graduate degree,Asian,Yes,No,Yes,Yes,Yes,Yes,No,Yes,Yes,Yes,Yes,,,,,,,,,,,5
+7/24/20 22:44,7/24/20 22:47,IP Address,105.160.50.141,100,205,True,7/24/20 22:47,R_2EfXzK6zFGA1TBg,,,,,-1.284103394,36.81550598,anonymous,EN,0.7,Male,Yes,Yes,Yes,Married,English,$60000 - $150000,21-40,Democrat,Graduate degree,Black / African,Yes,,,,,,,,,,,Yes,Yes,No,Yes,No,No,No,Yes,No,No,9
+7/24/20 22:44,7/24/20 22:47,IP Address,174.65.81.86,100,183,True,7/24/20 22:47,R_2rx8UdM1FPy7qpm,,,,,32.81230164,-116.9171982,anonymous,EN,0.9,Male,No,No,No,Single,English,< $60000,41-60,Other,Some college,Caucasian,Yes,Yes,Yes,No,Yes,No,No,Yes,Yes,No,No,,,,,,,,,,,10
+7/24/20 22:46,7/24/20 22:48,IP Address,71.227.122.29,100,94,True,7/24/20 22:48,R_28XQabY2meI84qv,,,,,42.21960449,-83.604599,anonymous,EN,0.9,Female,Yes,Yes,Yes,Married,English,$150000 - $250000,21-40,Republican,College degree,Caucasian,Yes,,,,,,,,,,,Yes,Yes,Yes,No,Yes,Yes,Yes,Yes,Yes,Yes,4
+7/24/20 22:43,7/24/20 22:48,IP Address,72.47.8.241,100,276,True,7/24/20 22:48,R_24eGlort4KbotYf,,,,,47.54310608,-116.1253052,anonymous,EN,0.9,Male,Yes,Yes,Yes,Married,English,$150000 - $250000,21-40,Republican,College degree,Hispanic / Latinx,Yes,,,,,,,,,,,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,5
+7/24/20 22:45,7/24/20 22:48,IP Address,71.194.220.208,100,188,True,7/24/20 22:48,R_AMUFR8f94ALjVlv,,,,,41.59100342,-88.04840088,anonymous,EN,0.9,Female,Yes,Yes,Yes,Married,English,$60000 - $150000,21-40,Democrat,College degree,Caucasian,Yes,No,Yes,Yes,Yes,Yes,Yes,Yes,No,Yes,Yes,,,,,,,,,,,3
+7/24/20 22:43,7/24/20 22:48,IP Address,71.58.178.210,100,294,True,7/24/20 22:48,R_3I0LXPF124drycK,,,,,41.31469727,-75.79109955,anonymous,EN,0.9,Male,Yes,Yes,Yes,Married,English,$60000 - $150000,41-60,Republican,College degree,Caucasian,Yes,Yes,No,Yes,Yes,Yes,Yes,Yes,No,Yes,Yes,,,,,,,,,,,3
+7/24/20 22:46,7/24/20 22:48,IP Address,73.144.23.102,100,142,True,7/24/20 22:48,R_2AWIfc8RDC0QxeB,,,,,42.46580505,-82.94589996,anonymous,EN,0.7,Female,Yes,Yes,Yes,Married,English,$60000 - $150000,21-40,Democrat,College degree,Caucasian,Yes,,,,,,,,,,,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,5
+7/24/20 22:45,7/24/20 22:48,IP Address,198.228.83.177,100,191,True,7/24/20 22:48,R_WkWbaQB354W8Edb,,,,,37.75100708,-97.8219986,anonymous,EN,0.9,Male,Yes,Yes,Yes,Married,English,< $60000,21-40,Democrat,College degree,Caucasian,Yes,Yes,No,Yes,No,Yes,Yes,Yes,Yes,No,No,,,,,,,,,,,5
+7/24/20 22:45,7/24/20 22:48,IP Address,24.3.47.213,100,182,True,7/24/20 22:48,R_vog0lgDbUCBtm81,,,,,40.36950684,-80.63480377,anonymous,EN,0.3,Female,Yes,Yes,Yes,Married,English,$60000 - $150000,21-40,Republican,College degree,Caucasian,Yes,,,,,,,,,,,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,No,Yes,6
+7/24/20 22:43,7/24/20 22:48,IP Address,73.229.139.186,100,347,True,7/24/20 22:48,R_3CbD16FFcVJ2xZ7,,,,,40.53770447,-105.0546036,anonymous,EN,0.9,Female,Yes,No,Yes,Married,English,$60000 - $150000,21-40,Democrat,Graduate degree,Caucasian,Yes,,,,,,,,,,,Yes,Yes,No,No,Yes,No,Yes,Yes,No,No,8
+7/24/20 22:43,7/24/20 22:49,IP Address,73.153.191.15,100,345,True,7/24/20 22:49,R_31F8jqtVfBOOsqh,,,,,39.66670227,-105.0854034,anonymous,EN,0.9,Female,Yes,No,Yes,Married,English,< $60000,41-60,Other,College degree,Caucasian,Yes,Yes,Yes,No,Yes,No,Yes,No,No,No,No,,,,,,,,,,,7
+7/24/20 22:43,7/24/20 22:49,IP Address,63.117.151.101,100,358,True,7/24/20 22:49,R_BXHi8wXoNTQe8Wl,,,,,40.78759766,-74.05999756,anonymous,EN,,Female,Yes,Yes,Yes,Married,English,< $60000,41-60,Democrat,College degree,Native American,Yes,,,,,,,,,,,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,No,Yes,6
+7/24/20 22:45,7/24/20 22:49,IP Address,198.228.69.228,100,256,True,7/24/20 22:49,R_3e9oCKyqymJlUHT,,,,,37.75100708,-97.8219986,anonymous,EN,0.1,Male,Yes,Yes,Yes,Married,English,$60000 - $150000,21-40,Republican,College degree,Native American,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,No,Yes,,,,,,,,,,,6
+7/24/20 22:47,7/24/20 22:49,IP Address,76.18.166.173,100,127,True,7/24/20 22:49,R_31gRBrLvTUIyoH9,,,,,37.20759583,-87.18060303,anonymous,EN,0.9,Female,Yes,Yes,Yes,Married,English,$60000 - $150000,21-40,Republican,College degree,Caucasian,Yes,Yes,Yes,Yes,Yes,Yes,Yes,No,Yes,Yes,Yes,,,,,,,,,,,4
+7/24/20 22:48,7/24/20 22:49,IP Address,172.93.161.71,100,81,True,7/24/20 22:49,R_6mzXR9bAS0WcNNf,,,,,40.78759766,-74.05999756,anonymous,EN,0.9,Female,Yes,Yes,Yes,Married,English,$60000 - $150000,21-40,Republican,Graduate degree,Native American,Yes,No,Yes,Yes,No,Yes,No,Yes,Yes,Yes,No,,,,,,,,,,,5
+7/24/20 22:45,7/24/20 22:49,IP Address,154.13.61.126,100,271,True,7/24/20 22:49,R_2Cm5zr1vzY9e4fg,,,,,37.75100708,-97.8219986,anonymous,EN,0.9,Male,Yes,No,Yes,Single,English,< $60000,21-40,Republican,Graduate degree,Hispanic / Latinx,Yes,Yes,Yes,No,Yes,Yes,Yes,Yes,No,No,No,,,,,,,,,,,7
+7/24/20 22:46,7/24/20 22:49,IP Address,174.128.236.106,100,220,True,7/24/20 22:49,R_22Q5a3t9AZ4JZeD,,,,,39.75010681,-104.995697,anonymous,EN,0.7,Male,Yes,Yes,Yes,Single,English,< $60000,21-40,Democrat,Graduate degree,Caucasian,Yes,,,,,,,,,,,No,Yes,No,Yes,Yes,No,Yes,Yes,No,Yes,7
+7/24/20 22:43,7/24/20 22:49,IP Address,68.57.36.122,100,368,True,7/24/20 22:49,R_UWJ7u65ZUXrHXt7,,,,,37.06340027,-88.66320038,anonymous,EN,0.9,Male,Yes,Yes,Yes,Married,English,$60000 - $150000,21-40,Democrat,College degree,Caucasian,Yes,Yes,Yes,Yes,Yes,No,Yes,Yes,Yes,No,Yes,,,,,,,,,,,7
+7/24/20 22:43,7/24/20 22:50,IP Address,38.91.100.123,100,401,True,7/24/20 22:50,R_11do6bSQWAWEXCq,,,,,40.72650146,-74.17819977,anonymous,EN,0.9,Male,Yes,No,Yes,Single,English,< $60000,21-40,Democrat,Some college,Hispanic / Latinx,Yes,,,,,,,,,,,No,Yes,No,Yes,Yes,No,Yes,Yes,Yes,No,7
+7/24/20 22:45,7/24/20 22:50,IP Address,63.117.150.48,100,268,True,7/24/20 22:50,R_UPI4s1YLfwYzd9D,,,,,38.64379883,-77.3451004,anonymous,EN,0.9,Female,Yes,Yes,Yes,Married,English,$150000 - $250000,41-60,Democrat,College degree,Caucasian,Yes,Yes,Yes,No,Yes,Yes,No,Yes,Yes,No,No,,,,,,,,,,,9
+7/24/20 22:46,7/24/20 22:50,IP Address,98.214.164.170,100,219,True,7/24/20 22:50,R_tJnzxXkGeEgTn9v,,,,,40.63209534,-89.69029999,anonymous,EN,0.1,Female,No,Yes,No,Married,English,$60000 - $150000,21-40,Democrat,Graduate degree,Caucasian,Yes,Yes,Yes,No,No,Yes,Yes,Yes,Yes,Yes,Yes,,,,,,,,,,,5
+7/24/20 22:44,7/24/20 22:50,IP Address,108.196.136.202,100,333,True,7/24/20 22:50,R_xz5NkAQb75VzcxH,,,,,29.03819275,-95.44159698,anonymous,EN,0.9,Male,Yes,Yes,Yes,Married,English,> $250000,21-40,Democrat,High school graduate,Caucasian,Yes,,,,,,,,,,,No,Yes,No,Yes,Yes,No,Yes,Yes,No,Yes,7
+7/24/20 22:46,7/24/20 22:50,IP Address,46.101.183.164,100,265,True,7/24/20 22:50,R_10xiLRcufVgbUsC,,,,,50.11880493,8.684295654,anonymous,EN,0.7,Female,Yes,Yes,Yes,Married,English,$60000 - $150000,41-60,Republican,Graduate degree,Caucasian,Yes,No,Yes,No,Yes,Yes,No,Yes,Yes,No,No,,,,,,,,,,,8
+7/24/20 22:45,7/24/20 22:51,IP Address,198.228.133.208,100,303,True,7/24/20 22:51,R_1Kp3BqmkHYSMw36,,,,,34.17120361,-118.5186005,anonymous,EN,0.9,Female,Yes,Yes,Yes,Married,English,$60000 - $150000,21-40,Democrat,High school graduate,Caucasian,Yes,No,Yes,No,No,Yes,Yes,No,Yes,No,Yes,,,,,,,,,,,4
+7/24/20 22:46,7/24/20 22:51,IP Address,108.51.79.162,100,270,True,7/24/20 22:51,R_2SkmBtZPJnckF2v,,,,,38.75909424,-77.0923996,anonymous,EN,0.7,Male,Yes,Yes,Yes,Married,English,$60000 - $150000,41-60,Democrat,College degree,Caucasian,Yes,,,,,,,,,,,No,Yes,No,No,Yes,No,No,No,Yes,No,4
+7/24/20 22:45,7/24/20 22:51,IP Address,63.117.151.178,100,335,True,7/24/20 22:51,R_1fgaw5bTFllDTuO,,,,,40.78759766,-74.05999756,anonymous,EN,0.7,Male,Yes,Yes,Yes,Married,English,< $60000,61+,Democrat,Graduate degree,Native American,Yes,Yes,Yes,Yes,Yes,No,Yes,Yes,Yes,No,No,,,,,,,,,,,8
+7/24/20 22:44,7/24/20 22:51,IP Address,38.68.40.89,100,441,True,7/24/20 22:51,R_3Gp8RPfkHGIxTGo,,,,,37.75100708,-97.8219986,anonymous,EN,0.9,Male,Yes,No,Yes,Married,English,< $60000,21-40,Democrat,College degree,Hispanic / Latinx,Yes,No,Yes,Yes,Yes,Yes,Yes,Yes,Yes,No,No,,,,,,,,,,,6
+7/24/20 22:50,7/24/20 22:52,IP Address,64.137.80.146,100,147,True,7/24/20 22:52,R_3P5leYrY2pggwgF,,,,,37.75100708,-97.8219986,anonymous,EN,0.9,Female,Yes,Yes,Yes,Married,English,$60000 - $150000,21-40,Democrat,Graduate degree,Caucasian,Yes,,,,,,,,,,,Yes,Yes,Yes,Yes,No,Yes,No,Yes,No,Yes,6
+7/24/20 22:46,7/24/20 22:52,IP Address,38.68.53.23,100,361,True,7/24/20 22:52,R_3KVGiTeUbgKFihL,,,,,37.75100708,-97.8219986,anonymous,EN,0.9,Male,Yes,Yes,Yes,Married,English,< $60000,21-40,Democrat,Graduate degree,Caucasian,Yes,No,Yes,No,Yes,No,No,Yes,No,No,No,,,,,,,,,,,8
+7/24/20 22:47,7/24/20 22:53,IP Address,65.220.86.207,100,361,True,7/24/20 22:53,R_7VAfvvjrd3wjVrX,,,,,38.73320007,-77.54949951,anonymous,EN,0.9,Female,Yes,Yes,Yes,Married,English,< $60000,41-60,Democrat,Graduate degree,Caucasian,Yes,,,,,,,,,,,No,No,Yes,No,Yes,No,Yes,Yes,No,Yes,4
+7/24/20 22:45,7/24/20 22:53,IP Address,196.17.64.107,100,473,True,7/24/20 22:53,R_1QFcfq2azifELSu,,,,,34.05439758,-118.2440033,anonymous,EN,0.3,Male,Yes,Yes,Yes,Married,English,$60000 - $150000,21-40,Republican,College degree,Caucasian,Yes,,,,,,,,,,,Yes,Yes,Yes,Yes,No,No,Yes,No,Yes,Yes,6
+7/24/20 22:48,7/24/20 22:53,IP Address,23.127.5.162,100,314,True,7/24/20 22:53,R_Qgpe9YRNYIXcZWx,,,,,40.11039734,-83.11309814,anonymous,EN,0.9,Male,Yes,Yes,Yes,Married,English,< $60000,21-40,Other,College degree,Caucasian,Yes,,,,,,,,,,,No,Yes,No,Yes,Yes,No,Yes,Yes,No,Yes,7
+7/24/20 22:45,7/24/20 22:54,IP Address,63.117.156.99,100,513,True,7/24/20 22:54,R_22G5w1WrozfNP4c,,,,,33.72239685,-84.52050018,anonymous,EN,0.7,Male,Yes,Yes,Yes,Married,English,< $60000,21-40,Democrat,College degree,Caucasian,Yes,,,,,,,,,,,No,Yes,Yes,Yes,Yes,No,Yes,Yes,Yes,Yes,5
+7/24/20 22:53,7/24/20 22:54,IP Address,67.3.110.249,100,69,True,7/24/20 22:54,R_R36QLyLERbpgFwt,,,,,47.53419495,-92.53079987,anonymous,EN,0.9,Male,Yes,No,Yes,Single,English,< $60000,21-40,Republican,Some college,Native American,Yes,Yes,No,No,Yes,No,Yes,Yes,No,Yes,No,,,,,,,,,,,6
+7/24/20 22:45,7/24/20 22:54,IP Address,198.228.80.103,100,537,True,7/24/20 22:54,R_205TpDcXnxcmwYV,,,,,37.75100708,-97.8219986,anonymous,EN,0.9,Female,Yes,No,Yes,Married,English,< $60000,61+,Republican,Graduate degree,Native American,Yes,,,,,,,,,,,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,5
+7/24/20 22:44,7/24/20 22:54,IP Address,154.16.232.190,100,631,True,7/24/20 22:54,R_1i8KdOf2uBs9R5v,,,,,40.71569824,-74,anonymous,EN,0.3,Female,Yes,Yes,Yes,Single,English,< $60000,21-40,Republican,Graduate degree,Native American,Yes,,,,,,,,,,,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,5
+7/24/20 22:53,7/24/20 22:55,IP Address,107.174.25.151,100,122,True,7/24/20 22:55,R_AI1v3GVLRZ1kgj7,,,,,37.75100708,-97.8219986,anonymous,EN,0.9,Female,Yes,Yes,Yes,Married,English,$60000 - $150000,41-60,Republican,College degree,Caucasian,Yes,,,,,,,,,,,Yes,No,No,No,Yes,No,Yes,Yes,Yes,Yes,5
+7/24/20 22:45,7/24/20 22:56,IP Address,98.212.214.93,100,651,True,7/24/20 22:56,R_doguMM6vaEff87D,,,,,42.01280212,-88.09670258,anonymous,EN,0.9,Male,No,No,No,Single,Other,$60000 - $150000,21-40,Democrat,Graduate degree,Asian,Yes,No,Yes,No,Yes,Yes,No,Yes,No,No,No,,,,,,,,,,,7
+7/24/20 22:55,7/24/20 22:57,IP Address,198.228.83.184,100,93,True,7/24/20 22:57,R_1QJZYwIruz9pA9y,,,,,37.75100708,-97.8219986,anonymous,EN,0.9,Male,Yes,Yes,Yes,Married,English,< $60000,21-40,Democrat,High school graduate,Other,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,,,,,,,,,,,5
+7/24/20 22:55,7/24/20 22:59,IP Address,76.105.152.14,100,186,True,7/24/20 22:59,R_bqgkfc4W8vrKEed,,,,,45.36419678,-122.6443024,anonymous,EN,0.9,Female,Yes,No,Yes,Single,English,< $60000,41-60,Other,Some college,Caucasian,Yes,,,,,,,,,,,Yes,Yes,No,Yes,Yes,No,No,No,No,No,7
+7/24/20 22:50,7/24/20 22:59,IP Address,47.41.79.5,100,548,True,7/24/20 22:59,R_2duX0YZaQOzWvrh,,,,,44.04840088,-92.49479675,anonymous,EN,0.9,Male,No,No,No,Divorced,English,> $250000,41-60,Republican,Graduate degree,Black / African,Yes,No,Yes,No,No,Yes,Yes,No,Yes,No,No,,,,,,,,,,,5
+7/24/20 22:57,7/24/20 22:59,IP Address,170.253.146.6,100,146,True,7/24/20 22:59,R_3hEBMflaEaZi4ml,,,,,33.44740295,-88.82050323,anonymous,EN,0.3,Male,Yes,Yes,Yes,Single,English,< $60000,21-40,Republican,Graduate degree,Asian,Yes,,,,,,,,,,,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,5
+7/24/20 22:59,7/24/20 23:01,IP Address,67.234.253.255,100,142,True,7/24/20 23:01,R_2TMlxqOFV26EGEK,,,,,33.33799744,-111.7434998,anonymous,EN,,Male,Yes,Yes,Yes,Married,English,$60000 - $150000,41-60,Democrat,College degree,Caucasian,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,No,Yes,Yes,,,,,,,,,,,4
+7/24/20 22:59,7/24/20 23:01,IP Address,73.83.141.178,100,139,True,7/24/20 23:01,R_1Nh3RDTjcTN2j9l,,,,,48.05889893,-122.1578979,anonymous,EN,0.7,Male,Yes,Yes,Yes,Married,English,< $60000,41-60,Republican,College degree,Hispanic / Latinx,Yes,Yes,No,Yes,Yes,Yes,Yes,Yes,Yes,Yes,No,,,,,,,,,,,5
+7/24/20 23:00,7/24/20 23:01,IP Address,73.55.251.79,100,112,True,7/24/20 23:01,R_3nNrqK5emRvCF8A,,,,,29.78050232,-95.51290131,anonymous,EN,0.9,Male,Yes,Yes,Yes,Married,English,$150000 - $250000,21-40,Democrat,College degree,Native American,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,,,,,,,,,,,5
+7/24/20 22:58,7/24/20 23:02,IP Address,38.68.50.40,100,192,True,7/24/20 23:02,R_1KqyP3szEupGaou,,,,,37.75100708,-97.8219986,anonymous,EN,0.9,Female,Yes,Yes,Yes,Married,English,$150000 - $250000,21-40,Republican,Graduate degree,Caucasian,Yes,Yes,Yes,Yes,Yes,No,No,Yes,Yes,No,Yes,,,,,,,,,,,8
+7/24/20 22:58,7/24/20 23:02,IP Address,71.46.244.133,100,193,True,7/24/20 23:02,R_2trHD5XbQPAxYRO,,,,,28.62249756,-81.43170166,anonymous,EN,0.9,Male,Yes,Yes,Yes,Married,English,$60000 - $150000,21-40,Republican,College degree,Black / African,Yes,,,,,,,,,,,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,5
+7/24/20 22:59,7/24/20 23:02,IP Address,38.68.49.49,100,167,True,7/24/20 23:02,R_1LMPpAQMtlWqatB,,,,,37.75100708,-97.8219986,anonymous,EN,0.9,Female,Yes,Yes,Yes,Married,English,$60000 - $150000,21-40,Republican,Graduate degree,Caucasian,Yes,,,,,,,,,,,No,Yes,No,Yes,Yes,Yes,Yes,Yes,No,No,7
+7/24/20 22:58,7/24/20 23:02,IP Address,117.242.69.152,100,228,True,7/24/20 23:02,R_3lXK6iAOBBhvjix,,,,,10.18969727,78.41720581,anonymous,EN,0.9,Male,Yes,Yes,Yes,Married,English,$60000 - $150000,41-60,Republican,College degree,Asian,Yes,No,Yes,No,Yes,Yes,Yes,Yes,Yes,No,No,,,,,,,,,,,7
+7/24/20 22:58,7/24/20 23:02,IP Address,47.198.205.164,100,232,True,7/24/20 23:02,R_OHZkORjm6iXtpRL,,,,,28.04750061,-82.6147995,anonymous,EN,0.7,Male,Yes,Yes,Yes,Married,English,< $60000,21-40,Republican,College degree,Hispanic / Latinx,Yes,,,,,,,,,,,Yes,Yes,Yes,Yes,Yes,No,Yes,Yes,No,No,8
+7/24/20 22:58,7/24/20 23:02,IP Address,173.174.123.75,100,240,True,7/24/20 23:02,R_3iCkmEESjmvIsjp,,,,,30.44270325,-97.68049622,anonymous,EN,0.9,Male,Yes,Yes,Yes,Married,English,< $60000,41-60,Republican,Graduate degree,Black / African,Yes,,,,,,,,,,,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,5
+7/24/20 22:59,7/24/20 23:02,IP Address,24.28.71.125,100,185,True,7/24/20 23:02,R_1jjqdEaVaTqDaVA,,,,,30.40319824,-97.75299835,anonymous,EN,0.9,Female,Yes,No,Yes,Single,English,< $60000,21-40,Other,Some college,Black / African,Yes,,,,,,,,,,,Yes,Yes,No,Yes,Yes,No,Yes,No,No,No,8
+7/24/20 23:00,7/24/20 23:02,IP Address,47.144.162.16,100,139,True,7/24/20 23:02,R_1pJM5QESCWNon6O,,,,,33.8697052,-118.3693008,anonymous,EN,0.9,Male,Yes,Yes,Yes,Married,English,< $60000,21-40,Democrat,Graduate degree,Hispanic / Latinx,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,,,,,,,,,,,5
+7/24/20 23:00,7/24/20 23:03,IP Address,45.4.197.141,100,135,True,7/24/20 23:03,R_2c6kGEBuG1o3vXR,,,,,40.75030518,-74.00140381,anonymous,EN,0.3,Male,Yes,Yes,Yes,Married,English,$60000 - $150000,21-40,Democrat,Graduate degree,Caucasian,Yes,,,,,,,,,,,Yes,Yes,Yes,Yes,Yes,No,No,Yes,Yes,Yes,5
+7/24/20 22:59,7/24/20 23:03,IP Address,50.114.85.107,100,236,True,7/24/20 23:03,R_1NzAEZrab98fgb8,,,,,37.75100708,-97.8219986,anonymous,EN,0.3,Female,Yes,Yes,Yes,Married,English,$60000 - $150000,21-40,Democrat,Graduate degree,Caucasian,Yes,No,Yes,No,Yes,Yes,No,Yes,Yes,No,Yes,,,,,,,,,,,7
+7/24/20 22:59,7/24/20 23:04,IP Address,184.166.55.144,100,274,True,7/24/20 23:04,R_3dJLasl7DJgECWq,,,,,48.1999054,-114.3033981,anonymous,EN,0.7,Male,Yes,Yes,Yes,Married,English,< $60000,21-40,Republican,College degree,Native American,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,,,,,,,,,,,5
+7/24/20 22:59,7/24/20 23:04,IP Address,108.53.21.17,100,284,True,7/24/20 23:04,R_3NCEZkXP4QVExN9,,,,,40.72380066,-74.22930145,anonymous,EN,0.9,Female,Yes,Yes,Yes,Married,English,< $60000,41-60,Republican,Graduate degree,Caucasian,Yes,,,,,,,,,,,Yes,Yes,No,No,Yes,Yes,No,Yes,Yes,No,5
+7/24/20 22:58,7/24/20 23:04,IP Address,45.20.79.79,100,330,True,7/24/20 23:04,R_234f0fgLe3ZPLwJ,,,,,37.21170044,-93.2990036,anonymous,EN,0.9,Female,Yes,Yes,Yes,Married,English,< $60000,21-40,Republican,Graduate degree,Black / African,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,,,,,,,,,,,5
+7/24/20 22:59,7/24/20 23:04,IP Address,174.72.229.119,100,323,True,7/24/20 23:04,R_6JyaOMpgrfY1FKh,,,,,36.20379639,-115.225502,anonymous,EN,0.9,Female,Yes,Yes,Yes,Married,English,$60000 - $150000,21-40,Democrat,College degree,Caucasian,Yes,Yes,Yes,Yes,No,Yes,Yes,Yes,Yes,No,No,,,,,,,,,,,6
+7/24/20 23:01,7/24/20 23:04,IP Address,96.56.103.238,100,229,True,7/24/20 23:04,R_1mL49LmvgFs2cRW,,,,,40.63679504,-74.00050354,anonymous,EN,0.9,Female,Yes,Yes,Yes,Married,English,$60000 - $150000,21-40,Democrat,Graduate degree,Hispanic / Latinx,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,,,,,,,,,,,5
+7/24/20 22:59,7/24/20 23:05,IP Address,23.111.188.5,100,354,True,7/24/20 23:05,R_3kpKXIyUf0PoAma,,,,,32.94439697,-97.31189728,anonymous,EN,0.7,Male,Yes,No,Yes,Single,English,< $60000,21-40,Republican,Some college,Asian,Yes,No,Yes,No,Yes,Yes,No,Yes,Yes,No,Yes,,,,,,,,,,,7
+7/24/20 23:02,7/24/20 23:05,IP Address,73.173.103.253,100,184,True,7/24/20 23:05,R_24w0bCGT5ZHOOFV,,,,,39.21240234,-76.87760162,anonymous,EN,0.9,Male,Yes,Yes,Yes,Single,English,> $250000,21-40,Democrat,College degree,Caucasian,No,,,,,,,,,,,Yes,Yes,No,Yes,No,No,Yes,Yes,No,No,10
+7/24/20 22:59,7/24/20 23:05,IP Address,45.23.240.35,100,404,True,7/24/20 23:05,R_3nN2RITfXGJhFog,,,,,41.87330627,-88.11630249,anonymous,EN,0.9,Female,Yes,Yes,Yes,Married,English,< $60000,61+,Republican,College degree,Hispanic / Latinx,Yes,,,,,,,,,,,Yes,No,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,4
+7/24/20 23:01,7/24/20 23:06,IP Address,69.249.77.179,100,334,True,7/24/20 23:06,R_O0CikKy4xFvBtS1,,,,,40.02549744,-75.05339813,anonymous,EN,0.9,Female,Yes,Yes,Yes,Single,English,$60000 - $150000,21-40,Democrat,College degree,Caucasian,Yes,,,,,,,,,,,Yes,Yes,No,Yes,No,No,Yes,No,Yes,No,8
+7/24/20 22:59,7/24/20 23:06,IP Address,208.126.159.93,100,447,True,7/24/20 23:06,R_1dFGWvMRyOr9Vbu,,,,,42.23420715,-92.8864975,anonymous,EN,0.9,Male,Yes,Yes,Yes,Married,English,< $60000,21-40,Democrat,College degree,Hispanic / Latinx,Yes,,,,,,,,,,,Yes,No,Yes,No,Yes,No,Yes,Yes,No,Yes,5
+7/24/20 23:05,7/24/20 23:07,IP Address,47.40.163.169,100,107,True,7/24/20 23:07,R_1etvleNDWhy7Yo2,,,,,41.92810059,-83.44499969,anonymous,EN,0.9,Male,Yes,Yes,Yes,Married,English,< $60000,61+,Republican,Graduate degree,Native American,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,,,,,,,,,,,5
+7/24/20 22:59,7/24/20 23:08,IP Address,68.47.166.51,100,536,True,7/24/20 23:08,R_3KUFhVEoO5wCQYD,,,,,36.1867981,-86.50669861,anonymous,EN,0.9,Female,Yes,Yes,Yes,Married,English,< $60000,21-40,Republican,College degree,Hispanic / Latinx,Yes,,,,,,,,,,,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,5
+7/24/20 23:03,7/24/20 23:08,IP Address,199.115.103.10,100,300,True,7/24/20 23:08,R_3UGi1IcVlSm1fMZ,,,,,39.75010681,-104.995697,anonymous,EN,0.9,Male,Yes,Yes,Yes,Single,English,$60000 - $150000,21-40,Other,College degree,Caucasian,Yes,Yes,Yes,Yes,Yes,No,Yes,Yes,Yes,No,No,,,,,,,,,,,8
+7/24/20 22:59,7/24/20 23:09,IP Address,181.215.85.146,100,553,True,7/24/20 23:09,R_3nGlhShhNx73pb8,,,,,41.8710022,-87.62889862,anonymous,EN,0.1,Male,Yes,No,Yes,Single,English,< $60000,21-40,Republican,Graduate degree,Caucasian,Yes,No,No,Yes,No,Yes,No,Yes,Yes,No,No,,,,,,,,,,,5
+7/24/20 23:01,7/24/20 23:09,IP Address,173.231.66.135,100,463,True,7/24/20 23:09,R_9XfmZHYTryikhYB,,,,,39.91879272,-78.96369934,anonymous,EN,0.9,Male,Yes,Yes,Yes,Married,English,$60000 - $150000,41-60,Republican,College degree,Caucasian,Yes,,,,,,,,,,,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,5
+7/24/20 23:04,7/24/20 23:09,IP Address,71.55.110.181,100,287,True,7/24/20 23:09,R_eyrfwjgj4m4NHSV,,,,,36.16819763,-115.2165985,anonymous,EN,,Female,Yes,Yes,Yes,Married,English,$60000 - $150000,21-40,Republican,College degree,Caucasian,Yes,,,,,,,,,,,Yes,Yes,No,Yes,No,No,Yes,Yes,No,Yes,9
+7/24/20 23:10,7/24/20 23:10,IP Address,68.202.156.179,100,44,True,7/24/20 23:10,R_1eRTrPprSy0ad7z,,,,,29.05110168,-82.03800201,anonymous,EN,0.9,Female,Yes,Yes,No,Married,English,< $60000,21-40,Democrat,Some college,Caucasian,Yes,Yes,No,No,Yes,No,No,Yes,No,No,No,,,,,,,,,,,8
+7/24/20 23:09,7/24/20 23:11,IP Address,64.251.53.2,100,125,True,7/24/20 23:11,R_1I9sAYDngUGOfHX,,,,,41.706604,-72.57450104,anonymous,EN,0.9,Male,Yes,Yes,Yes,Married,English,$60000 - $150000,21-40,Democrat,Graduate degree,Hispanic / Latinx,Yes,,,,,,,,,,,Yes,No,Yes,No,No,Yes,Yes,Yes,Yes,Yes,4
+7/24/20 23:10,7/24/20 23:12,IP Address,73.155.133.27,100,88,True,7/24/20 23:12,R_ZmLxHpFHNYeKRgd,,,,,29.94299316,-95.25959778,anonymous,EN,0.9,Male,Yes,No,No,Single,English,$60000 - $150000,0-20,Democrat,Some college,Black / African,Yes,,,,,,,,,,,Yes,Yes,No,Yes,Yes,No,Yes,No,Yes,Yes,6
+7/24/20 23:14,7/24/20 23:16,IP Address,47.35.218.176,100,114,True,7/24/20 23:16,R_3NJKhVcrSykh07u,,,,,34.86270142,-82.31860352,anonymous,EN,0.3,Female,Yes,Yes,No,Married,English,$60000 - $150000,21-40,Democrat,Graduate degree,Caucasian,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,,,,,,,,,,,5
+7/24/20 23:14,7/24/20 23:17,IP Address,173.172.14.239,100,153,True,7/24/20 23:17,R_12EHGrCGz5urcF2,,,,,32.87559509,-96.74949646,anonymous,EN,0.9,Female,Yes,Yes,Yes,Married,English,> $250000,21-40,Republican,College degree,Native American,Yes,,,,,,,,,,,Yes,Yes,Yes,Yes,Yes,No,Yes,Yes,Yes,Yes,6
+7/24/20 23:14,7/24/20 23:17,IP Address,24.211.82.43,100,182,True,7/24/20 23:17,R_3L8aPwigDqNDcFA,,,,,34.37890625,-80.08309937,anonymous,EN,0.3,Male,Yes,Yes,Yes,Married,English,$60000 - $150000,21-40,Republican,Graduate degree,Caucasian,Yes,,,,,,,,,,,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,5
+7/24/20 23:14,7/24/20 23:17,IP Address,98.113.31.64,100,181,True,7/24/20 23:17,R_RF6y3X6FxwnUQKd,,,,,40.72599792,-73.84799957,anonymous,EN,0.9,Male,Yes,Yes,Yes,Single,English,$60000 - $150000,21-40,Democrat,Graduate degree,Caucasian,Yes,No,Yes,No,Yes,No,No,Yes,Yes,No,No,,,,,,,,,,,9
+7/24/20 23:16,7/24/20 23:18,IP Address,71.206.84.78,100,126,True,7/24/20 23:18,R_UKp264dad1wbZUB,,,,,26.2545929,-80.17620087,anonymous,EN,0.9,Male,Yes,Yes,Yes,Married,English,$60000 - $150000,21-40,Republican,College degree,Black / African,Yes,,,,,,,,,,,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,5
+7/24/20 23:16,7/24/20 23:18,IP Address,24.178.15.98,100,118,True,7/24/20 23:18,R_28YsbPxa4m8Ocoo,,,,,32.80459595,-97.1937027,anonymous,EN,0.9,Male,Yes,Yes,Yes,Married,English,$150000 - $250000,21-40,Democrat,College degree,Native American,Yes,,,,,,,,,,,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,5
+7/24/20 23:16,7/24/20 23:19,IP Address,45.4.196.6,100,155,True,7/24/20 23:19,R_2ClCtpXs6WlEG7O,,,,,40.75030518,-74.00140381,anonymous,EN,0.3,Male,Yes,Yes,Yes,Married,English,$60000 - $150000,21-40,Democrat,Graduate degree,Caucasian,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,,,,,,,,,,,5
+7/24/20 23:15,7/24/20 23:19,IP Address,45.4.196.211,100,219,True,7/24/20 23:19,R_2YqR2pZRgPODpac,,,,,40.75030518,-74.00140381,anonymous,EN,0.3,Male,Yes,Yes,Yes,Married,English,$60000 - $150000,21-40,Democrat,Graduate degree,Caucasian,Yes,,,,,,,,,,,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,5
+7/24/20 23:16,7/24/20 23:19,IP Address,108.184.13.148,100,165,True,7/24/20 23:19,R_XOhEjh1e7M313Lr,,,,,34.02510071,-118.1556015,anonymous,EN,0.9,Female,Yes,No,Yes,Married,English,< $60000,21-40,Democrat,College degree,Other,Yes,Yes,Yes,Yes,No,Yes,Yes,Yes,Yes,No,Yes,,,,,,,,,,,5
+7/24/20 23:16,7/24/20 23:19,IP Address,50.91.103.213,100,161,True,7/24/20 23:19,R_xFrUM1GyYRD3ndT,,,,,35.38659668,-119.0171051,anonymous,EN,0.9,Male,Yes,Yes,Yes,Married,English,< $60000,21-40,Democrat,College degree,Caucasian,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,,,,,,,,,,,5
+7/24/20 23:14,7/24/20 23:21,IP Address,73.19.123.28,100,416,True,7/24/20 23:21,R_1EdjC3yhUKxWQas,,,,,47.62759399,-122.6430969,anonymous,EN,0.9,Female,Yes,Yes,Yes,Married,English,< $60000,21-40,Republican,Graduate degree,Caucasian,Yes,No,Yes,Yes,No,No,No,Yes,Yes,No,No,,,,,,,,,,,7
+7/24/20 23:21,7/24/20 23:23,IP Address,71.173.204.206,100,109,True,7/24/20 23:23,R_3V3ygPInB1YSTVn,,,,,40.2749939,-76.80390167,anonymous,EN,0.9,Male,Yes,No,Yes,Single,English,< $60000,21-40,Republican,College degree,Caucasian,Yes,,,,,,,,,,,Yes,Yes,No,Yes,No,No,Yes,Yes,No,No,10
+7/24/20 23:30,7/24/20 23:31,IP Address,24.147.223.143,100,84,True,7/24/20 23:31,R_1Pbm79kmbusP0ja,,,,,41.31860352,-72.93019867,anonymous,EN,0.9,Male,Yes,Yes,Yes,Married,English,$150000 - $250000,21-40,Democrat,College degree,Caucasian,Yes,Yes,Yes,Yes,Yes,Yes,No,Yes,Yes,Yes,Yes,,,,,,,,,,,6
+7/24/20 23:29,7/24/20 23:36,IP Address,68.189.167.87,100,362,True,7/24/20 23:36,R_9S0XxoEs7ugdnqN,,,,,35.0644989,-81.64769745,anonymous,EN,0.7,Male,Yes,Yes,Yes,Married,English,$60000 - $150000,21-40,Republican,College degree,Hispanic / Latinx,Yes,,,,,,,,,,,Yes,Yes,No,Yes,No,No,Yes,Yes,No,No,10
+7/25/20 0:02,7/25/20 0:10,IP Address,38.68.53.5,100,429,True,7/25/20 0:10,R_2ayMVSTcc3960Jf,,,,,37.75100708,-97.8219986,anonymous,EN,0.9,,Yes,No,Yes,Married,English,< $60000,21-40,Democrat,College degree,Caucasian,Yes,Yes,Yes,No,Yes,Yes,No,No,No,No,Yes,,,,,,,,,,,6

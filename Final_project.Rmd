@@ -24,6 +24,7 @@ library(car)
 library(ggplot2)
 library(data.table)
 library(knitr)
+library(kableExtra)
 library(rgeolocate)
 library(data.table)
 library(knitr)
@@ -36,7 +37,7 @@ library(forcats)
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-options(digits=5)
+options(digits=2)
 ```
 
 ## Null & Alternate Hypothesis 
@@ -162,12 +163,55 @@ outcome ~ red_flag * gender + red_flag * political_affiliation  + factor(age_gro
     - Test if fake news red flagging affects different age groups differently 
     - Test if fake news red flagging affects voters and non voters differently 
 
+
+### Hypothesis
+
+The primary hypothesis and effect that we have set out to test is the following: 
+
+**H1: Reminding subjects about possiblity of misleading tweets using a genral warning will reduce the perceived accuracy of false headlines relative to a no-warning scenario.**
+
+We also want to check the spillover effect of this general warning about fake news on people's trust in true news/headlines. 
+
+**H2: Reminding subjects about possiblity of misleading tweets using a genral warning will also reduce their trust in true headlines/news relative to a no-warning scenario.**
+
+### Experimental Method
+
+#### Participants
+
+The study was conducted online through survey forms created using the Qualtric Survey service provided to us by the Unversity of California, Berkeley. There were two types of pariticipants recruited for this study : 
+
+1. Participants recruited using the Amazon Mechanical Turk service
+  - Although samples from Mturk are not nationally respresentative, results from the study closely match those obtained from other samples(e.g., Berinsky et al. 2012; Coppock 2016; Horton et al. 2011; Mullinix et al. 2015)
+  - Non-US residents, were not allowed to participate.
+  
+2. Participants recruited through experimenters' personal and professional network using personal contacts, direct messages, social media network and email. 
+
+**_< Fill in the text about sample distribution from the data analysis>_**
+
+
+
+#### Procedure
+
+The experiment design used individual random assignment to place subjects in treatment and control. Table 1 shows the distribution of subject randomly assigned to treatment and control for each of the participant group described above. The survey would display warning before presenting the test questions to a subjects if the subject was placed in the treatment group. If the subject was placed in the control group, then no warning would be displayed on the questions. We focused on posts made on the social media platform _Twitter_ as the source for all headlines used in the survey. The tweets were mainly from three broad categories 1) US politics 2) Climate change and general belief in science 3) Random facts about US. After each headline, the question asked the participant whether they believe the information in the headline is true or not. The scoring was based on the total number of correct responses (responses that match the group truth about each headline).
+
+
+```{r}
+
+col1 <- c("Treatment","Control")
+col2 <- c("General Warning","No Warning")
+col3 <- c("X","Y")
+dt<- data.table(col1,col2,col3)
+
+colnames(dt) <- c("Assignment Group", "Flag", "N")
+kable(dt,"latex",booktabs=T)
+```
+
 ### Pilot data analysis
 
 ```{r}
 pilot_dataset <- fread('./data/pilot/pilot_data_07262020.csv')
-head(pilot_dataset)
-names(pilot_dataset)
+#head(pilot_dataset)
+#names(pilot_dataset)
 ```
 
 
@@ -248,125 +292,227 @@ data_mod <- rename(data_w_scores,
 head(data_mod[,19:27])
 ```
 
-### MTurk data
 
-Mturk survey 1 was done with a higher reward and no check for BOTs. The survey subject count was 100 and responses were obtained within 24 hours due to the high reward (5-8 min task paid $1.5). 
+## Define functions 
 
-```{r}
-mturk1_dataset <- fread('./data/Mturk_1/Mturk_1_data.csv')
-head(mturk1_dataset)
+```{r, define_functions}
+
+prune_data <- function(dataset){
+    data_pruned <- dataset[ 3:nrow(dataset),]
+    data_pruned[, c(6,7)] <- lapply(data_pruned[, c(6,7)], as.numeric)
+    question_col_names <- c('8B','9B','10B','11B','12B','13B','14B','15B','16B','17B',
+                            '8A','9A','10A','11A','12A','13A','14A','15A','16A','17A')
+    # Set NA for empty empty strings in question columns (either in treatment or control but not both)
+    for(i in c(31:length(names(data_pruned)))){
+        data_pruned[[i]][data_pruned[[i]]==''] <- NA
+    }
+    # Set assignment group variable (treatment = 1 , control = 0)
+    data_pruned[, assignment := ifelse(is.na(data_pruned[,'8B']),0,1)]
+  
+    return(data_pruned)
+}
+
+compute_score <- function(dataset,answer_guide){
+  # compute full score  
+  for(i in 1:nrow(dataset)){
+          dataset[i,"score"] <- sum(dataset[i,31:50] == answer_guide,na.rm=TRUE)
+          dataset[i, "score_false"] <- sum(dataset[i,c(33,35,36,39,40,43,45,46,49,50)] == answer_guide[c(3,5,6,9,10,13,15,16,19,20)], na.rm=TRUE)
+          dataset[i, "score_true"] <- sum(dataset[i,c(31,32,34,37,38,41,42,44,47,48)] == answer_guide[c(1,2,4,7,8,11,12,14,17,18)], na.rm=TRUE)
+    }
+  return(dataset)
+}
+
+rename_cols <- function(dataset){
+    dt <- rename(dataset, 
+     Gender = Q1,
+     Reg_Voter = Q2,
+     Age_bin = Q3,
+     Party = Q4,
+     Education = Q5,
+     Ethnicity = Q6,
+     Soc_Med_Active = Q7,
+     Voted_2012 = Q38,
+     Voted_2016 = Q39,
+     Marital_status = Q37,
+     Income = Q36,
+     Language = Q40
+    
+      )
+  
+     dt$Gender[dataset$Gender == ''] <-"Unanswered"
+     return(dt)
+}
+
 ```
 
+#### Import data
+
+Study 1: Mturk survey 1 was done with a higher reward and no check for BOTs. The survey subject count was 104 and responses were obtained within 24 hours due to the high reward (5-8 min task paid $1.5). 
+
+Study 2: Mturk survey 2 was done with a higher reward and no check for BOTs. The survey subject count was 132 and responses were obtained over a period of 5 days 
+
+Study3: Personal and professional network of the experimenters
+
 ```{r}
-data_pruned <- mturk1_dataset[ 3:nrow(mturk1_dataset),]
-data_pruned[, c(6,7)] <- lapply(data_pruned[, c(6,7)], as.numeric)
-question_col_names <- c('8B','9B','10B','11B','12B','13B','14B','15B','16B','17B',
-                        '8A','9A','10A','11A','12A','13A','14A','15A','16A','17A')
-for(i in c(26:length(names(data_pruned)))){
-    data_pruned[[i]][data_pruned[[i]]==''] <- NA
-}
+study1_data <- fread('./data/Mturk_nocaptcha/data.csv')
+study2_data <- fread('./data/Mturk_captcha/data.csv')
+study3_data <- fread("./data/NonMturk_wCaptcha/data.csv")
+# head(study1_data)
+# head(study2_data)
+# head(study3_data)
+# names(study1_data)[31:51]
+# names(study2_data)[31:51]
+# names(study3_data)[31:51]
+```
+
+#### Modify data
+
+```{r, modify_datasets}
+
+study1_data_pruned <- prune_data(study1_data)
+study2_data_pruned <- prune_data(study2_data)
+study3_data_pruned <- prune_data(study3_data)
+
+# Rename the covariate columns
+study1_data_mod <- rename_cols(study1_data_pruned)
+study2_data_mod <- rename_cols(study2_data_pruned)
+study3_data_mod <- rename_cols(study3_data_pruned)
+
+# Add score columns 
+answer_guide <- c('Yes','Yes','No','Yes','No','No','Yes','Yes','No','No',  
+                  'Yes','Yes','No','Yes','No','No','Yes','Yes','No','No') 
+
+study1_data_mod <- compute_score(study1_data_mod, answer_guide = answer_guide )
+study2_data_mod <- compute_score(study2_data_mod, answer_guide = answer_guide )
+study3_data_mod <- compute_score(study3_data_mod, answer_guide = answer_guide )
+
+# Add indicator variables
+study1_data_mod[, Mturk := 1]
+study1_data_mod[, captcha := 0]
+
+study2_data_mod[, Mturk := 1]
+study2_data_mod[, captcha := 1]
+
+
+study3_data_mod[, Mturk := 0]
+study3_data_mod[, captcha := 1]
 
 # Check the data
-# head(data_pruned[, 26:length(names(data_pruned))])
+# head(study1_data_mod[, 31:length(names(study1_data_mod))])
+head(study2_data_mod)
+# head(study3_data_mod)
 
-# Set assignment group variable (treatment = 1 , control = 0)
-data_pruned[, assignment := ifelse(is.na(data_pruned[,'8B']),0,1)]
-head(data_pruned[, 26:length(names(data_pruned))])
+```
+
+#### Combine data sets from all studies
+
+```{r}
+# combine data set 
+data_full <- rbind(study1_data_mod,study2_data_mod,study3_data_mod)
+head(data_full)
+```
+
+
+### EDA 
+
+Figure 1 summarizes the score of subjects in each assignment group (treatment/control) and for true and false tweets. 
+
+```{r}
+dt <- data_full[, .(mean_total_score = mean(score),mean_true_score = mean(score_true),mean_false_score = mean(score_false)), by=assignment]
+dt
+p <- ggplot(dt, aes(x = assignment, y = mean_total_score)) + 
+  geom_bar(stat="identity", fill="steelblue") + 
+  geom_text(aes(label = mean_total_score), size=3.5, color="white", vjust=1.5) + 
+  ggtitle("Average score for all tweets by assignment group") +
+  ylab("Average Total Score") + 
+  xlab("Assignment Group \n (0 : Control | 1: Treatment)") + 
+  theme_minimal()
+
+
+p + scale_x_discrete(limits=c(0, 1))
+
 ```
 
 ```{r}
-answer_guide <- c('Yes','Yes','No','Yes','No','No','Yes','Yes','No','No',
-                  'Yes','Yes','No','Yes','No','No','Yes','Yes','No','No')
+dfm <- melt(dt[,c('assignment','mean_true_score','mean_false_score')],id.vars = 1)
+dfm <- rename(dfm, 
+       Assignment = assignment,
+       Score_Type = variable,
+       Score = value)
+p <- ggplot(dfm,aes(x = Assignment,y = Score)) + 
+    geom_bar(aes(fill = Score_Type),stat = "identity",position = "dodge")
 
-compute_scores <- function(dataset,answer_guide){
-    for(i in 1:nrow(data_pruned)){
-    dataset[i,"score"] <- sum(dataset[i,26:length(names(dataset))] == answer_guide,na.rm=TRUE)
-    }
-    return(dataset)
-}
 
-data_w_scores <- compute_scores(data_pruned,answer_guide)
-head(data_w_scores[,31:length(names(data_w_scores))])
+p <- ggplot(dfm,aes(x = Assignment,y = Score)) + 
+    geom_bar(aes(fill = Score_Type),stat = "identity",position = "dodge") + 
+  ggtitle("Average score for all tweets by assignment group") +
+  ylab("Average Total Score") + 
+  xlab("Assignment Group \n (0 : Control | 1: Treatment)") + 
+  theme_minimal()
+
+
+p + scale_x_discrete(limits=c(0, 1))
 ```
 
+The figure above shows that there is some improvement in scores for false tweets in the presence of a general flag but there is also a descrease in the score for true tweets in the presence of this flag.
+
+
 ```{r}
-sd <- data_w_scores[, sd(score)]
-sd
-d <- data_w_scores[, .(scores=mean(score)), by = assignment]
-mod <- lm(score ~ assignment, data_w_scores)
+sd <- data_full[, sd(score)]
+d <- data_full[, .(scores=mean(score)), by = assignment]
+mod1 <- lm(score ~ assignment, data_full)
+mod2 <- lm(score ~ assignment+Mturk, data_full)
+mod3 <- lm(score ~ assignment+Mturk+captcha, data_full)
 ate <- diff(d$scores)
-ate
-stargazer(mod, type="text")
+stargazer(mod1,mod2,mod3, type="text",ci=TRUE)
 
 ```
 
 ```{r}
 ## Power calculation 
-power.t.test(d=ate,sig.level=0.95,n=nrow(data_w_scores),sd=sd,alternative="two.sided")
+power.t.test(d=ate,sig.level=0.95,n=nrow(data_full),sd=sd,alternative="two.sided")
 ```
 
-### EDA with Mturk data set 1
+**A large portion of survey subjects said that they considered themselves to be active on social media**
 
 ```{r}
-data_w_scores[, .(score_mean = mean(score)), by=assignment]
-```
-```{r}
-data_mod <- rename(data_w_scores, 
-       Gender = Q1,
-       Reg_Voter = Q2,
-       Age_bin = Q3,
-       Party = Q4,
-       Education = Q5,
-       Ethnicity = Q6,
-       Soc_Med_Active = Q7
-        )
-
-data_mod$Gender[data_mod$Gender==''] <- 'Unanswered'
-
-names(data_mod)
+ggplot(data_full) + geom_bar(aes(x = Soc_Med_Active))
 ```
 
-
-**Nearly everyone in the Mturk survey considered themselved active on social media**
-
-```{r}
-ggplot(data_mod) + geom_bar(aes(x = Soc_Med_Active))
-```
-
-**Also nearly everyone said that they were registered as a voter currently**
+**Alse, majority of survey subjects said that they were registered as a voter**
 
 ```{r}
-ggplot(data_mod) + geom_bar(aes(x = Reg_Voter))
+ggplot(data_full) + geom_bar(aes(x = Reg_Voter))
 ```
 
 **The randomization worked well in the survey software and we had an equal allocation to treatment and control groups in the experiment**
 
 ```{r}
-ggplot(data_mod) + geom_bar(aes(x = assignment))
+ggplot(data_full) + geom_bar(aes(x = assignment))
 ```
 
 **There does seem to be a slight skew in the distribution of participant's gender towards the Male gender (One subject did not answer the gender question)**
 
 ```{r}
-ggplot(data_mod) + geom_bar(aes(x = Gender))
+ggplot(data_full) + geom_bar(aes(x = Gender))
 ```
 
 **Within each gender category, we see that the party affiliation is approximately evenly distributed.**
 
 ```{r}
-data_mod[, .N, by=.(Gender,Party)]
-ggplot(data_mod) + geom_bar(aes(x = Gender,fill=Party))
+data_full[, .N, by=.(Gender,Party)]
+ggplot(data_full) + geom_bar(aes(x = Gender,fill=Party))
 ```
 
 **Our dataset does appear to consist mostly of people with atleast a college degree or higher and the participants mostly belong to the 21-40 age bucket.**
 
 ```{r}
-ggplot(data_mod) + geom_bar(aes(x = Education,fill=Age_bin))
+ggplot(data_full) + geom_bar(aes(x = Education,fill=Age_bin))
 ```
 
 
 ```{r}
-ggplot(mutate(data_mod, Age = fct_infreq(Age_bin))) + geom_bar(aes(x = Age_bin))
+ggplot(mutate(data_full, Age = fct_infreq(Age_bin))) + geom_bar(aes(x = Age_bin))
 ```
 
 ```{r}
@@ -376,8 +522,8 @@ data_mod[, .N, by=.(Party,Age_bin)]
 In terms of ethinicity of the randomly sampled subjects, the majority were Caucasian followed by approximately equal counts of Hispanic and Native americans, followed by african americans and asians.
 
 ```{r}
-data_mod[, .N, by=Ethnicity]
-ggplot(mutate(data_mod, Ethnicity = fct_infreq(Ethnicity))) + geom_bar(aes(x = Ethnicity))
+data_full[, .N, by=Ethnicity]
+ggplot(mutate(data_full, Ethnicity = fct_infreq(Ethnicity))) + geom_bar(aes(x = Ethnicity))
 ```
 
 ```{r}
@@ -417,10 +563,10 @@ compute_robust_se<- function(mod,type="HC",clustering = FALSE,data=NA) {
 ```
 
 ```{r}
-mod1 <- lm(score ~ assignment, data_mod)
-mod2 <- lm(score ~ assignment+factor(Party)*factor(Gender)+factor(Ethnicity)*factor(Gender)+factor(Age_bin), data_mod)
-ci_custom1 <- compute_robust_ci(mod1,type="HC1")
-ci_custom2 <- compute_robust_ci(mod2,type="HC1")
+mod1 <- lm(score ~ assignment, data_full)
+mod2 <- lm(score ~ assignment+factor(Party)*factor(Gender)+factor(Ethnicity)*factor(Gender)+factor(Age_bin), data_full)
+ci_custom1 <- compute_robust_ci(mod1,type="HC3")
+ci_custom2 <- compute_robust_ci(mod2,type="HC3")
 
 stargazer(mod1,mod2, type="text",ci.custom=list(ci_custom1,ci_custom2))
 
