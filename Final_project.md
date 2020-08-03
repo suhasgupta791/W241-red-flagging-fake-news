@@ -2,6 +2,10 @@ Red Flagging Fake News
 ================
 Suhas Gupta, Kevin Drever, Imran Manji
 
+
+
+
+
 ``` r
 # load packages
 library(data.table)
@@ -60,6 +64,7 @@ library(car)
 library(ggplot2)
 library(data.table)
 library(knitr)
+# options(kableExtra.latex.load_packages = FALSE)
 library(kableExtra)
 ```
 
@@ -606,15 +611,15 @@ stargazer(mod, type="text")
 
 ``` r
 ## Power calculation 
-power.t.test(d=ate,sig.level=0.95,power=0.8,sd=sd,alternative="two.sided")
+power.t.test(d=ate,sig.level=0.95,power=0.8,sd=sd_pilot,alternative="two.sided")
 ```
 
     ## 
     ##      Two-sample t test power calculation 
     ## 
-    ##               n = 22
+    ##               n = 39
     ##           delta = 0.27
-    ##              sd = 1
+    ##              sd = 1.3
     ##       sig.level = 0.95
     ##           power = 0.8
     ##     alternative = two.sided

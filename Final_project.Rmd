@@ -1,4 +1,7 @@
 ---
+header-includes:
+- \usepackage{booktabs}
+- \usepackage{makecell}
 title: "Red Flagging Fake News"
 author: 'Suhas Gupta, Kevin Drever, Imran Manji' 
 output: 
@@ -24,6 +27,7 @@ library(car)
 library(ggplot2)
 library(data.table)
 library(knitr)
+# options(kableExtra.latex.load_packages = FALSE)
 library(kableExtra)
 library(rgeolocate)
 library(data.table)
@@ -164,134 +168,6 @@ outcome ~ red_flag * gender + red_flag * political_affiliation  + factor(age_gro
     - Test if fake news red flagging affects voters and non voters differently 
 
 
-### Hypothesis
-
-The primary hypothesis and effect that we have set out to test is the following: 
-
-**H1: Reminding subjects about possiblity of misleading tweets using a genral warning will reduce the perceived accuracy of false headlines relative to a no-warning scenario.**
-
-We also want to check the spillover effect of this general warning about fake news on people's trust in true news/headlines. 
-
-**H2: Reminding subjects about possiblity of misleading tweets using a genral warning will also reduce their trust in true headlines/news relative to a no-warning scenario.**
-
-### Experimental Method
-
-#### Participants
-
-The study was conducted online through survey forms created using the Qualtric Survey service provided to us by the Unversity of California, Berkeley. There were two types of pariticipants recruited for this study : 
-
-1. Participants recruited using the Amazon Mechanical Turk service
-  - Although samples from Mturk are not nationally respresentative, results from the study closely match those obtained from other samples(e.g., Berinsky et al. 2012; Coppock 2016; Horton et al. 2011; Mullinix et al. 2015)
-  - Non-US residents, were not allowed to participate.
-  
-2. Participants recruited through experimenters' personal and professional network using personal contacts, direct messages, social media network and email. 
-
-**_< Fill in the text about sample distribution from the data analysis>_**
-
-
-
-#### Procedure
-
-The experiment design used individual random assignment to place subjects in treatment and control. Table 1 shows the distribution of subject randomly assigned to treatment and control for each of the participant group described above. The survey would display warning before presenting the test questions to a subjects if the subject was placed in the treatment group. If the subject was placed in the control group, then no warning would be displayed on the questions. We focused on posts made on the social media platform _Twitter_ as the source for all headlines used in the survey. The tweets were mainly from three broad categories 1) US politics 2) Climate change and general belief in science 3) Random facts about US. After each headline, the question asked the participant whether they believe the information in the headline is true or not. The scoring was based on the total number of correct responses (responses that match the group truth about each headline).
-
-
-```{r}
-
-col1 <- c("Treatment","Control")
-col2 <- c("General Warning","No Warning")
-col3 <- c("X","Y")
-dt<- data.table(col1,col2,col3)
-
-colnames(dt) <- c("Assignment Group", "Flag", "N")
-kable(dt,"latex",booktabs=T)
-```
-
-### Pilot data analysis
-
-```{r}
-pilot_dataset <- fread('./data/pilot/pilot_data_07262020.csv')
-#head(pilot_dataset)
-#names(pilot_dataset)
-```
-
-
-```{r}
-data_pruned <- pilot_dataset[ 3:nrow(pilot_dataset),]
-data_pruned[, c(6,7)] <- lapply(data_pruned[, c(6,7)], as.numeric)
-
-question_col_names <- c('8B','9B','10B','11B','12B','13B','14B','15B','16B','17B',
-                        '8A','9A','10A','11A','12A','13A','14A','15A','16A','17A')
-
-
-# replace all empty strings with NA
-for(i in c(26:length(names(data_pruned)))){
-    data_pruned[[i]][data_pruned[[i]]==''] <- NA
-}
-
-# Check the data
-head(data_pruned[, 26:length(names(data_pruned))])
-
-# Set assignment group variable (treatment = 1 , conrol = 0)
-data_pruned[, assignment := ifelse(is.na(data_pruned[,'8B']),0,1)]
-head(data_pruned[, 26:length(names(data_pruned))])
-
-
-```
-
-
-```{r}
-head(data_pruned)
-```
-
-```{r}
-
-# Compute the score against answer guide
-answer_guide <- c('Yes','Yes','No','Yes','No','No','Yes','Yes','No','No',
-                  'Yes','Yes','No','Yes','No','No','Yes','Yes','No','No')
-
-compute_scores <- function(dataset,answer_guide){
-    for(i in 1:nrow(data_pruned)){
-    dataset[i,"score"] <- sum(dataset[i,26:45] == answer_guide,na.rm=TRUE)
-    }
-    return(dataset)
-}
-
-
-data_w_scores <- compute_scores(data_pruned,answer_guide)
-head(data_w_scores)
-```
-
-
-```{r}
-# Compute the SD and point estimates with pilot data
-sd_pilot <- data_w_scores[, sd(score)]
-sd_pilot
-d <- data_w_scores[, .(scores=mean(score)), by = assignment]
-mod <- lm(score ~ assignment, data_w_scores)
-ate <- diff(d$scores)
-ate
-stargazer(mod, type="text")
-```
-
-```{r}
-## Power calculation 
-power.t.test(d=ate,sig.level=0.95,power=0.8,sd=sd,alternative="two.sided")
-```
-
-```{r}
-# Modify the column names for better readability
-data_mod <- rename(data_w_scores, 
-       Gender = Q1,
-       Reg_Voter = Q2,
-       Age_bin = Q3,
-       Party = Q4,
-       Education = Q5,
-       Ethnicity = Q6,
-       Soc_Med_Active = Q7
-        )
-head(data_mod[,19:27])
-```
-
 
 ## Define functions 
 
@@ -343,6 +219,42 @@ rename_cols <- function(dataset){
      return(dt)
 }
 
+# Color palette for ggplot 
+cbPalette <- c("#009999", "#AA9900")
+
+compute_robust_ci<- function(mod,type="HC",clustering = FALSE,data=NA) { 
+  coefs <- names(mod$coefficients)
+  if (clustering){
+    # calculate robust clustered standard errors 
+    robust_se <- sqrt(diag(vcovCL(mod,cluster = data,type=type))) 
+  }
+  else{
+    # calculate robust standard errors without clustering
+    robust_se <- sqrt(diag(vcovHC(mod,type=type)))  
+  }
+  ci_ll <- NA
+  ci_ul <- NA
+  for(i in 1:length(coefs)){
+    ci_ll[i] <- mod$coefficients[[coefs[i]]] - 1.96 * robust_se[i]
+    ci_ul[i] <- mod$coefficients[[coefs[i]]] + 1.96 * robust_se[i]
+  }
+    ci_custom <- matrix(c(ci_ll,ci_ul), nrow = length(coefs), byrow = FALSE)
+    return(ci_custom)
+}
+
+compute_robust_se<- function(mod,type="HC",clustering = FALSE,data=NA) { 
+  coefs <- names(mod$coefficients)
+  if (clustering){
+    # calculate robust clustered standard errors 
+    robust_se <- sqrt(diag(vcovCL(mod,cluster = data,type=type))) 
+  }
+  else{
+    # calculate robust standard errors without clustering
+    robust_se <- sqrt(diag(vcovHC(mod,type=type)))  
+  }
+  
+    return(robust_se)
+}
 ```
 
 #### Import data
@@ -398,8 +310,8 @@ study3_data_mod[, Mturk := 0]
 study3_data_mod[, captcha := 1]
 
 # Check the data
-# head(study1_data_mod[, 31:length(names(study1_data_mod))])
-head(study2_data_mod)
+# head(study1_data_mod)
+# head(study2_data_mod)
 # head(study3_data_mod)
 
 ```
@@ -409,69 +321,121 @@ head(study2_data_mod)
 ```{r}
 # combine data set 
 data_full <- rbind(study1_data_mod,study2_data_mod,study3_data_mod)
-head(data_full)
+# head(data_full)
 ```
+
+## Hypothesis
+
+The primary hypothesis and effect that we have set out to test is the following: 
+
+**H1: Reminding subjects about possiblity of misleading tweets using a genral warning will reduce the perceived accuracy of false headlines relative to a no-warning scenario.**
+
+We also want to check the spillover effect of this general warning about fake news on people's trust in true news/headlines. 
+
+**H2: Reminding subjects about possiblity of misleading tweets using a genral warning will also reduce their trust in true headlines/news relative to a no-warning scenario.**
+
+### Experimental Method
+
+#### Participants
+
+The study was conducted online through survey forms created using the Qualtric Survey service provided to us by the Unversity of California, Berkeley. There were two types of pariticipants recruited for this study : 
+
+1. Participants recruited using the Amazon Mechanical Turk service
+  - Although samples from Mturk are not nationally respresentative, results from the study closely match those obtained from other samples(e.g., Berinsky et al. 2012; Coppock 2016; Horton et al. 2011; Mullinix et al. 2015)
+  - Non-US residents, were not allowed to participate.
+  
+2. Participants recruited through experimenters' personal and professional network using personal contacts, direct messages, social media network and email. 
+
+**_< Fill in the text about sample distribution from the data analysis>_**
+
+#### Procedure
+
+The experiment design used individual random assignment to place subjects in treatment and control. Table 1 shows the distribution of subject randomly assigned to treatment and control for each of the participant group described above. The survey would display warning before presenting the test questions to a subjects if the subject was placed in the treatment group. If the subject was placed in the control group, then no warning would be displayed on the questions. We focused on posts made on the social media platform _Twitter_ as the source for all headlines used in the survey. The tweets were mainly from three broad categories 1) US politics 2) Climate change and general belief in science 3) Random facts about US. After each headline, the question asked the participant whether they believe the information in the headline is true or not. The scoring was based on the total number of correct responses (responses that match the group truth about each headline).
+
+
+```{r}
+col1 <- c("Treatment","Control")
+col2 <- c("General Warning","No Warning")
+col3 <- c("X","Y")
+dt<- data.table(col1,col2,col3)
+
+colnames(dt) <- c("Assignment Group", "Flag", "N")
+kable(dt,"latex",booktabs=T)
+```
+
+### check experimental data 
+
+#### Randomization
+
+**The randomization worked well in the survey software and we had an equal allocation to treatment and control groups in the experiment**
+```{r}
+dt <- data_full[, .(count = .N), by=assignment]
+ggplot(dt, aes(x = assignment, y = count)) + 
+  geom_bar(stat="identity", fill="steelblue") 
+```
+
+#### Power 
+
+**The data collected has 80% power in detecting any treatment effect that may exist in this experiment**
+
+```{r}
+## Power calculation 
+ate <- diff(d$scores)
+sd <- data_full[, sd(score)]
+power.t.test(d=ate,sig.level=0.95,n=nrow(data_full),sd=sd,alternative="two.sided")
+```
+
 
 
 ### EDA 
 
-Figure 1 summarizes the score of subjects in each assignment group (treatment/control) and for true and false tweets. 
+**Figure 1** summarizes the score of subjects in each assignment group (treatment/control) and for true and false tweets. The table and figures indicate that a general flag slightly decreased the overall score for the subjects ability to detect whether a tweet was true or false. Looking at the third and fourth column of Table1, we see that the detection ability (score) for true tweets decreased slightly in the presence of the general warning flag while the score for detecting false tweets improved slightly. This suggests that though the general warning flag about fake news might improve people's ability to accurately detect false information, it also reduces the belief in true information as well. 
+We will test our hypothesis and research questions more formally in the upcoming sections. 
 
 ```{r}
 dt <- data_full[, .(mean_total_score = mean(score),mean_true_score = mean(score_true),mean_false_score = mean(score_false)), by=assignment]
-dt
-p <- ggplot(dt, aes(x = assignment, y = mean_total_score)) + 
-  geom_bar(stat="identity", fill="steelblue") + 
-  geom_text(aes(label = mean_total_score), size=3.5, color="white", vjust=1.5) + 
-  ggtitle("Average score for all tweets by assignment group") +
-  ylab("Average Total Score") + 
-  xlab("Assignment Group \n (0 : Control | 1: Treatment)") + 
-  theme_minimal()
-
-
-p + scale_x_discrete(limits=c(0, 1))
-
-```
-
-```{r}
-dfm <- melt(dt[,c('assignment','mean_true_score','mean_false_score')],id.vars = 1)
-dfm <- rename(dfm, 
-       Assignment = assignment,
+dt$Warning_Flag[dt$assignment == 0] <- "No Flag"
+dt$Warning_Flag[dt$assignment == 1] <- "Flag"
+dfm <- melt(dt[,c('Warning_Flag','mean_total_score')],id.vars = 1)
+dfm <- rename(dfm,
+       Assignment = Warning_Flag,
        Score_Type = variable,
        Score = value)
-p <- ggplot(dfm,aes(x = Assignment,y = Score)) + 
-    geom_bar(aes(fill = Score_Type),stat = "identity",position = "dodge")
-
-
-p <- ggplot(dfm,aes(x = Assignment,y = Score)) + 
-    geom_bar(aes(fill = Score_Type),stat = "identity",position = "dodge") + 
-  ggtitle("Average score for all tweets by assignment group") +
-  ylab("Average Total Score") + 
-  xlab("Assignment Group \n (0 : Control | 1: Treatment)") + 
+ggplot(dfm, aes(x = Assignment, y = Score,label=sprintf("%0.2f", round(Score, digits = 2)))) + 
+  geom_bar(stat="identity", fill="steelblue", width = 0.5) + 
+  geom_text(size=3.5, color="white", vjust=1.5) + 
+  ggtitle("Figure 1. Average score for all tweets by survey assignment group") +
+  ylab("Mean Total Score") + 
+  xlab("Survey Group")   + 
+  theme(plot.title = element_text(hjust = 0.5)) +
   theme_minimal()
-
-
-p + scale_x_discrete(limits=c(0, 1))
 ```
 
-The figure above shows that there is some improvement in scores for false tweets in the presence of a general flag but there is also a descrease in the score for true tweets in the presence of this flag.
+
 
 
 ```{r}
-sd <- data_full[, sd(score)]
-d <- data_full[, .(scores=mean(score)), by = assignment]
-mod1 <- lm(score ~ assignment, data_full)
-mod2 <- lm(score ~ assignment+Mturk, data_full)
-mod3 <- lm(score ~ assignment+Mturk+captcha, data_full)
-ate <- diff(d$scores)
-stargazer(mod1,mod2,mod3, type="text",ci=TRUE)
+dt$Warning_Flag[dt$assignment == 0] <- "No"
+dt$Warning_Flag[dt$assignment == 1] <- "Yes"
+
+dfm <- melt(dt[,c('Warning_Flag','mean_true_score','mean_false_score')],id.vars = 1)
+dfm <- rename(dfm,
+       Score_Type = variable,
+       Score = value)
+levels(dfm$Score_Type) = c("True Tweets", "False Tweets")
+
+p <- ggplot(dfm,aes(x = Score_Type,y = Score)) + 
+    geom_bar(aes(fill = Warning_Flag),stat = "identity", width=0.7, position=position_dodge(width=0.8)) +
+  ggtitle("Figure2. General warning effect on true and false tweets") +
+  ylab("Average score for tweet accuracy detection") + 
+  xlab("Type of tweet") + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  scale_fill_manual(values = cbPalette)
+p
 
 ```
 
-```{r}
-## Power calculation 
-power.t.test(d=ate,sig.level=0.95,n=nrow(data_full),sd=sd,alternative="two.sided")
-```
+We find from figures 3 and 4 that a large majority of users identified themselves as being active on social media and most of the survewy participants were registered voters in the united states.
 
 **A large portion of survey subjects said that they considered themselves to be active on social media**
 
@@ -485,29 +449,89 @@ ggplot(data_full) + geom_bar(aes(x = Soc_Med_Active))
 ggplot(data_full) + geom_bar(aes(x = Reg_Voter))
 ```
 
-**The randomization worked well in the survey software and we had an equal allocation to treatment and control groups in the experiment**
+There appears to be an increase of 6% in score of participants for correctly identifying the false tweets with a confidence interval of (-0.3,0.420) before including control for mechanical turk participants and BOT checks. We added indicator variables for participants recruited on mechanical turk as participants on amazon's mechanical turk may not be accurate representatives of general US population. Futhermore, we also added an indicator variable for a BOT check being present in the survey to control for any malignant activity on mechanical turk (using BOTs to answer survey and earn monetray rewards). Since the CAPTCHA verification was added in the latter half of the experiment, we added an indicator variable in regression to control for errors due to BOT activity. We see that the 95% confidence intervals shrink slightly when we control for these covariates. The model in the third column will be our baseline model. The coefficient for assignment variable in the table is not statistically significant in this model.
 
 ```{r}
-ggplot(data_full) + geom_bar(aes(x = assignment))
+mod1 <- lm(score_false ~ assignment, data_full)
+mod2 <- lm(score_false ~ assignment+Mturk, data_full)
+mod3 <- lm(score_false ~ assignment+Mturk+captcha, data_full)
+ci_custom1 <- compute_robust_ci(mod1)
+ci_custom2 <- compute_robust_ci(mod2)
+ci_custom3 <- compute_robust_ci(mod3)
+stargazer(mod1,mod2,mod3, type="text",ci.custom = list(ci_custom1,ci_custom2,ci_custom3))
+
 ```
 
-**There does seem to be a slight skew in the distribution of participant's gender towards the Male gender (One subject did not answer the gender question)**
+**Figure 5** examines the distribution of the survey participants by Gender and shows that we have a well balanced data set in terms of gender distribution. 
 
 ```{r}
-ggplot(data_full) + geom_bar(aes(x = Gender))
+
+dt <- data_full[, .(count = .N), by=Gender]
+dt$Gender[dt$Gender == ''] <- "Other"
+
+ggplot(dt, aes(x = Gender, y = count)) +
+  geom_bar(aes(fill=count), stat="identity", width = 0.5) + 
+  ggtitle("Figure 5. Gender distribution of survey takers") +
+  ylab("Count") + xlab("Gender")   + 
+  theme(plot.title = element_text(hjust = 0.5))
 ```
 
-**Within each gender category, we see that the party affiliation is approximately evenly distributed.**
+**Figure 6** examines the data distribution based on party affiliation. We see that the Male and Female genders are well balanced for Democrats and Republicans parties while there is a slight skew towards males in _Other_ party affiliations. The unanswered or non-conforming genders are only 2 counts in the data set and hence not represented well in this experimental data. 
 
 ```{r}
-data_full[, .N, by=.(Gender,Party)]
-ggplot(data_full) + geom_bar(aes(x = Gender,fill=Party))
+dt <- data_full[, .(count = .N), by=.(Gender,Party)]
+dt$Gender[dt$Gender == ''] <- "Other"
+
+ggplot(dt, aes(x = Party, y = count)) +
+  geom_bar(aes(fill=Gender), stat="identity", width = 0.5) + 
+  ggtitle("Figure 6. Gender distribution by party affiliation") +
+  ylab("Count") + xlab("Gender")   + 
+  theme(plot.title = element_text(hjust = 0.5)) 
+```
+
+```{r}
+
+dt <- data_full[, .(mean_score_by_gender = mean(score_false)), by=Gender]
+dt$Gender[dt$Gender == ''] <- "Other"
+ggplot(dt, aes(x = Gender, y = mean_score_by_gender)) +
+  geom_bar(aes(Gender), stat="identity", width = 0.5) + 
+  ggtitle("Figure X. Mean scores by Gender") + 
+  ylab("Score on False Tweets") + xlab("Gender")   + 
+  theme(plot.title = element_text(hjust = 0.5)) 
+```
+
+The tweets selected for our experiment deal with US politics, climate change and general US current affair topics. Believability in social media news/headlines/tweets (and thus ability to score correctly on the survey) can have large variation between Republicans vs Democrats or Male vs Female, depending on the type of the tweets selected. Therefore, we next test the affect of displaying a general warning flag on participant score by including interaction terms on top of the baseline regression model. The mean score of different gender identities is different from each other and we will control for this in the regression model to get a better estimate of the treatment effect.
+
+```{r}
+mod4 <- lm(score_false ~ assignment*factor(Gender)+factor(Party)+Mturk+captcha, data_full)
+mod5 <- lm(score_false ~ assignment*factor(Party)+factor(Gender)+Mturk+captcha, data_full)
+mod6 <- lm(score_false ~ assignment*factor(Gender)*factor(Party)+Mturk+captcha, data_full)
+ci_custom4 <- compute_robust_ci(mod4)
+ci_custom5 <- compute_robust_ci(mod5)
+ci_custom6 <- compute_robust_ci(mod6)
+
+se_custom4 <- compute_robust_se(mod4)
+se_custom5 <- compute_robust_se(mod5)
+se_custom6 <- compute_robust_se(mod6)
+
+stargazer(mod4,mod5,mod6,type="text",se=list(se_custom4,se_custom5,se_custom6))
 ```
 
 **Our dataset does appear to consist mostly of people with atleast a college degree or higher and the participants mostly belong to the 21-40 age bucket.**
 
 ```{r}
 ggplot(data_full) + geom_bar(aes(x = Education,fill=Age_bin))
+```
+
+
+
+
+```{r}
+mod7 <- lm(score_false ~ assignment*factor(Party)+factor(Gender)+assignment*factor(Age_bin)+Mturk+captcha, data_full)
+mod8 <- lm(score_false ~ assignment*factor(Party)*factor(Age_bin)+factor(Gender)+Mturk+captcha, data_full)
+se_custom7 <- compute_robust_se(mod7)
+se_custom8 <- compute_robust_se(mod8)
+stargazer(mod7,mod8,type="text",se=list(se_custom7,se_custom8))
 ```
 
 
@@ -527,49 +551,24 @@ ggplot(mutate(data_full, Ethnicity = fct_infreq(Ethnicity))) + geom_bar(aes(x = 
 ```
 
 ```{r}
-compute_robust_ci<- function(mod,type="HC",clustering = FALSE,data=NA) { 
-  coefs <- names(mod$coefficients)
-  if (clustering){
-    # calculate robust clustered standard errors 
-    robust_se <- sqrt(diag(vcovCL(mod,cluster = data,type=type))) 
-  }
-  else{
-    # calculate robust standard errors without clustering
-    robust_se <- sqrt(diag(vcovHC(mod,type=type)))  
-  }
-  ci_ll <- NA
-  ci_ul <- NA
-  for(i in 1:length(coefs)){
-    ci_ll[i] <- mod$coefficients[[coefs[i]]] - 1.96 * robust_se[i]
-    ci_ul[i] <- mod$coefficients[[coefs[i]]] + 1.96 * robust_se[i]
-  }
-    ci_custom <- matrix(c(ci_ll,ci_ul), nrow = length(coefs), byrow = FALSE)
-    return(ci_custom)
-}
-
-compute_robust_se<- function(mod,type="HC",clustering = FALSE,data=NA) { 
-  coefs <- names(mod$coefficients)
-  if (clustering){
-    # calculate robust clustered standard errors 
-    robust_se <- sqrt(diag(vcovCL(mod,cluster = data,type=type))) 
-  }
-  else{
-    # calculate robust standard errors without clustering
-    robust_se <- sqrt(diag(vcovHC(mod,type=type)))  
-  }
-  
-    return(robust_se)
-}
+dt <- data_full[, .(mean_score_by_Ethnicity = mean(score_false)), by=Ethnicity]
+dt$Gender[dt$Gender == ''] <- "Other"
+ggplot(dt, aes(x = Ethnicity, y = mean_score_by_Ethnicity)) +
+  geom_bar(aes(Ethnicity), stat="identity", width = 0.5) + 
+  ggtitle("Figure X. Mean scores by Gender") + 
+  ylab("Score on False Tweets") + xlab("Gender")   + 
+  theme(plot.title = element_text(hjust = 0.5)) 
 ```
 
+
+
 ```{r}
-mod1 <- lm(score ~ assignment, data_full)
-mod2 <- lm(score ~ assignment+factor(Party)*factor(Gender)+factor(Ethnicity)*factor(Gender)+factor(Age_bin), data_full)
-ci_custom1 <- compute_robust_ci(mod1,type="HC3")
-ci_custom2 <- compute_robust_ci(mod2,type="HC3")
-
-stargazer(mod1,mod2, type="text",ci.custom=list(ci_custom1,ci_custom2))
-
+mod9 <- lm(score_false ~ assignment*Party*Age_bin+Gender+Ethnicity + Mturk+captcha, data_full)
+mod10 <- lm(score_false ~ assignment*Age_bin*Party*Ethnicity + Mturk+captcha, data_full)
+se_custom9 <- compute_robust_se(mod9)
+se_custom10 <- compute_robust_se(mod10)
+stargazer(mod9,mod10,type="text",se=list(se_custom9,se_custom10)
+          )
 ```
 
 
