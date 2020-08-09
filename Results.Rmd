@@ -1,0 +1,648 @@
+---
+header-includes:
+- \usepackage{booktabs}
+- \usepackage{makecell}
+title: "Red Flagging Fake News"
+author: 'Suhas Gupta, Kevin Drever, Imran Manji' 
+output: 
+    pdf_document: default
+    github_document: default
+knit: (function(inputFile, encoding) {
+  rmarkdown::render(
+    inputFile, encoding = encoding,
+    output_format = c('github_document', 'pdf_document')) 
+    })
+---
+
+```{r, include=FALSE}
+# load packages
+library(data.table)
+library(foreign)
+library(sandwich)
+library(lmtest)
+library(stargazer)
+library(lfe)
+library(car)
+library(ggplot2)
+library(data.table)
+library(knitr)
+library(kableExtra)
+library(rgeolocate)
+library(data.table)
+library(knitr)
+library(lmtest)
+library(ri2)
+library(dplyr)
+library(forcats)
+```
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options(digits=2)
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
+```
+
+```{r, define_functions, include=FALSE}
+
+prune_data <- function(dataset){
+    data_pruned <- dataset[ 3:nrow(dataset),]
+    data_pruned[, c(6,7)] <- lapply(data_pruned[, c(6,7)], as.numeric)
+    question_col_names <- c('8B','9B','10B','11B','12B','13B','14B','15B','16B','17B',
+                            '8A','9A','10A','11A','12A','13A','14A','15A','16A','17A')
+    # Set NA for empty empty strings in question columns (either in treatment or control but not both)
+    for(i in c(31:length(names(data_pruned)))){
+        data_pruned[[i]][data_pruned[[i]]==''] <- NA
+    }
+    # Set assignment group variable (treatment = 1 , control = 0)
+    data_pruned[, assignment := ifelse(is.na(data_pruned[,'8B']),0,1)]
+  
+    return(data_pruned)
+}
+
+compute_score <- function(dataset,answer_guide){
+  # compute full score  
+  for(i in 1:nrow(dataset)){
+          dataset[i,"score"] <- sum(dataset[i,31:50] == answer_guide,na.rm=TRUE)
+          dataset[i, "score_false"] <- sum(dataset[i,c(33,35,36,39,40,43,45,46,49,50)] == answer_guide[c(3,5,6,9,10,13,15,16,19,20)], na.rm=TRUE)
+          dataset[i, "score_true"] <- sum(dataset[i,c(31,32,34,37,38,41,42,44,47,48)] == answer_guide[c(1,2,4,7,8,11,12,14,17,18)], na.rm=TRUE)
+    }
+  return(dataset)
+}
+
+rename_cols <- function(dataset){
+    dt <- rename(dataset, 
+     Gender = Q1,
+     Reg_Voter = Q2,
+     Age_bin = Q3,
+     Party = Q4,
+     Education = Q5,
+     Ethnicity = Q6,
+     Soc_Med_Active = Q7,
+     Voted_2012 = Q38,
+     Voted_2016 = Q39,
+     Marital_status = Q37,
+     Income = Q36,
+     Language = Q40
+    
+      )
+  
+     dt$Gender[dataset$Gender == ''] <-"Unanswered"
+     return(dt)
+}
+
+create_question_column <- function(dataset){
+  dataset[, TestQ1 := ifelse(is.na(dataset$'8B'), dataset$'8A', dataset$'8B')]
+  dataset[, TestQ2 := ifelse(is.na(dataset$'9B'), dataset$'9A', dataset$'9B')]
+  dataset[, TestQ3 := ifelse(is.na(dataset$'10B'), dataset$'10A', dataset$'10B')]
+  dataset[, TestQ4 := ifelse(is.na(dataset$'11B'), dataset$'11A', dataset$'11B')]
+  dataset[, TestQ5 := ifelse(is.na(dataset$'12B'), dataset$'12A', dataset$'12B')]
+  dataset[, TestQ6 := ifelse(is.na(dataset$'13B'), dataset$'13A', dataset$'13B')]
+  dataset[, TestQ7 := ifelse(is.na(dataset$'14B'), dataset$'14A', dataset$'14B')]
+  dataset[, TestQ8 := ifelse(is.na(dataset$'15B'), dataset$'15A', dataset$'15B')]
+  dataset[, TestQ9 := ifelse(is.na(dataset$'16B'), dataset$'16A', dataset$'16B')]
+  dataset[, TestQ10 := ifelse(is.na(dataset$'17B'), dataset$'17A', dataset$'17B')]
+  return(dataset)
+}
+
+
+# Color palette for ggplot 
+cbPalette <- c("#009999", "#AA9900")
+
+compute_robust_ci<- function(mod,type="HC",clustering = FALSE,data=NA) { 
+  coefs <- names(mod$coefficients)
+  if (clustering){
+    # calculate robust clustered standard errors 
+    robust_se <- sqrt(diag(vcovCL(mod,cluster = data,type=type))) 
+  }
+  else{
+    # calculate robust standard errors without clustering
+    robust_se <- sqrt(diag(vcovHC(mod,type=type)))  
+  }
+  ci_ll <- NA
+  ci_ul <- NA
+  for(i in 1:length(coefs)){
+    ci_ll[i] <- mod$coefficients[[coefs[i]]] - 1.96 * robust_se[i]
+    ci_ul[i] <- mod$coefficients[[coefs[i]]] + 1.96 * robust_se[i]
+  }
+    ci_custom <- matrix(c(ci_ll,ci_ul), nrow = length(coefs), byrow = FALSE)
+    return(ci_custom)
+}
+
+compute_robust_se<- function(mod,type="HC",clustering = FALSE,data=NA) { 
+  coefs <- names(mod$coefficients)
+  if (clustering){
+    # calculate robust clustered standard errors 
+    robust_se <- sqrt(diag(vcovCL(mod,cluster = data,type=type))) 
+  }
+  else{
+    # calculate robust standard errors without clustering
+    robust_se <- sqrt(diag(vcovHC(mod,type=type)))  
+  }
+  
+    return(robust_se)
+}
+```
+
+```{r, import_datasets, include=FALSE}
+study1_data <- fread('./data/Mturk_nocaptcha/data.csv')
+study2_data <- fread('./data/Mturk_captcha/data.csv')
+study3_data <- fread("./data/NonMturk_wCaptcha/data.csv")
+```
+
+```{r, modify_and_combine_datasets, include=FALSE}
+study1_data_pruned <- prune_data(study1_data)
+study2_data_pruned <- prune_data(study2_data)
+study3_data_pruned <- prune_data(study3_data)
+
+# Rename the covariate columns
+study1_data_temp <- rename_cols(study1_data_pruned)
+study2_data_temp <- rename_cols(study2_data_pruned)
+study3_data_temp <- rename_cols(study3_data_pruned)
+
+# Add score columns 
+answer_guide <- c('Yes','Yes','No','Yes','No','No','Yes','Yes','No','No',  
+                  'Yes','Yes','No','Yes','No','No','Yes','Yes','No','No') 
+study1_data_mod <- compute_score(study1_data_temp, answer_guide = answer_guide )
+study2_data_mod <- compute_score(study2_data_temp, answer_guide = answer_guide )
+study3_data_mod <- compute_score(study3_data_temp, answer_guide = answer_guide )
+
+# Add indicator variables
+study1_data_mod[, Mturk := 1]
+study1_data_mod[, captcha := 0]
+
+study2_data_mod[, Mturk := 1]
+study2_data_mod[, captcha := 1]
+
+
+study3_data_mod[, Mturk := 0]
+study3_data_mod[, captcha := 1]
+
+# Check the data
+# head(study1_data_mod)
+# head(study2_data_mod)
+# head(study3_data_mod)
+
+
+# combine data set 
+dt <- rbind(study1_data_mod,study2_data_mod,study3_data_mod)
+data_full <- create_question_column(dt)
+```
+
+# Metrics
+
+  For measuring the affect of our treatment we scored the participants on a binary choice of "Yes" or "No" about whether they believed the content of each post displayed during the suvery. Subjects scored one point if they answered correctly ("Yes" for true tweets and "No" for false tweets) and zero points otherwise. We added up the points for all the tweet related questions for each participants and generated the _total score_ (score on all tweet questions), _true tweet score_ (score on true tweets only) and _false tweet score_ (score on false tweets only). These scores were used in regressions to analyze the affect of treatment in this experiment. 
+
+# Results
+
+  We analyzed two major effecs of our experiment using regression with robust standard errors. First, we tested our primary NULL hypothesis that displaying general warning flags with social media posts doesn't affect people's belief in **false** posts, against the alternate hypothesis that displaying generals warning flags reduces the believability in fake stories. In order to test this, we regressed _true_tweet_score_ over the _warning flag_ (treatment) to calcuate the treatment effect coefficient and standard errors. Robust standard errors were used throughout the regression tables in this experiment's data analysis. We pooled data from all three surveys to run the regerssions and included indicator variables for subjects from Amazon's Mechanical Turk and whether the survey included a Captcha verification at the beginning. We also ran regressions with question fixed effects (for each tweet question) and interaction terms with Age, Party and Gender that we hypothesized to likely have the most effect on fake news believability. Secondly, we tested the spillover effect of warning flags on true social media posts. Since our treatment only involves displaying a general fake news warning flag, we believed that there might be a reduction in participants' belief in true posts as well since both true and false tweets are displayed in the same survey. We test this effect using the same regression strategy as the primary effect. 
+  
+  
+## Effect of general warning on false tweets
+
+  Figure 1 shows the total mean scores of all 313 survey takers for both treatment (flag) and control (no flag) conditions. Note, that this is the mean of total score, i.e. including score and true and false tweets. The figure indicates a decrease in participant score when the treatment warning flag is present (from 7.16 to 7.05 out of a scale of 10).
+  
+```{r, echo=FALSE}
+dt <- data_full[, .(mean_total_score = mean(score),mean_true_score = mean(score_true),mean_false_score = mean(score_false)), by=assignment]
+dt$Warning_Flag[dt$assignment == 0] <- "No Flag"
+dt$Warning_Flag[dt$assignment == 1] <- "Flag"
+dfm <- melt(dt[,c('Warning_Flag','mean_total_score')],id.vars = 1)
+dfm <- rename(dfm,
+       Assignment = Warning_Flag,
+       Score_Type = variable,
+       Score = value)
+ 
+p <- ggplot(dfm,aes(x = Assignment,y = Score,label=sprintf("%0.2f", round(Score, digits = 2)))) + 
+      geom_bar(stat = "identity",col = "gray", fill=c("blue","gold"), width=0.7, position=position_dodge(width=0.8)) +
+      geom_text(size=6, color=c("white","black"), vjust=1.5) +
+      ggtitle("Figure 1. Average score for all tweets by survey assignment group") +
+      ylab("Mean Total Score") + 
+      xlab("Survey Group")
+  
+p + theme(plot.title = element_text(hjust = 0.5)) + theme_classic() 
+
+```
+  
+  Figure 2. beraks down the point sample mean scores on false and true tweets in the presence and absence of warning flags. We see from this figure that for false tweets, the presence of a flag increases the participants' ability to correctly identify them by 1.97%. However, we also see that the ability to correctly identify true tweets reduces in the presence of the warning flag by 5% as compared to no flag survey. 
+  We tested the hypothesis formally in Table 1, which shows pooled regression results (over all 313 participants across 3 surveys) for score on false tweet questions. There appears to be an increase of 6% in score of participants for correctly identifying the false tweets with a confidence interval of (-0.3,0.420) before including control for mechanical turk participants and BOT checks. We added indicator variables for participants recruited on mechanical turk as participants on amazon's mechanical turk may not be accurate representatives of general US population. Futhermore, we also added an indicator variable for a BOT check being present in the survey to control for any malignant activity on mechanical turk (using BOTs to answer survey and earn monetray rewards). Since the CAPTCHA verification was added in the latter half of the experiment, we added an indicator variable in regression to control for errors due to BOT activity. We see that the 95% confidence intervals shrink slightly when we control for these covariates. The results do not show a statistically significant result for the treatment effect [0.061 (0.140)]. This result supports our NULL hypothesis that a general warning flags doesn not have any effect on human ability to detect false posts on twitter.However, consistent with our intuition, the coefficient sign indicates that there is a positive effect on score for detecting false tweets when a warning flag is present.
+  
+```{r, echo=FALSE}
+
+dfm <- melt(dt[,c('Warning_Flag','mean_true_score','mean_false_score')],id.vars = 1)
+dfm <- rename(dfm,
+       Score_Type = variable,
+       Score = value)
+levels(dfm$Score_Type) = c("True Tweets", "False Tweets")
+dfm
+p <- ggplot(dfm,aes(x = Score_Type,y = Score, label=sprintf("%0.2f", round(Score, digits = 2)))) + 
+  geom_bar(aes(fill = Warning_Flag),col = "gray",stat = "identity", width=0.7, position=position_dodge(width=0.8)) +
+  geom_text(size=6, color=c("white","black","white","black"), vjust=c(2.5,0.5,1,1.8), hjust=c(1.6,-0.6,1.6,-0.6)) +
+  ggtitle("Figure 2. General warning effect on true and false tweets") +
+  ylab("Average score for tweet accuracy detection") + 
+  xlab("Type of tweet") + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  theme_classic() + 
+  scale_fill_manual(values = c("blue","gold"))
+
+p
+```
+  
+```{r, table1, results="asis", echo=FALSE}
+mod1 <- lm(score_false ~ assignment, data_full)  # primary regression 
+mod2 <- lm(score_false ~ assignment+Mturk, data_full)  # added Mturk indicator 
+mod3 <- lm(score_false ~ assignment+Mturk+captcha, data_full) # added Mturk and Captcha verification indicators (baseline regression model)
+ci_custom1 <- compute_robust_ci(mod1)
+ci_custom2 <- compute_robust_ci(mod2)
+ci_custom3 <- compute_robust_ci(mod3)
+se_custom1 <- compute_robust_se(mod1)
+se_custom2 <- compute_robust_se(mod2)
+se_custom3 <- compute_robust_se(mod3)
+stargazer(mod1,mod2,mod3, type="latex",se = list(se_custom1,se_custom2,se_custom3),
+          covariate.labels = c("Warning Flag", "MTurk Participant","Captcha Verified"),
+          omit.stat = c("f","ser"),
+          dep.var.caption = "Outcome Variable", dep.var.labels = "Score on False Tweets",
+          column.labels = c("ATE(no indicator)", "ATE(Mturk indicator)", "Baseline model"),
+          add.lines = list(c("Question Fixed Effects", rep("No",5))),
+          title="Table 1. Treatment effect of warning flag on false tweet score",
+          notes = c("Regression models with robust standard errors.",
+                    "Warning Flag is the treatment and outcome variable is participant on false tweet questions in survey.",
+                    "Respondents in treatment saw the flag and those in control didn't see any warning.",
+                    "Baseline mode is the third column in table with indicator variables for Mturk and BOT verification"),
+          notes.align = "l",
+          out = "outputs/table1.txt"
+          )
+
+```
+
+Figure 3 shows that distribution of gender among our survey participants while Figure 4 shows breaks the party affiliation by gender among our survey respondents. We see a fairly balanced distributed between Male and Female survey respondents. The distribution of male and female respondents by party affiliation (Figure 4) also appears to be well balanced for all three party affiliations. We find however, that the distribution is skewed towards the number of democratic party affiliation compared to Republicans or _Other_. Figure 5 indicates that the mean score for detecting the false tweets in the survey is slightly better for males versus females. Figure 6, shows that the mean scores for detecting false tweets correctly is substantially for _Other_ party affiliates followed by Democrats and Republicans in order.
+
+```{r, figure3_4_5_6, echo=FALSE}
+
+# Figure 3
+dt <- data_full[, .(count = .N), by=Gender]
+dt$Gender[dt$Gender == ''] <- "Unanswered"
+
+p3 <- ggplot(dt, aes(x = Gender, y = count)) +
+  geom_bar(fill = c("blue","gold","blue"),stat="identity", width = 0.5, col = "gray") + 
+  ggtitle("Figure 3. Gender distribution of survey takers") +
+  ylab("Count") + xlab("Gender")   + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  theme_classic() 
+p3
+
+# Figure 4
+data_full$Party[data_full$Party == ''] <- "Other"
+dt <- data_full[, .(count = .N), by=.(Gender,Party)]
+dt$Gender[dt$Gender == ''] <- "Unanswered"
+
+p4 <- ggplot(dt, aes(x = Party, y = count)) +
+  geom_bar(aes(fill=Gender), col = "gray",stat="identity", width = 0.5) + 
+  ggtitle("Figure 6. Gender distribution by party affiliation") +
+  ylab("Count") + xlab("Gender") + 
+  theme(plot.title = element_text(hjust = 0.5)) +
+  theme_classic() +
+  scale_fill_manual(values = c("blue","gold","gray"))
+p4 
+
+dt <- data_full[, .(mean_score_by_gender = mean(score_false)), by=Gender]
+dt$Gender[dt$Gender == ''] <- "Unanswered"
+p5 <- ggplot(dt, aes(x = Gender, y = mean_score_by_gender,label=sprintf("%0.2f", round(mean_score_by_gender, digits = 2)))) +
+        geom_bar(aes(Gender), col = "gray", fill= c("blue","gold"),stat="identity", width = 0.5) + 
+        geom_text(size=6, col = c("white","black","gray"),vjust=1.5, hjust=0.5) +
+        ggtitle("Figure 5. Mean scores by Gender") + 
+        ylab("Score on False Tweets") + xlab("Gender")   + 
+        theme(plot.title = element_text(hjust = 0.5)) + 
+        theme_classic() +
+        scale_x_discrete(limits=c("Female", "Male"))
+p5
+
+dt <- data_full[, .(mean_score_by_party = mean(score_false)), by=Party]
+dt$Party[dt$Party == ''] <- "Other"
+p6 <- ggplot(dt, aes(x = Party, y = mean_score_by_party,label=sprintf("%0.2f", round(mean_score_by_party, digits = 2)))) +
+        geom_bar(aes(Party), col = "gray", fill= c("blue","gold","gray"),stat="identity", width = 0.5) + 
+        geom_text(size=6, col = c("white","black","black"),vjust=1.5, hjust=0.5) +
+        ggtitle("Figure 5. Mean scores by Party") + 
+        ylab("Score on False Tweets") + xlab("Party")   + 
+        theme(plot.title = element_text(hjust = 0.5)) + 
+        theme_classic() 
+p6
+
+dt <- data_full[, .(mean_score_by_party = mean(score_false)), by=Party]
+dt$Party[dt$Party == ''] <- "Other"
+p6 <- ggplot(dt, aes(x = Party, y = mean_score_by_party,label=sprintf("%0.2f", round(mean_score_by_party, digits = 2)))) +
+        geom_bar(aes(Party), col = "gray", fill= c("blue","gold","gray"),stat="identity", width = 0.5) + 
+        geom_text(size=6, col = c("white","black","black"),vjust=1.5, hjust=0.5) +
+        ggtitle("Figure 5. Mean scores by Party") + 
+        ylab("Score on False Tweets") + xlab("Party")   + 
+        theme(plot.title = element_text(hjust = 0.5)) + 
+        theme_classic() 
+p6
+
+
+# Save images
+ggsave("outputs/fig3.png", plot=p3, device="png")
+ggsave("outputs/fig4.png", plot=p4, device="png")
+ggsave("outputs/fig5.png", plot=p5, device="png")
+ggsave("outputs/fig6.png", plot=p6, device="png")
+```
+  
+  Based on the above point sample data analysis, we are motivated to test the interaction effects gender, party affiliation and age on our outcome variable (score on false tweet detection). Some research has shown that false (especially negative) news coverage may be targeted towards female viewers more than men and there is tendency to believe in different kind of false news based on a person's gender [1]. In our survey, we have attempted to include tweets from political, scienctific and general US recent affairs which makes us hypothesize that the warning flag for false tweets may have different marginal effects on subjects aligning with different political parties. 
+  Table 2 summarizes the regression result with interaction terms with gender and party and shows that there is not statistically significant marginal effect of showing the warning flag on accurate detection of false twitter posts.
+
+```{r, table2, results="asis",echo=FALSE}
+mod4 <- lm(score_false ~ assignment*Gender+Mturk+captcha, data_full)
+mod5 <- lm(score_false ~ assignment*Party+Mturk+captcha, data_full)
+mod6 <- lm(score_false ~ assignment*Gender*Party+Mturk+captcha, data_full)
+ci_custom4 <- compute_robust_ci(mod4)
+ci_custom5 <- compute_robust_ci(mod5)
+ci_custom6 <- compute_robust_ci(mod6)
+
+se_custom4 <- compute_robust_se(mod4)
+se_custom5 <- compute_robust_se(mod5)
+se_custom6 <- compute_robust_se(mod6)
+
+stargazer(mod4,mod5,mod6,type="latex",se=list(se_custom4,se_custom5,se_custom6),
+          covariate.labels = c("Warning Flag", "MTurk Participant","Captcha Verified"),
+          omit.stat = c("f","ser"),
+          dep.var.caption = "Outcome Variable", dep.var.labels = "Score on False Tweets",
+          column.labels = c("Marginal effects of Gender", "Marginal effects of Party", "Gender and Party Interaction Effects"),
+          add.lines = list(c("Question Fixed Effects", rep("No",3))),
+          title="Table 2. Treatment effect of warning flag on false tweet score with Gender and Party interaction terms",
+          notes = c("Regression models with robust standard errors.",
+                    "First column includes interaction with gender only",
+                    "Second column includes interacton with party only.",
+                    "Third column includes interaction with Gender and Party"),
+          notes.align = "l",
+          out = "outputs/table2.txt"
+          )
+```
+
+  Next we analyze the age and education co-variates collected during the experiment. It has been shown that older people (65+) tend to share more fake news on social media than people younger in age [2].There is also research indicating that people with higher education are less affected by fake news on social media [3]. Figure 7 shows the distribution of different age groups in our experiment's data set. We have a large representation of respondents within the 21-40 age group followed by the 41-60 group. The 61 and older as well as less than 20 years age are not well represented in our survey results. This skew will reduce the power of the experiment while trying to determine the marginal effects of treatment within the different age groups. Figure 8 reveals that the data set has a high representation of subjets with college education and graduate degrees while lower education categories are not well represented. This is indicative of the fact that the recruits for the experiment were from experimenters personal and professional network (who are likely have graduate degress) and from mechanical turk based only in the United States (who have mostly a minimum college education).
+  Figure 10 shows that the mean score is highest for respondents in the age 0-20 group and there is not a large difference in the other age groups. Figure 11 shows that for Mechanical Turk participants, the score is higher for the education category of _some college_ while for non Mechanical Turk respondents the highest score was achieved by people with a graduate degree. This in line with the distribution of respondents between the two types of survey respondents.
+  
+```{r, figure_7_to_10, echo=FALSE}
+# Age distribution
+dt <- data_full[, .(count = .N), by=Age_bin]
+p7 <- ggplot(dt, aes(x = Age_bin, y = count)) +
+  geom_bar(fill = c("blue","gold","blue","gold"),stat="identity", width = 0.5, col = "gray") + 
+  ggtitle("Figure 7. Age distribution of survey takers") +
+  ylab("Count") + xlab("Age Group")   + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  theme_classic() 
+p7
+
+# Education
+p8 <- ggplot(data_full[Mturk==0]) + 
+        geom_bar(aes(x = Education,fill=Age_bin),col="gray") + 
+        ggtitle("Figure 8. Education of survey respondents from experimenters' personal and professional network")+
+        scale_fill_manual(values = c("white","blue","gold","gray"))+
+        theme_classic()
+p8
+p9 <- ggplot(data_full[Mturk==1]) + 
+        geom_bar(aes(x = Education,fill=Age_bin),col="gray") + 
+        ggtitle("Figure 9. Education of survey respondents from Amazon Mechanical Turk")+
+        scale_fill_manual(values = c("white","blue","gold","gray"))+
+        theme_classic()
+p9
+
+dt <- data_full[, .(mean_score_by_age = mean(score_false)), by=Age_bin]
+p10 <- ggplot(dt, aes(x = Age_bin, y = mean_score_by_age,label=sprintf("%0.2f", round(mean_score_by_age, digits = 2)))) +
+        geom_bar(aes(Age_bin), col = "gray", fill= c("blue","gold","blue","gold"),stat="identity", width = 0.5) + 
+        geom_text(size=6, col = c("white","black","white","black"),vjust=1.5, hjust=0.5) +
+        ggtitle("Figure 10. Mean scores by Age") + 
+        ylab("Score on False Tweets") + xlab("Age")   + 
+        theme(plot.title = element_text(hjust = 0.5)) + 
+        theme_classic() 
+p10
+
+dt <- data_full[, .(mean_score_by_edu = mean(score_false)), by=.(Education,Mturk)]
+dt$Mturk[dt$Mturk=="1"] <- "Yes"
+dt$Mturk[dt$Mturk=="0"] <- "No"
+p11 <- ggplot(dt, aes(fill = Mturk,x = Education, y = mean_score_by_edu,label=sprintf("%0.2f", round(mean_score_by_edu, digits = 2)))) +
+        geom_bar(col = "gray", position=position_dodge(width=0.8),stat="identity", width = 0.5) + 
+        ggtitle("Figure 11. Mean scores by Education") + 
+        ylab("Score on False Tweets") + xlab("Education")   + 
+        theme_classic() +
+        scale_fill_manual(values = c("gold","blue"))
+p11
+
+# Save plots
+ggsave("outputs/fig7.png", plot=p7, device="png")
+ggsave("outputs/fig8.png", plot=p8, device="png")
+ggsave("outputs/fig9.png", plot=p9, device="png")
+ggsave("outputs/fig10.png", plot=p10, device="png")
+ggsave("outputs/fig11.png", plot=p11, device="png")
+
+```
+  
+Table 3, tests the interaction effects of treatment flag with these three co-variates to understand if warning about fake news effects demographics differently. Adding up the coefficients of interaction terms and applying Bonferroni correction, we find that neither education or age have any statistically significant marginal effects of warning flag on ability to detect false tweets.
+  
+```{r, table3_4,results="asis",echo=FALSE}
+mod7 <- lm(score_false ~ assignment*Age_bin+Mturk+captcha, data_full)
+mod8 <- lm(score_false ~ assignment*Education+Mturk+captcha, data_full)
+se_custom7 <- compute_robust_se(mod7)
+se_custom8 <- compute_robust_se(mod8)
+
+stargazer(mod7,type="latex",se=list(se_custom7),
+          covariate.labels = c("Warning Flag", "MTurk Participant","Captcha Verified"),
+          omit.stat = c("f","ser"),
+          dep.var.caption = "Outcome Variable", dep.var.labels = "Score on False Tweets",
+          column.labels = c("Marginal effects of Age", "Marginal effects of Education"),
+          add.lines = list(c("Question Fixed Effects", rep("No",3))),
+          title="Table 3. Treatment effect of warning flag on false tweet score with Age terms",
+          notes = c("Regression models with robust standard errors."),
+          notes.align = "l",
+          out = "outputs/table3.txt"
+          )
+
+stargazer(mod8,type="latex",se=list(se_custom8),
+          covariate.labels = c("Warning Flag", "MTurk Participant","Captcha Verified"),
+          omit.stat = c("f","ser"),
+          dep.var.caption = "Outcome Variable", dep.var.labels = "Score on False Tweets",
+          column.labels = c("Marginal effects of Age", "Marginal effects of Education"),
+          add.lines = list(c("Question Fixed Effects", rep("No",3))),
+          title="Table 4. Treatment effect of warning flag on false tweet score with Education interaction terms",
+          notes = c("Regression models with robust standard errors."),
+          notes.align = "l",
+          out = "outputs/table4.txt"
+          )
+```
+  
+  Now we proceed to test fixed question effects. Our survey has twitter posts _(tweets)_ covering politics, science and general US current affairs. It is possible that there are marginal treatment effects based on the _article slant_. Our primary interest in determining the effect on score for identifying the false tweets correctly. Question numbers 3,5,6,9,10 contains false information in the survey. In this section, we regress the score of correct detection over the treatment and question. This effectively increases the amount of data in our data set since we have five questions for false and true posts respectively. Figure 12 illustrates this where we have aggregated the correct answer count for each question. 
+  The regression output is shown in Table 5. It shows a highly significant effect of the warning flag on participant's ability to detect false tweets **[0.18 (0.055)]**. This result suggests that there is an 18% improvement in score of false tweet detection when the question fixed effects are included for Question 3,5 and 6. It is worthwhile to remind ourselves that question 3 is regarding political stance regarding kneeling of players/coaches/staff when the national anthem is players during NFL games, to protest police brutality and racial profiling against African Americans in the United States. This topic has got considerable media and public attention and it is easy to understand how adding fixed effect for this topic's question generates a significant effect in our survey regression results. Questions 3 and 6 are not dealing with recent controversies but instead deal with a lasting and pervasive controvesy regarding scientific conspiracy and disbelief among the general US population. The results show that presence of a warning flag might be nudging participants to think twice about the tweets and the false contect that might be present in them. 
+  
+```{r, fixed_efects, echo=FALSE}
+
+data_full[, score_TestQ1 := ifelse(TestQ1 == "Yes", 1, 0)]
+data_full[, score_TestQ2 := ifelse(TestQ2 == "Yes", 1, 0)]
+data_full[, score_TestQ3 := ifelse(TestQ3 == "No", 1, 0)]
+data_full[, score_TestQ4 := ifelse(TestQ4 == "Yes", 1, 0)]
+data_full[, score_TestQ5 := ifelse(TestQ5 == "No", 1, 0)]
+data_full[, score_TestQ6 := ifelse(TestQ6 == "No", 1, 0)]
+data_full[, score_TestQ7 := ifelse(TestQ7 == "Yes", 1, 0)]
+data_full[, score_TestQ8 := ifelse(TestQ8 == "Yes", 1, 0)]
+data_full[, score_TestQ9 := ifelse(TestQ9 == "No", 1, 0)]
+data_full[, score_TestQ10 := ifelse(TestQ10 == "No", 1, 0)]
+
+dt <- data_full[, .(countQ1 = sum(score_TestQ1), 
+              countQ2 = sum(score_TestQ2),
+              countQ3 = sum(score_TestQ3),
+              countQ4 = sum(score_TestQ4),
+              countQ5 = sum(score_TestQ5),
+              countQ6 = sum(score_TestQ6),
+              countQ7 = sum(score_TestQ7),
+              countQ8 = sum(score_TestQ8),
+              countQ9 = sum(score_TestQ9),
+              countQ10 = sum(score_TestQ10)
+              )]
+
+d2 <- data_full[, .(countQ1 = sum(score_TestQ1), 
+              countQ2 = sum(score_TestQ2),
+              countQ3 = sum(score_TestQ3),
+              countQ4 = sum(score_TestQ4),
+              countQ5 = sum(score_TestQ5),
+              countQ6 = sum(score_TestQ6),
+              countQ7 = sum(score_TestQ7),
+              countQ8 = sum(score_TestQ8),
+              countQ9 = sum(score_TestQ9),
+              countQ10 = sum(score_TestQ10)
+              ), by =assignment]
+
+d2$Warning_Flag[d2$assignment == 0] <- "No"
+d2$Warning_Flag[d2$assignment == 1] <- "Yes"
+
+dfm <- melt(d2[,c('Warning_Flag','countQ3','countQ5','countQ6','countQ9','countQ10')],id.vars = 1)
+levels(dfm$variable) = c("Q3","Q5","Q6","Q9","Q10")
+
+p12 <- ggplot(dfm,aes(x = variable,y = value)) + 
+  geom_bar(aes(fill = Warning_Flag),stat = "identity", width=0.7, position=position_dodge(width=0.8)) +
+  ggtitle("Figure 12. General warning effect on scores for each false tweet ") +
+  ylab("Count of correct answers per question") + 
+  xlab("Question Number") + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  scale_fill_manual(values = c("blue","gold")) +
+  theme_classic()
+p12
+ggsave("outputs/fig12.png", device = "png",plot = p12)
+
+```
+  
+```{r, table5, results="asis",echo=FALSE}
+
+mod9 <- lm(score_false ~ assignment+TestQ3+TestQ5+TestQ6+Mturk+captcha, data = data_full)
+se_custom9 <- compute_robust_se(mod9)
+
+stargazer(mod9,type="latex",se=list(se_custom9),
+          covariate.labels = c("Warning Flag","Q3 Correct","Q5 Correct","Q6 Correct","Mturk Participant","Captcha Verified"),
+          omit.stat = c("f","ser"),
+          dep.var.caption = "Outcome Variable", dep.var.labels = "Score on False Tweets",
+          add.lines = list(c("Question Fixed Effects", rep("Yes"))),
+          title="Table 5. Treatment effect of warning flag on false tweet score with question fixed effects",
+          notes = c("Regression models with robust standard errors.",
+                    "Model contains question fixed effects for false tweets.",
+                    "Effect is highly significant for a warning flag's ability to detect false tweets"),
+          notes.align = "l",
+          out = "outputs/table5.txt")
+
+```
+  
+## Spillover Effects
+
+Now we test formally the spillover effect of a warning flag on the participant's ability to detect true tweets correctly. Our alternate hypothesis was that there will be a negative effect on true tweet score in presence of a flag, i.e. when a general warning flag is present, subject will incorerctly label true tweets more often than when no warning about fake news is present. Table 6 shows that there is no statisitically significant [-0.180 (0.110)] negative effect of a warning flag on true tweet detection score. 
+  Table 7 shows statistically insignificant marginal effects of warning flag on all age groups: ATE on 21-40 [-0.2 (0.58)], 40-61 [-0.09 (0.74)], 0-21 [-0.35 (0.34) and 61+ [-0.65 (1.04)]. Simlilarly, Table 8 shows statisically insignificant marginal effects of warning flag on people in different education categories:  Graduate Degree [0.13 (0.43)], College Degree [=-0.32 (0.17)], some college [0.1 (0.48)], high school graduate [0.03 (0.64)] and less than high school [-0.94 (1.27)]. Note, here we have once again scaled the standard errors to account for the number of interaction terms that are being considered in the regression to determine a statistical effect.
+
+
+```{r, table6, results = "asis", echo = FALSE}
+mod10 <- lm(score_true ~ assignment, data_full)  # primary regression 
+mod11<- lm(score_true ~ assignment+Mturk, data_full)  # added Mturk indicator 
+mod12 <- lm(score_true ~ assignment+Mturk+captcha, data_full) # added Mturk and Captcha verification indicators (baseline regression model)
+se_custom10 <- compute_robust_se(mod10)
+se_custom11 <- compute_robust_se(mod11)
+se_custom12 <- compute_robust_se(mod12)
+stargazer(mod10,mod11,mod12, type="latex",se = list(se_custom10,se_custom11,se_custom12),
+          covariate.labels = c("Warning Flag", "MTurk Participant","Captcha Verified"),
+          omit.stat = c("f","ser"),
+          dep.var.caption = "Outcome Variable", dep.var.labels = "Score on True Tweets",
+          column.labels = c("ATE(no indicator)", "ATE(Mturk indicator)", "Spillover Baseline(Mturk + Captcha"),
+          add.lines = list(c("Question Fixed Effects", rep("No",5))),
+          title="Table 6. Treatment effect of warning flag on true tweet score",
+          notes = c("Regression models with robust standard errors.",
+                    "Warning Flag is the treatment and outcome variable is participant on true tweet questions in survey.",
+                    "Respondents in treatment saw the flag and those in control didn't see any warning.",
+                    "Baseline mode is the third column in table with indicator variables for Mturk and BOT verification"),
+          notes.align = "l",
+          out = "outputs/table6.txt"
+          )
+```
+
+```{r, table7, results="asis",echo=FALSE}
+mod13 <- lm(score_true ~ assignment*factor(Age_bin)+Mturk+captcha, data_full)
+mod14 <- lm(score_true ~ assignment*factor(Education)+Mturk+captcha, data_full)
+se_custom13 <- compute_robust_se(mod13)
+se_custom14 <- compute_robust_se(mod14)
+
+stargazer(mod13,type="latex",se=list(se_custom13),
+          covariate.labels = c("Warning Flag", "Age (21-40)", "Age (41-60)", "Age (61+)", "Mturk Participant","Captcha Verified", "Warning Flag X Age (21-40)", "Warning Flag X Age (41-60)", "Warning Flag X Age (61+)"),
+          omit.stat = c("f","ser"),
+          dep.var.caption = "Outcome Variable", dep.var.labels = "Score on True Tweets",
+          column.labels = c("Marginal effects of Age", "Marginal effects of Education"),
+          add.lines = list(c("Question Fixed Effects", rep("No",3))),
+          title="Table 7. Treatment effect of warning flag on true tweet score with Age terms",
+          notes = c("Regression models with robust standard errors."),
+          notes.align = "l",
+          out = "outputs/table7.txt"
+          )
+
+stargazer(mod14,type="latex",se=list(se_custom14),
+          omit.stat = c("f","ser"),
+          covariate.labels = c("Warning Flag", "Graduate Degree", "High School Graduate", "Less than High School", "Some College","Mturk Participant","Captcha Verified","Warning Flag X Gradute", "Warning Flag X High School", "Warning Flag X Less than high school", "Warning Flag X Some College"),
+
+          dep.var.caption = "Outcome Variable", dep.var.labels = "Score on True Tweets",
+          column.labels = c("Marginal effects of Age", "Marginal effects of Education"),
+          add.lines = list(c("Question Fixed Effects", rep("No",3))),
+          title="Table 8. Treatment effect of warning flag on true tweet score with Education interaction terms",
+          notes = c("Regression models with robust standard errors."),
+          notes.align = "l",
+          out = "outputs/table8.txt"
+          )
+```
+
+Lastly, we test the spillover treatment effect with question fixed effects in Tables 9 and 10. We find from Table 10 that the only question that has a significant effect on the score of true tweet is Question 4 **[-0.23 (0.099)]**. Question 4 in the survey asked participants about a tweet containing data, from National Center for Education Statistics, about proficiency of 8th graders in US history. The tweet said that only 15% of 8th graders are proficient in US history (which is a true fact). The presence of a warning flag seems to reduce people's ability to correctly identify this statistic as true by an average 23% (SE: 9.9%) compared to when no warning flag about fake news was presented to survey takers.
+
+```{r, fig12, results = "asis",echo=FALSE}
+dfm <- melt(d2[,c('Warning_Flag','countQ1','countQ2','countQ4','countQ7','countQ8')],id.vars = 1)
+levels(dfm$variable) = c("Q1","Q2","Q4","Q7","Q8")
+
+p13 <- ggplot(dfm,aes(x = variable,y = value)) + 
+  geom_bar(aes(fill = Warning_Flag),stat = "identity", width=0.7, position=position_dodge(width=0.8)) +
+  ggtitle("Figure 12. General warning effect on scores for each true tweet ") +
+  ylab("Count of correct answers per question") + 
+  xlab("Question Number") + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  scale_fill_manual(values = c("blue","gold")) +
+  theme_classic()
+p13
+ggsave("outputs/fig13.png", device = "png",plot = p13)
+```
+
+```{r, table9,results="asis",echo=FALSE}
+mod15 <- lm(score_true ~ assignment+TestQ4+Mturk+captcha, data = data_full)
+se_custom15 <- compute_robust_se(mod15)
+
+stargazer(mod15,type="latex",se=list(se_custom15),
+          covariate.labels = c("Warning Flag","Q4 Correct","Mturk Participant","Captcha Verified"),
+          omit.stat = c("f","ser"),
+          dep.var.caption = "Outcome Variable", dep.var.labels = "Score on True Tweets",
+          add.lines = list(c("Question 4 Fixed Effects", "Yes")),
+          title="Table 3. Treatment effect of warning flag on true tweet score with question fixed effects",
+          notes = c("Regression models with robust standard errors.",
+                    "Model contains question fixed effects for true tweets.",
+                    "Effect is significant with question 4 fixed effect"),
+          notes.align = "l",
+          out = "outputs/table9.txt")
+
+
+
+```
+
+  

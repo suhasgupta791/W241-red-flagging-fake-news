@@ -1,0 +1,52 @@
+
+Table 8. Treatment effect of warning flag on true tweet score with Education interaction terms
+===================================================================================
+                                                    Outcome Variable               
+                                     ----------------------------------------------
+                                                  Score on True Tweets             
+                                                Marginal effects of Age            
+-----------------------------------------------------------------------------------
+Warning Flag                                            -0.320*                    
+                                                        (0.170)                    
+                                                                                   
+Graduate Degree                                          -0.140                    
+                                                        (0.190)                    
+                                                                                   
+High School Graduate                                     -0.430                    
+                                                        (0.350)                    
+                                                                                   
+Less than High School                                  -1.100***                   
+                                                        (0.380)                    
+                                                                                   
+Some College                                            -0.360*                    
+                                                        (0.210)                    
+                                                                                   
+Mturk Participant                                        0.057                     
+                                                        (0.150)                    
+                                                                                   
+Captcha Verified                                       -0.630***                   
+                                                        (0.130)                    
+                                                                                   
+Warning Flag X Gradute                                   0.190                     
+                                                        (0.260)                    
+                                                                                   
+Warning Flag X High School                               0.350                     
+                                                        (0.470)                    
+                                                                                   
+Warning Flag X Less than high school                     -0.620                    
+                                                        (1.100)                    
+                                                                                   
+Warning Flag X Some College                              0.420                     
+                                                        (0.310)                    
+                                                                                   
+Constant                                                4.100***                   
+                                                        (0.230)                    
+                                                                                   
+-----------------------------------------------------------------------------------
+Question Fixed Effects                                     No                      
+Observations                                              313                      
+R2                                                       0.140                     
+Adjusted R2                                              0.110                     
+===================================================================================
+Note:                                *p<0.1; **p<0.05; ***p<0.01                   
+                                     Regression models with robust standard errors.

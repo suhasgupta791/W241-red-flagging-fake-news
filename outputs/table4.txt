@@ -1,0 +1,52 @@
+
+Table 4. Treatment effect of warning flag on false tweet score with Education interaction terms
+========================================================================================
+                                                         Outcome Variable               
+                                          ----------------------------------------------
+                                                      Score on False Tweets             
+                                                     Marginal effects of Age            
+----------------------------------------------------------------------------------------
+Warning Flag                                                  -0.092                    
+                                                             (0.210)                    
+                                                                                        
+MTurk Participant                                             -0.390                    
+                                                             (0.250)                    
+                                                                                        
+Captcha Verified                                              0.110                     
+                                                             (0.280)                    
+                                                                                        
+EducationLess than high school                                -0.110                    
+                                                             (0.730)                    
+                                                                                        
+EducationSome college                                        0.630***                   
+                                                             (0.230)                    
+                                                                                        
+Mturk                                                       -0.450***                   
+                                                             (0.140)                    
+                                                                                        
+captcha                                                      2.100***                   
+                                                             (0.190)                    
+                                                                                        
+assignment:EducationGraduate degree                           0.550*                    
+                                                             (0.320)                    
+                                                                                        
+assignment:EducationHigh school graduate                      0.065                     
+                                                             (0.450)                    
+                                                                                        
+assignment:EducationLess than high school                     -1.900                    
+                                                             (1.300)                    
+                                                                                        
+assignment:EducationSome college                              0.100                     
+                                                             (0.340)                    
+                                                                                        
+Constant                                                     2.500***                   
+                                                             (0.260)                    
+                                                                                        
+----------------------------------------------------------------------------------------
+Question Fixed Effects                                          No                      
+Observations                                                   313                      
+R2                                                            0.480                     
+Adjusted R2                                                   0.470                     
+========================================================================================
+Note:                                     *p<0.1; **p<0.05; ***p<0.01                   
+                                          Regression models with robust standard errors.

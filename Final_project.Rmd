@@ -5,8 +5,8 @@ header-includes:
 title: "Red Flagging Fake News"
 author: 'Suhas Gupta, Kevin Drever, Imran Manji' 
 output: 
-    github_document: default
     pdf_document: default
+    github_document: default
 knit: (function(inputFile, encoding) {
   rmarkdown::render(
     inputFile, encoding = encoding,
@@ -167,8 +167,6 @@ outcome ~ red_flag * gender + red_flag * political_affiliation  + factor(age_gro
     - Test if fake news red flagging affects different age groups differently 
     - Test if fake news red flagging affects voters and non voters differently 
 
-
-
 ## Define functions 
 
 ```{r, define_functions}
@@ -218,6 +216,21 @@ rename_cols <- function(dataset){
      dt$Gender[dataset$Gender == ''] <-"Unanswered"
      return(dt)
 }
+
+create_question_column <- function(dataset){
+  dataset[, TestQ1 := ifelse(is.na(dataset$'8B'), dataset$'8A', dataset$'8B')]
+  dataset[, TestQ2 := ifelse(is.na(dataset$'9B'), dataset$'9A', dataset$'9B')]
+  dataset[, TestQ3 := ifelse(is.na(dataset$'10B'), dataset$'10A', dataset$'10B')]
+  dataset[, TestQ4 := ifelse(is.na(dataset$'11B'), dataset$'11A', dataset$'11B')]
+  dataset[, TestQ5 := ifelse(is.na(dataset$'12B'), dataset$'12A', dataset$'12B')]
+  dataset[, TestQ6 := ifelse(is.na(dataset$'13B'), dataset$'13A', dataset$'13B')]
+  dataset[, TestQ7 := ifelse(is.na(dataset$'14B'), dataset$'14A', dataset$'14B')]
+  dataset[, TestQ8 := ifelse(is.na(dataset$'15B'), dataset$'15A', dataset$'15B')]
+  dataset[, TestQ9 := ifelse(is.na(dataset$'16B'), dataset$'16A', dataset$'16B')]
+  dataset[, TestQ10 := ifelse(is.na(dataset$'17B'), dataset$'17A', dataset$'17B')]
+  return(dataset)
+}
+
 
 # Color palette for ggplot 
 cbPalette <- c("#009999", "#AA9900")
@@ -319,9 +332,10 @@ study3_data_mod[, captcha := 1]
 #### Combine data sets from all studies
 
 ```{r}
+
 # combine data set 
-data_full <- rbind(study1_data_mod,study2_data_mod,study3_data_mod)
-# head(data_full)
+dt <- rbind(study1_data_mod,study2_data_mod,study3_data_mod)
+data_full <- create_question_column(dt)
 ```
 
 ## Hypothesis
@@ -403,13 +417,14 @@ dfm <- rename(dfm,
        Score_Type = variable,
        Score = value)
 ggplot(dfm, aes(x = Assignment, y = Score,label=sprintf("%0.2f", round(Score, digits = 2)))) + 
-  geom_bar(stat="identity", fill="steelblue", width = 0.5) + 
+  geom_bar(stat="identity", width = 0.5) + 
   geom_text(size=3.5, color="white", vjust=1.5) + 
   ggtitle("Figure 1. Average score for all tweets by survey assignment group") +
   ylab("Mean Total Score") + 
   xlab("Survey Group")   + 
   theme(plot.title = element_text(hjust = 0.5)) +
-  theme_minimal()
+  theme_minimal()+ 
+  scale_fill_manual(values = c("blue","gold"))
 ```
 
 
@@ -431,7 +446,9 @@ p <- ggplot(dfm,aes(x = Score_Type,y = Score)) +
   ylab("Average score for tweet accuracy detection") + 
   xlab("Type of tweet") + 
   theme(plot.title = element_text(hjust = 0.5)) + 
-  scale_fill_manual(values = cbPalette)
+  theme_bw() + 
+  scale_fill_manual(values = c("blue","gold"))
+
 p
 
 ```
@@ -454,7 +471,7 @@ ggplot(data_full) + geom_bar(aes(x = Reg_Voter))
 
 There appears to be an increase of 6% in score of participants for correctly identifying the false tweets with a confidence interval of (-0.3,0.420) before including control for mechanical turk participants and BOT checks. We added indicator variables for participants recruited on mechanical turk as participants on amazon's mechanical turk may not be accurate representatives of general US population. Futhermore, we also added an indicator variable for a BOT check being present in the survey to control for any malignant activity on mechanical turk (using BOTs to answer survey and earn monetray rewards). Since the CAPTCHA verification was added in the latter half of the experiment, we added an indicator variable in regression to control for errors due to BOT activity. We see that the 95% confidence intervals shrink slightly when we control for these covariates. The model in the third column will be our baseline model. The coefficient for assignment variable in the table is not statistically significant in this model.
 
-```{r}
+```{r, results = "asis"}
 mod1 <- lm(score_false ~ assignment, data_full)
 mod2 <- lm(score_false ~ assignment+Mturk, data_full)
 mod3 <- lm(score_false ~ assignment+Mturk+captcha, data_full)
@@ -465,7 +482,11 @@ se_custom1 <- compute_robust_se(mod1)
 se_custom2 <- compute_robust_se(mod2)
 se_custom3 <- compute_robust_se(mod3)
 # stargazer(mod1,mod2,mod3, type="text",ci.custom = list(ci_custom1,ci_custom2,ci_custom3))
-stargazer(mod1,mod2,mod3, type="text",se = list(se_custom1,se_custom2,se_custom3))
+stargazer(mod1,mod2,mod3, type="text",se = list(se_custom1,se_custom2,se_custom3),
+          covariate.labels = c("Warning Flag", "MTurk Participant","Captcha Verified"),
+          omit.stat = c("f","ser"),
+          dep.var.caption = "Outcome Variable", dep.var.labels = "Score on False Tweets"
+          )
 
 ```
 
@@ -514,7 +535,7 @@ The tweets selected for our experiment deal with US politics, climate change and
 ```{r}
 mod4 <- lm(score_false ~ assignment*factor(Gender)+Mturk+captcha, data_full)
 mod5 <- lm(score_false ~ assignment*factor(Party)+Mturk+captcha, data_full)
-mod6 <- lm(score_false ~ assignment*factor(Gender)*factor(Party)+Mturk+captcha, data_full)
+mod6 <- lm(score_false ~ assignment*factor(Gender)+assignment*factor(Party)+Mturk+captcha, data_full)
 ci_custom4 <- compute_robust_ci(mod4)
 ci_custom5 <- compute_robust_ci(mod5)
 ci_custom6 <- compute_robust_ci(mod6)
@@ -526,10 +547,145 @@ se_custom6 <- compute_robust_se(mod6)
 stargazer(mod4,mod5,mod6,type="text",se=list(se_custom4,se_custom5,se_custom6))
 ```
 
+```{r}
+
+mod11a <- lm(score_false ~ assignment+TestQ3+Mturk+captcha, data_full)
+mod11b <- lm(score_false ~ assignment+TestQ5+Mturk+captcha, data_full)
+mod11c <- lm(score_false ~ assignment+TestQ6+Mturk+captcha, data_full)
+mod11d <- lm(score_false ~ assignment+TestQ9+Mturk+captcha, data_full)
+mod11e <- lm(score_false ~ assignment+TestQ3+TestQ5+TestQ6+TestQ9+TestQ10+Mturk+captcha, data_full)
+
+stargazer(mod11a,mod11b,mod11c,mod11d,mod11e,type="text")
+```
+
+```{r}
+mod11a <- lm(score_true ~ assignment+TestQ3+Mturk+captcha, data_full)
+mod11b <- lm(score_true ~ assignment+TestQ5+Mturk+captcha, data_full)
+mod11c <- lm(score_true ~ assignment+TestQ3+TestQ5+TestQ6+Mturk+captcha, data_full)
+mod11d <- lm(score_true ~ assignment+TestQ9+Mturk+captcha, data_full)
+mod11e <- lm(score_true ~ assignment+TestQ3+TestQ5+TestQ6+TestQ9+TestQ10+Mturk+captcha, data_full)
+
+stargazer(mod11a,mod11b,mod11c,mod11d,mod11e,type="text",
+          add.lines=list(c("Question Fixed Effects", rep("Yes",5))))
+```
+
+```{r}
+
+data_full[, score_TestQ1 := ifelse(TestQ1 == "Yes", 1, 0)]
+data_full[, score_TestQ2 := ifelse(TestQ2 == "Yes", 1, 0)]
+data_full[, score_TestQ3 := ifelse(TestQ3 == "No", 1, 0)]
+data_full[, score_TestQ4 := ifelse(TestQ4 == "Yes", 1, 0)]
+data_full[, score_TestQ5 := ifelse(TestQ5 == "No", 1, 0)]
+data_full[, score_TestQ6 := ifelse(TestQ6 == "No", 1, 0)]
+data_full[, score_TestQ7 := ifelse(TestQ7 == "Yes", 1, 0)]
+data_full[, score_TestQ8 := ifelse(TestQ8 == "Yes", 1, 0)]
+data_full[, score_TestQ9 := ifelse(TestQ9 == "No", 1, 0)]
+data_full[, score_TestQ10 := ifelse(TestQ10 == "No", 1, 0)]
+
+dt <- data_full[, .(countQ1 = sum(score_TestQ1), 
+              countQ2 = sum(score_TestQ2),
+              countQ3 = sum(score_TestQ3),
+              countQ4 = sum(score_TestQ4),
+              countQ5 = sum(score_TestQ5),
+              countQ6 = sum(score_TestQ6),
+              countQ7 = sum(score_TestQ7),
+              countQ8 = sum(score_TestQ8),
+              countQ9 = sum(score_TestQ9),
+              countQ10 = sum(score_TestQ10)
+              )]
+
+d2 <- data_full[, .(countQ1 = sum(score_TestQ1), 
+              countQ2 = sum(score_TestQ2),
+              countQ3 = sum(score_TestQ3),
+              countQ4 = sum(score_TestQ4),
+              countQ5 = sum(score_TestQ5),
+              countQ6 = sum(score_TestQ6),
+              countQ7 = sum(score_TestQ7),
+              countQ8 = sum(score_TestQ8),
+              countQ9 = sum(score_TestQ9),
+              countQ10 = sum(score_TestQ10)
+              ), by =assignment]
+
+barplot(dt[,c(countQ3,countQ5,countQ6,countQ9,countQ10)],
+        col = c('blue','gold'),
+        ylab = "Percentage score for correct answer",
+        xlab = "Scores for each survey question",
+        names.arg= c("Q3","Q5","Q6","Q9","Q10")
+      )
+
+d2$Warning_Flag[d2$assignment == 0] <- "No"
+d2$Warning_Flag[d2$assignment == 1] <- "Yes"
+
+dfm <- melt(d2[,c('Warning_Flag','countQ3','countQ5','countQ6','countQ9','countQ10')],id.vars = 1)
+levels(dfm$variable) = c("Q3","Q5","Q6","Q9","Q10")
+
+p <- ggplot(dfm,aes(x = variable,y = value)) + 
+  geom_bar(aes(fill = Warning_Flag),stat = "identity", width=0.7, position=position_dodge(width=0.8)) +
+  ggtitle("Figure2. General warning effect on scores for each tweet ") +
+  ylab("Percentage score for correct answer") + 
+  xlab("Question Number") + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  scale_fill_manual(values = c("blue","gold")) 
+
+p + theme_classic()
+
+```
+
+- **Score on qestion 10 is collinear with the scores on other questions. Running regression with the fixed effects of question 10 leads to singularities.
+
+```{r}
+mod1 <- lm(score_false ~ assignment+score_TestQ3+score_TestQ5+score_TestQ6, data = data_full)
+se_custom1 <- compute_robust_se(mod1)
+
+stargazer(mod1,type="text",se=list(se_custom1))
+```
+
+
+```{r}
+
+# mod1 <- lm(score_TestQ1 ~ assignment, data = data_full)
+# mod2 <- lm(score_TestQ2 ~ assignment, data = data_full)
+# mod3 <- lm(score_TestQ3 ~ assignment, data = data_full)
+# mod4 <- lm(score_TestQ4 ~ assignment, data = data_full)
+# mod5 <- lm(score_TestQ5 ~ assignment, data = data_full)
+# mod6 <- lm(score_TestQ6 ~ assignment, data = data_full)
+# mod7 <- lm(score_TestQ7 ~ assignment, data = data_full)
+# mod8 <- lm(score_TestQ8 ~ assignment, data = data_full)
+# mod9 <- lm(score_TestQ9 ~ assignment, data = data_full)
+# mod10 <- lm(score_TestQ10 ~ assignment, data = data_full)
+mod11 <- lm(score_false ~ assignment*Ethnicity+TestQ3+TestQ5+TestQ6, data_full)
+mod12 <- lm(score_false ~ assignment*Gender+TestQ3+TestQ5+TestQ6, data_full)
+mod13 <- lm(score_false ~ assignment*Education+TestQ3+TestQ5+TestQ6, data_full)
+mod14 <- lm(score_false ~ assignment*factor(Income)+TestQ3+TestQ5+TestQ6, data_full)
+
+#stargazer(mod1,mod2,mod3,mod4,mod5,mod6,mod7,mod8,mod9,mod10,mod11,type="text")
+stargazer(mod11,mod12,mod13,mod14,type="text")
+
+```
+
+- **The SEs don't appear to be changing with different question fixed effects but the magnitude of the coefficient is changing. We will exploring cummulating the fixed effects from false questions.**
+
+```{r}
+
+mod11a <- lm(score_true ~ assignment+TestQ3+Mturk+captcha, data_full)
+mod11b <- lm(score_true ~ assignment+TestQ3+TestQ5+Mturk+captcha, data_full)
+mod11c <- lm(score_true ~ assignment+TestQ3+TestQ5+TestQ6+Mturk+captcha, data_full)
+mod11d <- lm(score_true ~ assignment+TestQ3+TestQ5+TestQ6+TestQ9+Mturk+captcha, data_full)
+mod11e <- lm(score_true ~ assignment+TestQ3+TestQ5+TestQ6+TestQ9+TestQ10+Mturk+captcha, data_full)
+
+stargazer(mod11a,mod11b,mod11c,mod11d,mod11e,type="text")
+
+```
+
+
+
+
 **Our dataset does appear to consist mostly of people with atleast a college degree or higher and the participants mostly belong to the 21-40 age bucket.**
 
 ```{r}
+
 ggplot(data_full) + geom_bar(aes(x = Education,fill=Age_bin))
+
 ```
 
 
@@ -537,7 +693,7 @@ ggplot(data_full) + geom_bar(aes(x = Education,fill=Age_bin))
 
 ```{r}
 mod7 <- lm(score_false ~ assignment*factor(Party)+factor(Gender)+assignment*factor(Age_bin)+Mturk+captcha, data_full)
-mod8 <- lm(score_false ~ assignment*factor(Party)*factor(Age_bin)+factor(Gender)+Mturk+captcha, data_full)
+mod8 <- lm(score_false ~ assignment*factor(Age_bin)+assignment*factor(Party)+Mturk+captcha, data_full)
 se_custom7 <- compute_robust_se(mod7)
 se_custom8 <- compute_robust_se(mod8)
 stargazer(mod7,mod8,type="text",se=list(se_custom7,se_custom8))
@@ -549,7 +705,7 @@ ggplot(mutate(data_full, Age = fct_infreq(Age_bin))) + geom_bar(aes(x = Age_bin)
 ```
 
 ```{r}
-data_mod[, .N, by=.(Party,Age_bin)]
+data_full[, .N, by=.(Party,Age_bin)]
 ```
 
 In terms of ethinicity of the randomly sampled subjects, the majority were Caucasian followed by approximately equal counts of Hispanic and Native americans, followed by african americans and asians.
@@ -584,7 +740,7 @@ stargazer(mod9,mod10,type="text",se=list(se_custom9,se_custom10)
 
 mod1a <- lm(score_true ~ assignment, data_full)
 mod2a <- lm(score_true ~ assignment+Mturk, data_full)
-mod3a <- lm(score_true ~ assignment+Mturk+captcha, data_full)
+mod3a <- lm(score_true ~ assignment+Mturk+captcha+Age_bin+Party+Gender+Ethnicity, data_full)
 ci_custom1a <- compute_robust_ci(mod1a)
 ci_custom2a <- compute_robust_ci(mod2a)
 ci_custom3a <- compute_robust_ci(mod3a)

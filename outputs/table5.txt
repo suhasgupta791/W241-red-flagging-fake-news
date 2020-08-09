@@ -1,0 +1,38 @@
+
+Table 5. Treatment effect of warning flag on false tweet score with question fixed effects
+=======================================================================================================
+                                                       Outcome Variable                                
+                       --------------------------------------------------------------------------------
+                                                    Score on False Tweets                              
+-------------------------------------------------------------------------------------------------------
+Warning Flag                                               0.180***                                    
+                                                           (0.055)                                     
+                                                                                                       
+Q3 Correct                                                -1.600***                                    
+                                                           (0.130)                                     
+                                                                                                       
+Q5 Correct                                                -1.300***                                    
+                                                           (0.063)                                     
+                                                                                                       
+Q6 Correct                                                -1.400***                                    
+                                                           (0.120)                                     
+                                                                                                       
+Mturk Participant                                          -0.120**                                    
+                                                           (0.054)                                     
+                                                                                                       
+Captcha Verified                                           0.230**                                     
+                                                           (0.096)                                     
+                                                                                                       
+Constant                                                   4.700***                                    
+                                                           (0.110)                                     
+                                                                                                       
+-------------------------------------------------------------------------------------------------------
+Question Fixed Effects                                       Yes                                       
+Observations                                                 313                                       
+R2                                                          0.910                                      
+Adjusted R2                                                 0.900                                      
+=======================================================================================================
+Note:                  *p<0.1; **p<0.05; ***p<0.01                                                     
+                       Regression models with robust standard errors.                                  
+                       Model contains question fixed effects for false tweets.                         
+                       Effect is highly significant for a warning flag's ability to detect false tweets

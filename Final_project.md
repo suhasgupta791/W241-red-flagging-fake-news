@@ -281,380 +281,6 @@ registered\_voter + race + social\_media\_active
       - Test if fake news red flagging affects voters and non voters
         differently
 
-### Hypothesis
-
-The primary hypothesis and effect that we have set out to test is the
-following:
-
-**H1: Reminding subjects about possiblity of misleading tweets using a
-genral warning will reduce the perceived accuracy of false headlines
-relative to a no-warning scenario.**
-
-We also want to check the spillover effect of this general warning about
-fake news on people’s trust in true news/headlines.
-
-**H2: Reminding subjects about possiblity of misleading tweets using a
-genral warning will also reduce their trust in true headlines/news
-relative to a no-warning scenario.**
-
-### Experimental Method
-
-#### Participants
-
-The study was conducted online through survey forms created using the
-Qualtric Survey service provided to us by the Unversity of California,
-Berkeley. There were two types of pariticipants recruited for this study
-:
-
-1.  Participants recruited using the Amazon Mechanical Turk service
-
-<!-- end list -->
-
-  - Although samples from Mturk are not nationally respresentative,
-    results from the study closely match those obtained from other
-    samples(e.g., Berinsky et al. 2012; Coppock 2016; Horton et
-    al. 2011; Mullinix et al. 2015)
-  - Non-US residents, were not allowed to participate.
-
-<!-- end list -->
-
-2.  Participants recruited through experimenters’ personal and
-    professional network using personal contacts, direct messages,
-    social media network and email.
-
-***\< Fill in the text about sample distribution from the data
-analysis\>***
-
-#### Procedure
-
-The experiment design used individual random assignment to place
-subjects in treatment and control. Table 1 shows the distribution of
-subject randomly assigned to treatment and control for each of the
-participant group described above. The survey would display warning
-before presenting the test questions to a subjects if the subject was
-placed in the treatment group. If the subject was placed in the control
-group, then no warning would be displayed on the questions. We focused
-on posts made on the social media platform *Twitter* as the source for
-all headlines used in the survey. The tweets were mainly from three
-broad categories 1) US politics 2) Climate change and general belief in
-science 3) Random facts about US. After each headline, the question
-asked the participant whether they believe the information in the
-headline is true or not. The scoring was based on the total number of
-correct responses (responses that match the group truth about each
-headline).
-
-``` r
-col1 <- c("Treatment","Control")
-col2 <- c("General Warning","No Warning")
-col3 <- c("X","Y")
-dt<- data.table(col1,col2,col3)
-
-colnames(dt) <- c("Assignment Group", "Flag", "N")
-kable(dt,"latex",booktabs=T)
-```
-
-### Pilot data analysis
-
-``` r
-pilot_dataset <- fread('./data/pilot/pilot_data_07262020.csv')
-#head(pilot_dataset)
-#names(pilot_dataset)
-```
-
-``` r
-data_pruned <- pilot_dataset[ 3:nrow(pilot_dataset),]
-data_pruned[, c(6,7)] <- lapply(data_pruned[, c(6,7)], as.numeric)
-```
-
-    ## Warning in lapply(data_pruned[, c(6, 7)], as.numeric): NAs introduced by
-    ## coercion
-
-``` r
-question_col_names <- c('8B','9B','10B','11B','12B','13B','14B','15B','16B','17B',
-                        '8A','9A','10A','11A','12A','13A','14A','15A','16A','17A')
-
-
-# replace all empty strings with NA
-for(i in c(26:length(names(data_pruned)))){
-    data_pruned[[i]][data_pruned[[i]]==''] <- NA
-}
-
-# Check the data
-head(data_pruned[, 26:length(names(data_pruned))])
-```
-
-    ##      8B   9B  10B  11B  12B  13B  14B  15B  16B  17B   8A   9A  10A  11A  12A
-    ## 1: <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA>  Yes  Yes   No  Yes  Yes
-    ## 2:  Yes  Yes   No  Yes  Yes   No  Yes   No   No   No <NA> <NA> <NA> <NA> <NA>
-    ## 3: <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA>  Yes  Yes   No  Yes   No
-    ## 4:   No  Yes   No  Yes   No   No  Yes  Yes   No   No <NA> <NA> <NA> <NA> <NA>
-    ## 5: <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA>  Yes  Yes   No  Yes   No
-    ## 6: <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA>   No  Yes   No  Yes   No
-    ##     13A  14A  15A  16A  17A
-    ## 1:   No  Yes  Yes   No   No
-    ## 2: <NA> <NA> <NA> <NA> <NA>
-    ## 3:   No   No  Yes   No   No
-    ## 4: <NA> <NA> <NA> <NA> <NA>
-    ## 5:   No  Yes  Yes   No   No
-    ## 6:   No   No   No   No   No
-
-``` r
-# Set assignment group variable (treatment = 1 , conrol = 0)
-data_pruned[, assignment := ifelse(is.na(data_pruned[,'8B']),0,1)]
-```
-
-    ## Warning in `[.data.table`(data_pruned, , `:=`(assignment,
-    ## ifelse(is.na(data_pruned[, : Invalid .internal.selfref detected and fixed by
-    ## taking a (shallow) copy of the data.table so that := can add this new column
-    ## by reference. At an earlier point, this data.table has been copied by R (or
-    ## was created manually using structure() or similar). Avoid names<- and attr<-
-    ## which in R currently (and oddly) may copy the whole data.table. Use set* syntax
-    ## instead to avoid copying: ?set, ?setnames and ?setattr. If this message doesn't
-    ## help, please report your use case to the data.table issue tracker so the root
-    ## cause can be fixed or this message improved.
-
-``` r
-head(data_pruned[, 26:length(names(data_pruned))])
-```
-
-    ##      8B   9B  10B  11B  12B  13B  14B  15B  16B  17B   8A   9A  10A  11A  12A
-    ## 1: <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA>  Yes  Yes   No  Yes  Yes
-    ## 2:  Yes  Yes   No  Yes  Yes   No  Yes   No   No   No <NA> <NA> <NA> <NA> <NA>
-    ## 3: <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA>  Yes  Yes   No  Yes   No
-    ## 4:   No  Yes   No  Yes   No   No  Yes  Yes   No   No <NA> <NA> <NA> <NA> <NA>
-    ## 5: <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA>  Yes  Yes   No  Yes   No
-    ## 6: <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA>   No  Yes   No  Yes   No
-    ##     13A  14A  15A  16A  17A assignment
-    ## 1:   No  Yes  Yes   No   No          0
-    ## 2: <NA> <NA> <NA> <NA> <NA>          1
-    ## 3:   No   No  Yes   No   No          0
-    ## 4: <NA> <NA> <NA> <NA> <NA>          1
-    ## 5:   No  Yes  Yes   No   No          0
-    ## 6:   No   No   No   No   No          0
-
-``` r
-head(data_pruned)
-```
-
-    ##              StartDate             EndDate     Status      IPAddress Progress
-    ## 1: 2020-07-17 18:52:45 2020-07-17 18:59:24 IP Address   73.93.90.157      100
-    ## 2: 2020-07-17 19:46:06 2020-07-17 19:48:33 IP Address  98.234.117.52      100
-    ## 3: 2020-07-17 19:48:21 2020-07-17 19:59:28 IP Address 71.244.172.196      100
-    ## 4: 2020-07-17 20:01:07 2020-07-17 20:04:12 IP Address   173.67.9.152      100
-    ## 5: 2020-07-17 19:58:48 2020-07-17 20:13:25 IP Address 174.195.207.41      100
-    ## 6: 2020-07-17 20:08:21 2020-07-17 20:17:59 IP Address  67.188.128.89      100
-    ##    Duration (in seconds) Finished        RecordedDate        ResponseId
-    ## 1:                   399       NA 2020-07-17 18:59:25 R_u8Geu0CykTxNh6h
-    ## 2:                   147       NA 2020-07-17 19:48:34 R_2EgXOU7K2nTlgqG
-    ## 3:                   666       NA 2020-07-17 19:59:28 R_1NgJqwlFgUpLjT1
-    ## 4:                   185       NA 2020-07-17 20:04:13 R_33woiiDhvnhBZZR
-    ## 5:                   876       NA 2020-07-17 20:13:25 R_3nAiDFypCLOOxYV
-    ## 6:                   578       NA 2020-07-17 20:18:00 R_3QXbtPAqPrxpNRD
-    ##    RecipientLastName RecipientFirstName RecipientEmail ExternalReference
-    ## 1:                                                                      
-    ## 2:                                                                      
-    ## 3:                                                                      
-    ## 4:                                                                      
-    ## 5:                                                                      
-    ## 6:                                                                      
-    ##       LocationLatitude      LocationLongitude DistributionChannel UserLanguage
-    ## 1:     37.777099609375 -122.40599822998046875           anonymous           EN
-    ## 2:    36.5802001953125    -121.84429931640625           anonymous           EN
-    ## 3: 39.1269073486328125       -76.697998046875           anonymous           EN
-    ## 4: 39.1269073486328125       -76.697998046875           anonymous           EN
-    ## 5:         33.87890625 -117.53530120849609375           anonymous           EN
-    ## 6: 36.6808013916015625 -121.61640167236328125           anonymous           EN
-    ##                                           Q_RecaptchaScore     Q1  Q2    Q3
-    ## 1: 0.90000000000000002220446049250313080847263336181640625 Female Yes 21-40
-    ## 2: 0.90000000000000002220446049250313080847263336181640625 Female Yes 21-40
-    ## 3: 0.90000000000000002220446049250313080847263336181640625 Female Yes 21-40
-    ## 4: 0.90000000000000002220446049250313080847263336181640625 Female Yes 21-40
-    ## 5: 0.90000000000000002220446049250313080847263336181640625 Female Yes 21-40
-    ## 6: 0.90000000000000002220446049250313080847263336181640625   Male Yes   61+
-    ##            Q4              Q5                Q6  Q7   8B   9B  10B  11B  12B
-    ## 1:   Democrat Graduate degree             Asian Yes <NA> <NA> <NA> <NA> <NA>
-    ## 2:      Other Graduate degree         Caucasian  No  Yes  Yes   No  Yes  Yes
-    ## 3:             College degree         Caucasian  No <NA> <NA> <NA> <NA> <NA>
-    ## 4:   Democrat  College degree Hispanic / Latinx  No   No  Yes   No  Yes   No
-    ## 5:      Other  College degree         Caucasian Yes <NA> <NA> <NA> <NA> <NA>
-    ## 6: Republican Graduate degree         Caucasian  No <NA> <NA> <NA> <NA> <NA>
-    ##     13B  14B  15B  16B  17B   8A   9A  10A  11A  12A  13A  14A  15A  16A  17A
-    ## 1: <NA> <NA> <NA> <NA> <NA>  Yes  Yes   No  Yes  Yes   No  Yes  Yes   No   No
-    ## 2:   No  Yes   No   No   No <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA>
-    ## 3: <NA> <NA> <NA> <NA> <NA>  Yes  Yes   No  Yes   No   No   No  Yes   No   No
-    ## 4:   No  Yes  Yes   No   No <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA>
-    ## 5: <NA> <NA> <NA> <NA> <NA>  Yes  Yes   No  Yes   No   No  Yes  Yes   No   No
-    ## 6: <NA> <NA> <NA> <NA> <NA>   No  Yes   No  Yes   No   No   No   No   No   No
-    ##    assignment
-    ## 1:          0
-    ## 2:          1
-    ## 3:          0
-    ## 4:          1
-    ## 5:          0
-    ## 6:          0
-
-``` r
-# Compute the score against answer guide
-answer_guide <- c('Yes','Yes','No','Yes','No','No','Yes','Yes','No','No',
-                  'Yes','Yes','No','Yes','No','No','Yes','Yes','No','No')
-
-compute_scores <- function(dataset,answer_guide){
-    for(i in 1:nrow(data_pruned)){
-    dataset[i,"score"] <- sum(dataset[i,26:45] == answer_guide,na.rm=TRUE)
-    }
-    return(dataset)
-}
-
-
-data_w_scores <- compute_scores(data_pruned,answer_guide)
-head(data_w_scores)
-```
-
-    ##              StartDate             EndDate     Status      IPAddress Progress
-    ## 1: 2020-07-17 18:52:45 2020-07-17 18:59:24 IP Address   73.93.90.157      100
-    ## 2: 2020-07-17 19:46:06 2020-07-17 19:48:33 IP Address  98.234.117.52      100
-    ## 3: 2020-07-17 19:48:21 2020-07-17 19:59:28 IP Address 71.244.172.196      100
-    ## 4: 2020-07-17 20:01:07 2020-07-17 20:04:12 IP Address   173.67.9.152      100
-    ## 5: 2020-07-17 19:58:48 2020-07-17 20:13:25 IP Address 174.195.207.41      100
-    ## 6: 2020-07-17 20:08:21 2020-07-17 20:17:59 IP Address  67.188.128.89      100
-    ##    Duration (in seconds) Finished        RecordedDate        ResponseId
-    ## 1:                   399       NA 2020-07-17 18:59:25 R_u8Geu0CykTxNh6h
-    ## 2:                   147       NA 2020-07-17 19:48:34 R_2EgXOU7K2nTlgqG
-    ## 3:                   666       NA 2020-07-17 19:59:28 R_1NgJqwlFgUpLjT1
-    ## 4:                   185       NA 2020-07-17 20:04:13 R_33woiiDhvnhBZZR
-    ## 5:                   876       NA 2020-07-17 20:13:25 R_3nAiDFypCLOOxYV
-    ## 6:                   578       NA 2020-07-17 20:18:00 R_3QXbtPAqPrxpNRD
-    ##    RecipientLastName RecipientFirstName RecipientEmail ExternalReference
-    ## 1:                                                                      
-    ## 2:                                                                      
-    ## 3:                                                                      
-    ## 4:                                                                      
-    ## 5:                                                                      
-    ## 6:                                                                      
-    ##       LocationLatitude      LocationLongitude DistributionChannel UserLanguage
-    ## 1:     37.777099609375 -122.40599822998046875           anonymous           EN
-    ## 2:    36.5802001953125    -121.84429931640625           anonymous           EN
-    ## 3: 39.1269073486328125       -76.697998046875           anonymous           EN
-    ## 4: 39.1269073486328125       -76.697998046875           anonymous           EN
-    ## 5:         33.87890625 -117.53530120849609375           anonymous           EN
-    ## 6: 36.6808013916015625 -121.61640167236328125           anonymous           EN
-    ##                                           Q_RecaptchaScore     Q1  Q2    Q3
-    ## 1: 0.90000000000000002220446049250313080847263336181640625 Female Yes 21-40
-    ## 2: 0.90000000000000002220446049250313080847263336181640625 Female Yes 21-40
-    ## 3: 0.90000000000000002220446049250313080847263336181640625 Female Yes 21-40
-    ## 4: 0.90000000000000002220446049250313080847263336181640625 Female Yes 21-40
-    ## 5: 0.90000000000000002220446049250313080847263336181640625 Female Yes 21-40
-    ## 6: 0.90000000000000002220446049250313080847263336181640625   Male Yes   61+
-    ##            Q4              Q5                Q6  Q7   8B   9B  10B  11B  12B
-    ## 1:   Democrat Graduate degree             Asian Yes <NA> <NA> <NA> <NA> <NA>
-    ## 2:      Other Graduate degree         Caucasian  No  Yes  Yes   No  Yes  Yes
-    ## 3:             College degree         Caucasian  No <NA> <NA> <NA> <NA> <NA>
-    ## 4:   Democrat  College degree Hispanic / Latinx  No   No  Yes   No  Yes   No
-    ## 5:      Other  College degree         Caucasian Yes <NA> <NA> <NA> <NA> <NA>
-    ## 6: Republican Graduate degree         Caucasian  No <NA> <NA> <NA> <NA> <NA>
-    ##     13B  14B  15B  16B  17B   8A   9A  10A  11A  12A  13A  14A  15A  16A  17A
-    ## 1: <NA> <NA> <NA> <NA> <NA>  Yes  Yes   No  Yes  Yes   No  Yes  Yes   No   No
-    ## 2:   No  Yes   No   No   No <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA>
-    ## 3: <NA> <NA> <NA> <NA> <NA>  Yes  Yes   No  Yes   No   No   No  Yes   No   No
-    ## 4:   No  Yes  Yes   No   No <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA>
-    ## 5: <NA> <NA> <NA> <NA> <NA>  Yes  Yes   No  Yes   No   No  Yes  Yes   No   No
-    ## 6: <NA> <NA> <NA> <NA> <NA>   No  Yes   No  Yes   No   No   No   No   No   No
-    ##    assignment score
-    ## 1:          0     9
-    ## 2:          1     8
-    ## 3:          0     9
-    ## 4:          1     9
-    ## 5:          0    10
-    ## 6:          0     7
-
-``` r
-# Compute the SD and point estimates with pilot data
-sd_pilot <- data_w_scores[, sd(score)]
-sd_pilot
-```
-
-    ## [1] 1.3
-
-``` r
-d <- data_w_scores[, .(scores=mean(score)), by = assignment]
-mod <- lm(score ~ assignment, data_w_scores)
-ate <- diff(d$scores)
-ate
-```
-
-    ## [1] -0.27
-
-``` r
-stargazer(mod, type="text")
-```
-
-    ## 
-    ## ===============================================
-    ##                         Dependent variable:    
-    ##                     ---------------------------
-    ##                                score           
-    ## -----------------------------------------------
-    ## assignment                    -0.270           
-    ##                               (0.540)          
-    ##                                                
-    ## Constant                     7.900***          
-    ##                               (0.360)          
-    ##                                                
-    ## -----------------------------------------------
-    ## Observations                    26             
-    ## R2                             0.011           
-    ## Adjusted R2                   -0.030           
-    ## Residual Std. Error       1.400 (df = 24)      
-    ## F Statistic             0.260 (df = 1; 24)     
-    ## ===============================================
-    ## Note:               *p<0.1; **p<0.05; ***p<0.01
-
-``` r
-## Power calculation 
-power.t.test(d=ate,sig.level=0.95,power=0.8,sd=sd_pilot,alternative="two.sided")
-```
-
-    ## 
-    ##      Two-sample t test power calculation 
-    ## 
-    ##               n = 39
-    ##           delta = 0.27
-    ##              sd = 1.3
-    ##       sig.level = 0.95
-    ##           power = 0.8
-    ##     alternative = two.sided
-    ## 
-    ## NOTE: n is number in *each* group
-
-``` r
-# Modify the column names for better readability
-data_mod <- rename(data_w_scores, 
-       Gender = Q1,
-       Reg_Voter = Q2,
-       Age_bin = Q3,
-       Party = Q4,
-       Education = Q5,
-       Ethnicity = Q6,
-       Soc_Med_Active = Q7
-        )
-head(data_mod[,19:27])
-```
-
-    ##    Gender Reg_Voter Age_bin      Party       Education         Ethnicity
-    ## 1: Female       Yes   21-40   Democrat Graduate degree             Asian
-    ## 2: Female       Yes   21-40      Other Graduate degree         Caucasian
-    ## 3: Female       Yes   21-40             College degree         Caucasian
-    ## 4: Female       Yes   21-40   Democrat  College degree Hispanic / Latinx
-    ## 5: Female       Yes   21-40      Other  College degree         Caucasian
-    ## 6:   Male       Yes     61+ Republican Graduate degree         Caucasian
-    ##    Soc_Med_Active   8B   9B
-    ## 1:            Yes <NA> <NA>
-    ## 2:             No  Yes  Yes
-    ## 3:             No <NA> <NA>
-    ## 4:             No   No  Yes
-    ## 5:            Yes <NA> <NA>
-    ## 6:             No <NA> <NA>
-
 ## Define functions
 
 ``` r
@@ -702,6 +328,58 @@ rename_cols <- function(dataset){
   
      dt$Gender[dataset$Gender == ''] <-"Unanswered"
      return(dt)
+}
+
+create_question_column <- function(dataset){
+  dataset[, TestQ1 := ifelse(is.na(dataset$'8B'), dataset$'8A', dataset$'8B')]
+  dataset[, TestQ2 := ifelse(is.na(dataset$'9B'), dataset$'9A', dataset$'9B')]
+  dataset[, TestQ3 := ifelse(is.na(dataset$'10B'), dataset$'10A', dataset$'10B')]
+  dataset[, TestQ4 := ifelse(is.na(dataset$'11B'), dataset$'11A', dataset$'11B')]
+  dataset[, TestQ5 := ifelse(is.na(dataset$'12B'), dataset$'12A', dataset$'12B')]
+  dataset[, TestQ6 := ifelse(is.na(dataset$'13B'), dataset$'13A', dataset$'13B')]
+  dataset[, TestQ7 := ifelse(is.na(dataset$'14B'), dataset$'14A', dataset$'14B')]
+  dataset[, TestQ8 := ifelse(is.na(dataset$'15B'), dataset$'15A', dataset$'15B')]
+  dataset[, TestQ9 := ifelse(is.na(dataset$'16B'), dataset$'16A', dataset$'16B')]
+  dataset[, TestQ10 := ifelse(is.na(dataset$'17B'), dataset$'17A', dataset$'17B')]
+  return(dataset)
+}
+
+
+# Color palette for ggplot 
+cbPalette <- c("#009999", "#AA9900")
+
+compute_robust_ci<- function(mod,type="HC",clustering = FALSE,data=NA) { 
+  coefs <- names(mod$coefficients)
+  if (clustering){
+    # calculate robust clustered standard errors 
+    robust_se <- sqrt(diag(vcovCL(mod,cluster = data,type=type))) 
+  }
+  else{
+    # calculate robust standard errors without clustering
+    robust_se <- sqrt(diag(vcovHC(mod,type=type)))  
+  }
+  ci_ll <- NA
+  ci_ul <- NA
+  for(i in 1:length(coefs)){
+    ci_ll[i] <- mod$coefficients[[coefs[i]]] - 1.96 * robust_se[i]
+    ci_ul[i] <- mod$coefficients[[coefs[i]]] + 1.96 * robust_se[i]
+  }
+    ci_custom <- matrix(c(ci_ll,ci_ul), nrow = length(coefs), byrow = FALSE)
+    return(ci_custom)
+}
+
+compute_robust_se<- function(mod,type="HC",clustering = FALSE,data=NA) { 
+  coefs <- names(mod$coefficients)
+  if (clustering){
+    # calculate robust clustered standard errors 
+    robust_se <- sqrt(diag(vcovCL(mod,cluster = data,type=type))) 
+  }
+  else{
+    # calculate robust standard errors without clustering
+    robust_se <- sqrt(diag(vcovHC(mod,type=type)))  
+  }
+  
+    return(robust_se)
 }
 ```
 
@@ -784,17 +462,17 @@ study3_data_pruned <- prune_data(study3_data)
 
 ``` r
 # Rename the covariate columns
-study1_data_mod <- rename_cols(study1_data_pruned)
-study2_data_mod <- rename_cols(study2_data_pruned)
-study3_data_mod <- rename_cols(study3_data_pruned)
+study1_data_temp <- rename_cols(study1_data_pruned)
+study2_data_temp <- rename_cols(study2_data_pruned)
+study3_data_temp <- rename_cols(study3_data_pruned)
 
 # Add score columns 
 answer_guide <- c('Yes','Yes','No','Yes','No','No','Yes','Yes','No','No',  
                   'Yes','Yes','No','Yes','No','No','Yes','Yes','No','No') 
 
-study1_data_mod <- compute_score(study1_data_mod, answer_guide = answer_guide )
-study2_data_mod <- compute_score(study2_data_mod, answer_guide = answer_guide )
-study3_data_mod <- compute_score(study3_data_mod, answer_guide = answer_guide )
+study1_data_mod <- compute_score(study1_data_temp, answer_guide = answer_guide )
+study2_data_mod <- compute_score(study2_data_temp, answer_guide = answer_guide )
+study3_data_mod <- compute_score(study3_data_temp, answer_guide = answer_guide )
 
 # Add indicator variables
 study1_data_mod[, Mturk := 1]
@@ -808,75 +486,8 @@ study3_data_mod[, Mturk := 0]
 study3_data_mod[, captcha := 1]
 
 # Check the data
-# head(study1_data_mod[, 31:length(names(study1_data_mod))])
-head(study2_data_mod)
-```
-
-    ##              StartDate             EndDate     Status      IPAddress Progress
-    ## 1: 2020-07-25 20:18:27 2020-07-25 20:20:31 IP Address 47.196.110.241      100
-    ## 2: 2020-07-25 20:20:14 2020-07-25 20:21:01 IP Address   68.191.33.60      100
-    ## 3: 2020-07-25 20:21:00 2020-07-25 20:23:03 IP Address 136.24.243.198      100
-    ## 4: 2020-07-25 20:23:24 2020-07-25 20:27:34 IP Address   76.91.179.34      100
-    ## 5: 2020-07-25 20:30:35 2020-07-25 20:34:52 IP Address 73.189.103.206      100
-    ## 6: 2020-07-25 20:42:25 2020-07-25 20:45:25 IP Address 67.188.112.154      100
-    ##    Duration (in seconds) Finished        RecordedDate        ResponseId
-    ## 1:                   124       NA 2020-07-25 20:20:32 R_2zpQP14fLuuhfoW
-    ## 2:                    47       NA 2020-07-25 20:21:01 R_2YGr5mSM9w5R549
-    ## 3:                   122       NA 2020-07-25 20:23:03 R_2OGVuLEQeP89B0y
-    ## 4:                   250       NA 2020-07-25 20:27:35 R_1IpizIjkU9jHhYL
-    ## 5:                   256       NA 2020-07-25 20:34:53 R_2uKyuFbRClKReQG
-    ## 6:                   179       NA 2020-07-25 20:45:25 R_1nTTrweksgEQjuh
-    ##    RecipientLastName RecipientFirstName RecipientEmail ExternalReference
-    ## 1:                                                                      
-    ## 2:                                                                      
-    ## 3:                                                                      
-    ## 4:                                                                      
-    ## 5:                                                                      
-    ## 6:                                                                      
-    ##       LocationLatitude      LocationLongitude DistributionChannel UserLanguage
-    ## 1:  27.944793701171875  -82.24089813232421875           anonymous           EN
-    ## 2: 41.3318939208984375  -73.23670196533203125           anonymous           EN
-    ## 3: 37.7642059326171875 -122.39929962158203125           anonymous           EN
-    ## 4: 34.0312957763671875 -118.31240081787109375           anonymous           EN
-    ## 5: 37.4774932861328125    -122.45050048828125           anonymous           EN
-    ## 6: 37.3896942138671875 -122.08319854736328125           anonymous           EN
-    ##                                           Q_RecaptchaScore Gender Reg_Voter
-    ## 1: 0.90000000000000002220446049250313080847263336181640625   Male       Yes
-    ## 2: 0.90000000000000002220446049250313080847263336181640625   Male       Yes
-    ## 3: 0.90000000000000002220446049250313080847263336181640625 Female       Yes
-    ## 4: 0.90000000000000002220446049250313080847263336181640625   Male       Yes
-    ## 5: 0.90000000000000002220446049250313080847263336181640625   Male       Yes
-    ## 6: 0.90000000000000002220446049250313080847263336181640625 Female       Yes
-    ##    Voted_2012 Voted_2016 Marital_status Language            Income Age_bin
-    ## 1:         No        Yes         Single  English          < $60000   21-40
-    ## 2:         No         No         Single  Spanish         > $250000   21-40
-    ## 3:        Yes        Yes         Single  English          < $60000   21-40
-    ## 4:        Yes        Yes         Single  English  $60000 - $150000   21-40
-    ## 5:        Yes        Yes        Married  English  $60000 - $150000   41-60
-    ## 6:         No        Yes         Single  English $150000 - $250000   21-40
-    ##       Party            Education       Ethnicity Soc_Med_Active   8B   9B  10B
-    ## 1: Democrat High school graduate       Caucasian            Yes <NA> <NA> <NA>
-    ## 2: Democrat High school graduate Black / African            Yes <NA> <NA> <NA>
-    ## 3: Democrat       College degree           Asian             No  Yes  Yes   No
-    ## 4: Democrat         Some college Black / African            Yes <NA> <NA> <NA>
-    ## 5: Democrat       College degree           Asian            Yes   No  Yes   No
-    ## 6: Democrat       College degree       Caucasian            Yes <NA> <NA> <NA>
-    ##     11B  12B  13B  14B  15B  16B  17B   8A   9A  10A  11A  12A  13A  14A  15A
-    ## 1: <NA> <NA> <NA> <NA> <NA> <NA> <NA>  Yes  Yes  Yes  Yes   No   No  Yes  Yes
-    ## 2: <NA> <NA> <NA> <NA> <NA> <NA> <NA>   No   No   No   No   No   No  Yes   No
-    ## 3:  Yes   No   No  Yes  Yes   No   No <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA>
-    ## 4: <NA> <NA> <NA> <NA> <NA> <NA> <NA>   No  Yes   No   No   No   No  Yes  Yes
-    ## 5:  Yes   No  Yes  Yes  Yes  Yes   No <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA>
-    ## 6: <NA> <NA> <NA> <NA> <NA> <NA> <NA>  Yes  Yes   No   No  Yes   No  Yes   No
-    ##     16A  17A SC0 assignment score score_false score_true Mturk captcha
-    ## 1:   No   No   9          0     9           4          5     1       1
-    ## 2:   No  Yes   5          0     5           4          1     1       1
-    ## 3: <NA> <NA>  10          1    10           5          5     1       1
-    ## 4:   No   No   8          0     8           5          3     1       1
-    ## 5: <NA> <NA>   7          1     7           3          4     1       1
-    ## 6:   No   No   7          0     7           4          3     1       1
-
-``` r
+# head(study1_data_mod)
+# head(study2_data_mod)
 # head(study3_data_mod)
 ```
 
@@ -884,244 +495,779 @@ head(study2_data_mod)
 
 ``` r
 # combine data set 
-data_full <- rbind(study1_data_mod,study2_data_mod,study3_data_mod)
-head(data_full)
+dt <- rbind(study1_data_mod,study2_data_mod,study3_data_mod)
+data_full <- create_question_column(dt)
 ```
 
-    ##        StartDate       EndDate     Status       IPAddress Progress
-    ## 1: 7/24/20 22:43 7/24/20 22:45 IP Address   68.33.126.140      100
-    ## 2: 7/24/20 22:43 7/24/20 22:45 IP Address   98.19.217.229      100
-    ## 3: 7/24/20 22:43 7/24/20 22:45 IP Address  174.85.199.139      100
-    ## 4: 7/24/20 22:43 7/24/20 22:45 IP Address 209.159.199.248      100
-    ## 5: 7/24/20 22:43 7/24/20 22:46 IP Address    68.63.20.188      100
-    ## 6: 7/24/20 22:43 7/24/20 22:46 IP Address   24.13.196.131      100
-    ##    Duration (in seconds) Finished  RecordedDate        ResponseId
-    ## 1:                   112       NA 7/24/20 22:45 R_2wHbTKc7249gZQY
-    ## 2:                    99       NA 7/24/20 22:45 R_2Et95GjQbJ9BgaR
-    ## 3:                   142       NA 7/24/20 22:45 R_3LimuwbiSdyNO53
-    ## 4:                   152       NA 7/24/20 22:45 R_1rwQr9otPszxd5D
-    ## 5:                   136       NA 7/24/20 22:46 R_4Jyqc4Ld2c4PwMF
-    ## 6:                   172       NA 7/24/20 22:46 R_33jTNIqQiSmFSX3
-    ##    RecipientLastName RecipientFirstName RecipientEmail ExternalReference
-    ## 1:                                                                      
-    ## 2:                                                                      
-    ## 3:                                                                      
-    ## 4:                                                                      
-    ## 5:                                                                      
-    ## 6:                                                                      
-    ##    LocationLatitude LocationLongitude DistributionChannel UserLanguage
-    ## 1:      38.86700439      -76.81729889           anonymous           EN
-    ## 2:      34.45120239      -84.15299988           anonymous           EN
-    ## 3:      34.34539795      -86.27400208           anonymous           EN
-    ## 4:      44.14149475      -103.2052002           anonymous           EN
-    ## 5:      30.49079895      -84.31580353           anonymous           EN
-    ## 6:      42.18449402      -88.32659912           anonymous           EN
-    ##    Q_RecaptchaScore Gender Reg_Voter Voted_2012 Voted_2016 Marital_status
-    ## 1:              0.9 Female       Yes        Yes        Yes        Married
-    ## 2:              0.7 Female       Yes        Yes        Yes        Married
-    ## 3:              0.9 Female       Yes        Yes        Yes        Married
-    ## 4:              0.9   Male       Yes        Yes        Yes         Single
-    ## 5:              0.9   Male       Yes        Yes        Yes         Single
-    ## 6:              0.9   Male       Yes        Yes        Yes        Married
-    ##    Language            Income Age_bin      Party            Education
-    ## 1:  English $150000 - $250000   21-40   Democrat      Graduate degree
-    ## 2:  English  $60000 - $150000   21-40 Republican       College degree
-    ## 3:  English          < $60000   21-40      Other         Some college
-    ## 4:  English          < $60000   21-40      Other High school graduate
-    ## 5:  English          < $60000   21-40   Democrat       College degree
-    ## 6:  English  $60000 - $150000   41-60 Republican       College degree
-    ##            Ethnicity Soc_Med_Active   8B   9B  10B  11B  12B  13B  14B  15B
-    ## 1:         Caucasian            Yes <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA>
-    ## 2: Hispanic / Latinx            Yes <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA>
-    ## 3:         Caucasian            Yes <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA>
-    ## 4:         Caucasian            Yes   No  Yes   No  Yes  Yes   No  Yes   No
-    ## 5:         Caucasian            Yes <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA>
-    ## 6:         Caucasian            Yes   No  Yes   No  Yes  Yes   No   No  Yes
-    ##     16B  17B   8A   9A  10A  11A  12A  13A  14A  15A  16A  17A SC0 assignment
-    ## 1: <NA> <NA>  Yes   No  Yes  Yes  Yes  Yes   No  Yes  Yes  Yes   3          0
-    ## 2: <NA> <NA>  Yes  Yes  Yes   No   No  Yes   No  Yes   No  Yes   5          0
-    ## 3: <NA> <NA>   No  Yes   No  Yes  Yes   No  Yes  Yes   No   No   8          0
-    ## 4:   No   No <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA>   7          1
-    ## 5: <NA> <NA>   No  Yes   No   No   No   No   No   No   No   No   6          0
-    ## 6:   No  Yes <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA> <NA>   6          1
-    ##    score score_false score_true Mturk captcha
-    ## 1:     3           0          3     1       0
-    ## 2:     5           2          3     1       0
-    ## 3:     8           4          4     1       0
-    ## 4:     7           4          3     1       0
-    ## 5:     6           5          1     1       0
-    ## 6:     6           3          3     1       0
+## Hypothesis
 
-### EDA
+The primary hypothesis and effect that we have set out to test is the
+following:
 
-Figure 1 summarizes the score of subjects in each assignment group
-(treatment/control) and for true and false
-tweets.
+**H1: Reminding subjects about possiblity of misleading tweets using a
+genral warning will reduce the perceived accuracy of false headlines
+relative to a no-warning scenario.**
+
+We also want to check the spillover effect of this general warning about
+fake news on people’s trust in true news/headlines.
+
+**H2: Reminding subjects about possiblity of misleading tweets using a
+genral warning will also reduce their trust in true headlines/news
+relative to a no-warning scenario.**
+
+### Experimental Method
+
+#### Participants
+
+The study was conducted online through survey forms created using the
+Qualtric Survey service provided to us by the Unversity of California,
+Berkeley. There were two types of pariticipants recruited for this study
+:
+
+1.  Participants recruited using the Amazon Mechanical Turk service
+
+<!-- end list -->
+
+  - Although samples from Mturk are not nationally respresentative,
+    results from the study closely match those obtained from other
+    samples(e.g., Berinsky et al. 2012; Coppock 2016; Horton et
+    al. 2011; Mullinix et al. 2015)
+  - Non-US residents, were not allowed to participate.
+
+<!-- end list -->
+
+2.  Participants recruited through experimenters’ personal and
+    professional network using personal contacts, direct messages,
+    social media network and email.
+
+***\< Fill in the text about sample distribution from the data
+analysis\>***
+
+#### Procedure
+
+The experiment design used individual random assignment to place
+subjects in treatment and control. Table 1 shows the distribution of
+subject randomly assigned to treatment and control for each of the
+participant group described above. The survey would display warning
+before presenting the test questions to a subjects if the subject was
+placed in the treatment group. If the subject was placed in the control
+group, then no warning would be displayed on the questions. We focused
+on posts made on the social media platform *Twitter* as the source for
+all headlines used in the survey. The tweets were mainly from three
+broad categories 1) US politics 2) Climate change and general belief in
+science 3) Random facts about US. After each headline, the question
+asked the participant whether they believe the information in the
+headline is true or not. The scoring was based on the total number of
+correct responses (responses that match the group truth about each
+headline).
 
 ``` r
-dt <- data_full[, .(mean_total_score = mean(score),mean_true_score = mean(score_true),mean_false_score = mean(score_false)), by=assignment]
-dt
+col1 <- c("Treatment","Control")
+col2 <- c("General Warning","No Warning")
+col3 <- c("X","Y")
+dt<- data.table(col1,col2,col3)
+
+colnames(dt) <- c("Assignment Group", "Flag", "N")
+kable(dt,"latex",booktabs=T)
 ```
 
-    ##    assignment mean_total_score mean_true_score mean_false_score
-    ## 1:          0              7.2             3.6              3.5
-    ## 2:          1              7.0             3.4              3.6
+### check experimental data
+
+#### Randomization
+
+**The randomization worked well in the survey software and we had an
+equal allocation to treatment and control groups in the experiment**
 
 ``` r
-p <- ggplot(dt, aes(x = assignment, y = mean_total_score)) + 
-  geom_bar(stat="identity", fill="steelblue") + 
-  geom_text(aes(label = mean_total_score), size=3.5, color="white", vjust=1.5) + 
-  ggtitle("Average score for all tweets by assignment group") +
-  ylab("Average Total Score") + 
-  xlab("Assignment Group \n (0 : Control | 1: Treatment)") + 
-  theme_minimal()
-
-
-p + scale_x_discrete(limits=c(0, 1))
+dt <- data_full[, .(count = .N), by=assignment]
+ggplot(dt, aes(x = assignment, y = count)) + 
+  geom_bar(stat="identity", fill="steelblue") 
 ```
 
-![](Final_project_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+![](Final_project_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
-``` r
-dfm <- melt(dt[,c('assignment','mean_true_score','mean_false_score')],id.vars = 1)
-dfm <- rename(dfm, 
-       Assignment = assignment,
-       Score_Type = variable,
-       Score = value)
-p <- ggplot(dfm,aes(x = Assignment,y = Score)) + 
-    geom_bar(aes(fill = Score_Type),stat = "identity",position = "dodge")
+#### Power
 
-
-p <- ggplot(dfm,aes(x = Assignment,y = Score)) + 
-    geom_bar(aes(fill = Score_Type),stat = "identity",position = "dodge") + 
-  ggtitle("Average score for all tweets by assignment group") +
-  ylab("Average Total Score") + 
-  xlab("Assignment Group \n (0 : Control | 1: Treatment)") + 
-  theme_minimal()
-
-
-p + scale_x_discrete(limits=c(0, 1))
-```
-
-![](Final_project_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
-
-The figure above shows that there is some improvement in scores for
-false tweets in the presence of a general flag but there is also a
-descrease in the score for true tweets in the presence of this flag.
-
-``` r
-sd <- data_full[, sd(score)]
-d <- data_full[, .(scores=mean(score)), by = assignment]
-mod1 <- lm(score ~ assignment, data_full)
-mod2 <- lm(score ~ assignment+Mturk, data_full)
-mod3 <- lm(score ~ assignment+Mturk+captcha, data_full)
-ate <- diff(d$scores)
-stargazer(mod1,mod2,mod3, type="text",ci=TRUE)
-```
-
-    ## 
-    ## ======================================================================================
-    ##                                            Dependent variable:                        
-    ##                     ------------------------------------------------------------------
-    ##                                                   score                               
-    ##                             (1)                  (2)                     (3)          
-    ## --------------------------------------------------------------------------------------
-    ## assignment                -0.120                -0.120                 -0.120         
-    ##                       (-0.480, 0.240)      (-0.480, 0.230)         (-0.440, 0.200)    
-    ##                                                                                       
-    ## Mturk                                         -0.820***                -0.140         
-    ##                                            (-1.200, -0.410)        (-0.540, 0.260)    
-    ##                                                                                       
-    ## captcha                                                               1.600***        
-    ##                                                                    (1.200, 1.900)     
-    ##                                                                                       
-    ## Constant                 7.200***              7.800***               6.200***        
-    ##                       (6.900, 7.400)        (7.400, 8.200)         (5.700, 6.700)     
-    ##                                                                                       
-    ## --------------------------------------------------------------------------------------
-    ## Observations                313                  313                     313          
-    ## R2                         0.001                0.049                   0.220         
-    ## Adjusted R2               -0.002                0.043                   0.210         
-    ## Residual Std. Error  1.600 (df = 311)      1.600 (df = 310)       1.400 (df = 309)    
-    ## F Statistic         0.420 (df = 1; 311) 8.100*** (df = 2; 310) 29.000*** (df = 3; 309)
-    ## ======================================================================================
-    ## Note:                                                      *p<0.1; **p<0.05; ***p<0.01
+**The data collected has 80% power in detecting any treatment effect
+that may exist in this experiment**
 
 ``` r
 ## Power calculation 
-power.t.test(d=ate,sig.level=0.95,n=nrow(data_full),sd=sd,alternative="two.sided")
+d <- data_full[, .(score_false = mean(score_false)), by = assignment]
+ate <- diff(d$score_false)
+sd <- data_full[, sd(score_false)]
+power.t.test(d=ate,sig.level=0.95,n=nrow(data_full),sd=sd,alternative="one.sided")
 ```
 
     ## 
     ##      Two-sample t test power calculation 
     ## 
     ##               n = 313
-    ##           delta = 0.12
+    ##           delta = 0.062
     ##              sd = 1.6
     ##       sig.level = 0.95
-    ##           power = 0.8
-    ##     alternative = two.sided
+    ##           power = 0.98
+    ##     alternative = one.sided
     ## 
     ## NOTE: n is number in *each* group
+
+### EDA
+
+**Figure 1** summarizes the score of subjects in each assignment group
+(treatment/control) and for true and false tweets. The table and figures
+indicate that a general flag slightly decreased the overall score for
+the subjects ability to detect whether a tweet was true or false.
+Looking at the third and fourth column of Table1, we see that the
+detection ability (score) for true tweets decreased slightly in the
+presence of the general warning flag while the score for detecting false
+tweets improved slightly. This suggests that though the general warning
+flag about fake news might improve people’s ability to accurately detect
+false information, it also reduces the belief in true information as
+well. We will test our hypothesis and research questions more formally
+in the upcoming
+sections.
+
+``` r
+dt <- data_full[, .(mean_total_score = mean(score),mean_true_score = mean(score_true),mean_false_score = mean(score_false)), by=assignment]
+dt$Warning_Flag[dt$assignment == 0] <- "No Flag"
+dt$Warning_Flag[dt$assignment == 1] <- "Flag"
+dfm <- melt(dt[,c('Warning_Flag','mean_total_score')],id.vars = 1)
+dfm <- rename(dfm,
+       Assignment = Warning_Flag,
+       Score_Type = variable,
+       Score = value)
+ggplot(dfm, aes(x = Assignment, y = Score,label=sprintf("%0.2f", round(Score, digits = 2)))) + 
+  geom_bar(stat="identity", fill="steelblue", width = 0.5) + 
+  geom_text(size=3.5, color="white", vjust=1.5) + 
+  ggtitle("Figure 1. Average score for all tweets by survey assignment group") +
+  ylab("Mean Total Score") + 
+  xlab("Survey Group")   + 
+  theme(plot.title = element_text(hjust = 0.5)) +
+  theme_minimal()
+```
+
+![](Final_project_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+
+``` r
+dt$Warning_Flag[dt$assignment == 0] <- "No"
+dt$Warning_Flag[dt$assignment == 1] <- "Yes"
+
+dfm <- melt(dt[,c('Warning_Flag','mean_true_score','mean_false_score')],id.vars = 1)
+dfm <- rename(dfm,
+       Score_Type = variable,
+       Score = value)
+levels(dfm$Score_Type) = c("True Tweets", "False Tweets")
+
+p <- ggplot(dfm,aes(x = Score_Type,y = Score)) + 
+  geom_bar(aes(fill = Warning_Flag),stat = "identity", width=0.7, position=position_dodge(width=0.8)) +
+  ggtitle("Figure2. General warning effect on true and false tweets") +
+  ylab("Average score for tweet accuracy detection") + 
+  xlab("Type of tweet") + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  scale_fill_manual(values = cbPalette)
+p
+```
+
+![](Final_project_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+
+We find from figures 3 and 4 that a large majority of users identified
+themselves as being active on social media and most of the survewy
+participants were registered voters in the united states.
 
 **A large portion of survey subjects said that they considered
 themselves to be active on social media**
 
 ``` r
+data_full$Soc_Med_Active[data_full$Soc_Med_Active == ''] <- "Unanswered"
 ggplot(data_full) + geom_bar(aes(x = Soc_Med_Active))
 ```
 
-![](Final_project_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+![](Final_project_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
 **Alse, majority of survey subjects said that they were registered as a
 voter**
 
 ``` r
+data_full$Reg_Voter[data_full$Reg_Voter == ''] <- "Unanswered"
 ggplot(data_full) + geom_bar(aes(x = Reg_Voter))
 ```
 
-![](Final_project_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
+![](Final_project_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
-**The randomization worked well in the survey software and we had an
-equal allocation to treatment and control groups in the experiment**
+There appears to be an increase of 6% in score of participants for
+correctly identifying the false tweets with a confidence interval of
+(-0.3,0.420) before including control for mechanical turk participants
+and BOT checks. We added indicator variables for participants recruited
+on mechanical turk as participants on amazon’s mechanical turk may not
+be accurate representatives of general US population. Futhermore, we
+also added an indicator variable for a BOT check being present in the
+survey to control for any malignant activity on mechanical turk (using
+BOTs to answer survey and earn monetray rewards). Since the CAPTCHA
+verification was added in the latter half of the experiment, we added an
+indicator variable in regression to control for errors due to BOT
+activity. We see that the 95% confidence intervals shrink slightly when
+we control for these covariates. The model in the third column will be
+our baseline model. The coefficient for assignment variable in the table
+is not statistically significant in this model.
 
 ``` r
-ggplot(data_full) + geom_bar(aes(x = assignment))
+mod1 <- lm(score_false ~ assignment, data_full)
+mod2 <- lm(score_false ~ assignment+Mturk, data_full)
+mod3 <- lm(score_false ~ assignment+Mturk+captcha, data_full)
+ci_custom1 <- compute_robust_ci(mod1)
+ci_custom2 <- compute_robust_ci(mod2)
+ci_custom3 <- compute_robust_ci(mod3)
+se_custom1 <- compute_robust_se(mod1)
+se_custom2 <- compute_robust_se(mod2)
+se_custom3 <- compute_robust_se(mod3)
+# stargazer(mod1,mod2,mod3, type="text",ci.custom = list(ci_custom1,ci_custom2,ci_custom3))
+stargazer(mod1,mod2,mod3, type="latex",se = list(se_custom1,se_custom2,se_custom3))
+```
+
+% Table created by stargazer v.5.2.2 by Marek Hlavac, Harvard
+University. E-mail: hlavac at fas.harvard.edu % Date and time: Sat, Aug
+08, 2020 - 20:48:41
+
+**Figure 5** examines the distribution of the survey participants by
+Gender and shows that we have a well balanced data set in terms of
+gender distribution.
+
+``` r
+dt <- data_full[, .(count = .N), by=Gender]
+dt$Gender[dt$Gender == ''] <- "Unanswered"
+
+ggplot(dt, aes(x = Gender, y = count)) +
+  geom_bar(aes(fill=count), stat="identity", width = 0.5) + 
+  ggtitle("Figure 5. Gender distribution of survey takers") +
+  ylab("Count") + xlab("Gender")   + 
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+![](Final_project_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+
+**Figure 6** examines the data distribution based on party affiliation.
+We see that the Male and Female genders are well balanced for Democrats
+and Republicans parties while there is a slight skew towards males in
+*Other* party affiliations. The unanswered or non-conforming genders are
+only 2 counts in the data set and hence not represented well in this
+experimental data.
+
+``` r
+data_full$Party[data_full$Party == ''] <- "Unanswered"
+
+dt <- data_full[, .(count = .N), by=.(Gender,Party)]
+dt$Gender[dt$Gender == ''] <- "Unanswered"
+
+ggplot(dt, aes(x = Party, y = count)) +
+  geom_bar(aes(fill=Gender), stat="identity", width = 0.5) + 
+  ggtitle("Figure 6. Gender distribution by party affiliation") +
+  ylab("Count") + xlab("Gender")   + 
+  theme(plot.title = element_text(hjust = 0.5)) 
+```
+
+![](Final_project_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+
+``` r
+dt <- data_full[, .(mean_score_by_gender = mean(score_false)), by=Gender]
+dt$Gender[dt$Gender == ''] <- "Other"
+ggplot(dt, aes(x = Gender, y = mean_score_by_gender)) +
+  geom_bar(aes(Gender), stat="identity", width = 0.5) + 
+  ggtitle("Figure X. Mean scores by Gender") + 
+  ylab("Score on False Tweets") + xlab("Gender")   + 
+  theme(plot.title = element_text(hjust = 0.5)) 
+```
+
+![](Final_project_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
+
+The tweets selected for our experiment deal with US politics, climate
+change and general US current affair topics. Believability in social
+media news/headlines/tweets (and thus ability to score correctly on the
+survey) can have large variation between Republicans vs Democrats or
+Male vs Female, depending on the type of the tweets selected. Therefore,
+we next test the affect of displaying a general warning flag on
+participant score by including interaction terms on top of the baseline
+regression model. The mean score of different gender identities is
+different from each other and we will control for this in the regression
+model to get a better estimate of the treatment
+effect.
+
+``` r
+mod4 <- lm(score_false ~ assignment*factor(Gender)+Mturk+captcha, data_full)
+mod5 <- lm(score_false ~ assignment*factor(Party)+Mturk+captcha, data_full)
+mod6 <- lm(score_false ~ assignment*factor(Gender)+assignment*factor(Party)+Mturk+captcha, data_full)
+ci_custom4 <- compute_robust_ci(mod4)
+ci_custom5 <- compute_robust_ci(mod5)
+ci_custom6 <- compute_robust_ci(mod6)
+
+se_custom4 <- compute_robust_se(mod4)
+se_custom5 <- compute_robust_se(mod5)
+se_custom6 <- compute_robust_se(mod6)
+
+stargazer(mod4,mod5,mod6,type="text",se=list(se_custom4,se_custom5,se_custom6))
+```
+
+    ## 
+    ## ===========================================================================================================
+    ##                                                              Dependent variable:                           
+    ##                                    ------------------------------------------------------------------------
+    ##                                                                  score_false                               
+    ##                                              (1)                     (2)                     (3)           
+    ## -----------------------------------------------------------------------------------------------------------
+    ## assignment                                 -0.038                  -0.037                   -0.160         
+    ##                                            (0.190)                 (0.170)                 (0.240)         
+    ##                                                                                                            
+    ## factor(Gender)Female                      -1.100***                                       -1.000***        
+    ##                                            (0.290)                                         (0.280)         
+    ##                                                                                                            
+    ## factor(Gender)Male                        -0.670***                                       -0.660***        
+    ##                                            (0.220)                                         (0.200)         
+    ##                                                                                                            
+    ## factor(Party)Other                                                  0.280                   0.260          
+    ##                                                                    (0.230)                 (0.230)         
+    ##                                                                                                            
+    ## factor(Party)Republican                                           -0.540**                 -0.540**        
+    ##                                                                    (0.260)                 (0.250)         
+    ##                                                                                                            
+    ## Mturk                                      -0.180                  -0.120                   -0.130         
+    ##                                            (0.120)                 (0.120)                 (0.120)         
+    ##                                                                                                            
+    ## captcha                                   2.300***                2.100***                 2.100***        
+    ##                                            (0.190)                 (0.190)                 (0.190)         
+    ##                                                                                                            
+    ## assignment:factor(Gender)Female             0.180                                           0.230          
+    ##                                            (0.280)                                         (0.280)         
+    ##                                                                                                            
+    ## assignment:factor(Gender)Male                                                                              
+    ##                                                                                                            
+    ##                                                                                                            
+    ## assignment:factor(Party)Other                                       0.250                   0.250          
+    ##                                                                    (0.300)                 (0.310)         
+    ##                                                                                                            
+    ## assignment:factor(Party)Republican                                  0.120                   0.130          
+    ##                                                                    (0.350)                 (0.350)         
+    ##                                                                                                            
+    ## Constant                                  3.000***                2.300***                 3.200***        
+    ##                                            (0.290)                 (0.240)                 (0.300)         
+    ##                                                                                                            
+    ## -----------------------------------------------------------------------------------------------------------
+    ## Observations                                 313                     313                     313           
+    ## R2                                          0.460                   0.470                   0.480          
+    ## Adjusted R2                                 0.450                   0.460                   0.470          
+    ## Residual Std. Error                   1.200 (df = 306)        1.200 (df = 305)         1.200 (df = 302)    
+    ## F Statistic                        43.000*** (df = 6; 306) 39.000*** (df = 7; 305) 28.000*** (df = 10; 302)
+    ## ===========================================================================================================
+    ## Note:                                                                           *p<0.1; **p<0.05; ***p<0.01
+
+``` r
+mod11a <- lm(score_false ~ assignment+TestQ3+Mturk+captcha, data_full)
+mod11b <- lm(score_false ~ assignment+TestQ5+Mturk+captcha, data_full)
+mod11c <- lm(score_false ~ assignment+TestQ6+Mturk+captcha, data_full)
+mod11d <- lm(score_false ~ assignment+TestQ9+Mturk+captcha, data_full)
+mod11e <- lm(score_false ~ assignment+TestQ3+TestQ5+TestQ6+TestQ9+TestQ10+Mturk+captcha, data_full)
+
+stargazer(mod11a,mod11b,mod11c,mod11d,mod11e,type="text")
+```
+
+    ## 
+    ## ====================================================================================================================================================================================
+    ##                                                                                           Dependent variable:                                                                       
+    ##                     ----------------------------------------------------------------------------------------------------------------------------------------------------------------
+    ##                                                                                               score_false                                                                           
+    ##                               (1)                      (2)                      (3)                      (4)                                        (5)                             
+    ## ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    ## assignment                   0.087                    0.085                    0.200*                   -0.110                                    -0.000*                           
+    ##                             (0.100)                  (0.110)                  (0.100)                  (0.100)                                    (0.000)                           
+    ##                                                                                                                                                                                     
+    ## TestQ3Yes                  -2.400***                                                                                                             -1.000***                          
+    ##                             (0.150)                                                                                                               (0.000)                           
+    ##                                                                                                                                                                                     
+    ## TestQ5Yes                                           -1.500***                                                                                    -1.000***                          
+    ##                                                      (0.120)                                                                                      (0.000)                           
+    ##                                                                                                                                                                                     
+    ## TestQ6Yes                                                                    -2.300***                                                           -1.000***                          
+    ##                                                                               (0.150)                                                             (0.000)                           
+    ##                                                                                                                                                                                     
+    ## TestQ9Yes                                                                                             -2.200***                                  -1.000***                          
+    ##                                                                                                        (0.130)                                    (0.000)                           
+    ##                                                                                                                                                                                     
+    ## TestQ10Yes                                                                                                                                       -1.000***                          
+    ##                                                                                                                                                   (0.000)                           
+    ##                                                                                                                                                                                     
+    ## Mturk                        -0.200                   -0.130                   -0.120                   -0.078                                     -0.000                           
+    ##                             (0.130)                  (0.140)                  (0.130)                  (0.130)                                    (0.000)                           
+    ##                                                                                                                                                                                     
+    ## captcha                     0.980***                 1.600***                 1.200***                 1.400***                                    0.000                            
+    ##                             (0.140)                  (0.140)                  (0.140)                  (0.130)                                    (0.000)                           
+    ##                                                                                                                                                                                     
+    ## Constant                    3.600***                 3.300***                 3.300***                 3.200***                                   5.000***                          
+    ##                             (0.190)                  (0.200)                  (0.180)                  (0.170)                                    (0.000)                           
+    ##                                                                                                                                                                                     
+    ## ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    ## Observations                  313                      313                      313                      313                                        313                             
+    ## R2                           0.690                    0.630                    0.680                    0.710                                      1.000                            
+    ## Adjusted R2                  0.690                    0.620                    0.680                    0.700                                      1.000                            
+    ## Residual Std. Error     0.910 (df = 308)         1.000 (df = 308)         0.930 (df = 308)         0.890 (df = 308)                           0.000 (df = 304)                      
+    ## F Statistic         174.000*** (df = 4; 308) 129.000*** (df = 4; 308) 166.000*** (df = 4; 308) 186.000*** (df = 4; 308) 987,437,409,256,563,212,468,824,834,048.000*** (df = 8; 304)
+    ## ====================================================================================================================================================================================
+    ## Note:                                                                                                                                                    *p<0.1; **p<0.05; ***p<0.01
+
+``` r
+mod11a <- lm(score_true ~ assignment+TestQ3+Mturk+captcha, data_full)
+mod11b <- lm(score_true ~ assignment+TestQ5+Mturk+captcha, data_full)
+mod11c <- lm(score_true ~ assignment+TestQ3+TestQ5+TestQ6+Mturk+captcha, data_full)
+mod11d <- lm(score_true ~ assignment+TestQ9+Mturk+captcha, data_full)
+mod11e <- lm(score_true ~ assignment+TestQ3+TestQ5+TestQ6+TestQ9+TestQ10+Mturk+captcha, data_full)
+
+stargazer(mod11a,mod11b,mod11c,mod11d,mod11e,type="text",
+          add.lines=list(c("Question Fixed Effects", rep("Yes",5))))
+```
+
+    ## 
+    ## ==========================================================================================================================================
+    ##                                                                        Dependent variable:                                                
+    ##                        -------------------------------------------------------------------------------------------------------------------
+    ##                                                                            score_true                                                     
+    ##                                  (1)                    (2)                    (3)                    (4)                    (5)          
+    ## ------------------------------------------------------------------------------------------------------------------------------------------
+    ## assignment                     -0.190*                 -0.180                -0.200*                 -0.170                -0.210*        
+    ##                                (0.110)                (0.110)                (0.110)                (0.110)                (0.110)        
+    ##                                                                                                                                           
+    ## TestQ3Yes                     0.560***                                       0.450**                                       0.460**        
+    ##                                (0.160)                                       (0.180)                                       (0.200)        
+    ##                                                                                                                                           
+    ## TestQ5Yes                                              0.130                  0.074                                         0.075         
+    ##                                                       (0.120)                (0.120)                                       (0.130)        
+    ##                                                                                                                                           
+    ## TestQ6Yes                                                                     0.220                                         0.240         
+    ##                                                                              (0.180)                                       (0.180)        
+    ##                                                                                                                                           
+    ## TestQ9Yes                                                                                            0.100                  -0.200        
+    ##                                                                                                     (0.150)                (0.170)        
+    ##                                                                                                                                           
+    ## TestQ10Yes                                                                                                                  0.170         
+    ##                                                                                                                            (0.170)        
+    ##                                                                                                                                           
+    ## Mturk                           0.047                  0.037                  0.038                  0.037                  0.032         
+    ##                                (0.140)                (0.140)                (0.140)                (0.140)                (0.140)        
+    ##                                                                                                                                           
+    ## captcha                       -0.400**               -0.640***               -0.320*               -0.650***               -0.300*        
+    ##                                (0.160)                (0.140)                (0.170)                (0.140)                (0.170)        
+    ##                                                                                                                                           
+    ## Constant                      3.700***                4.000***               3.600***               4.000***               3.600***       
+    ##                                (0.200)                (0.200)                (0.220)                (0.200)                (0.220)        
+    ##                                                                                                                                           
+    ## ------------------------------------------------------------------------------------------------------------------------------------------
+    ## Question Fixed Effects           Yes                    Yes                    Yes                    Yes                    Yes          
+    ## Observations                     313                    313                    313                    313                    313          
+    ## R2                              0.140                  0.110                  0.140                  0.110                  0.150         
+    ## Adjusted R2                     0.130                  0.098                  0.130                  0.097                  0.130         
+    ## Residual Std. Error       0.980 (df = 308)        1.000 (df = 308)       0.980 (df = 306)       1.000 (df = 308)       0.980 (df = 304)   
+    ## F Statistic            12.000*** (df = 4; 308) 9.500*** (df = 4; 308) 8.600*** (df = 6; 306) 9.300*** (df = 4; 308) 6.700*** (df = 8; 304)
+    ## ==========================================================================================================================================
+    ## Note:                                                                                                          *p<0.1; **p<0.05; ***p<0.01
+
+``` r
+data_full[, score_TestQ1 := ifelse(TestQ1 == "Yes", 1, 0)]
+data_full[, score_TestQ2 := ifelse(TestQ2 == "Yes", 1, 0)]
+data_full[, score_TestQ3 := ifelse(TestQ3 == "No", 1, 0)]
+data_full[, score_TestQ4 := ifelse(TestQ4 == "Yes", 1, 0)]
+data_full[, score_TestQ5 := ifelse(TestQ5 == "No", 1, 0)]
+data_full[, score_TestQ6 := ifelse(TestQ6 == "No", 1, 0)]
+data_full[, score_TestQ7 := ifelse(TestQ7 == "Yes", 1, 0)]
+data_full[, score_TestQ8 := ifelse(TestQ8 == "Yes", 1, 0)]
+data_full[, score_TestQ9 := ifelse(TestQ9 == "No", 1, 0)]
+data_full[, score_TestQ10 := ifelse(TestQ10 == "No", 1, 0)]
+
+dt <- data_full[, .(countQ1 = sum(score_TestQ1), 
+              countQ2 = sum(score_TestQ2),
+              countQ3 = sum(score_TestQ3),
+              countQ4 = sum(score_TestQ4),
+              countQ5 = sum(score_TestQ5),
+              countQ6 = sum(score_TestQ6),
+              countQ7 = sum(score_TestQ7),
+              countQ8 = sum(score_TestQ8),
+              countQ9 = sum(score_TestQ9),
+              countQ10 = sum(score_TestQ10)
+              )]
+
+d2 <- data_full[, .(countQ1 = sum(score_TestQ1), 
+              countQ2 = sum(score_TestQ2),
+              countQ3 = sum(score_TestQ3),
+              countQ4 = sum(score_TestQ4),
+              countQ5 = sum(score_TestQ5),
+              countQ6 = sum(score_TestQ6),
+              countQ7 = sum(score_TestQ7),
+              countQ8 = sum(score_TestQ8),
+              countQ9 = sum(score_TestQ9),
+              countQ10 = sum(score_TestQ10)
+              ), by =assignment]
+
+barplot(dt[,c(countQ3,countQ5,countQ6,countQ9,countQ10)],
+        col = c('blue','gold'),
+        ylab = "Percentage score for correct answer",
+        xlab = "Scores for each survey question",
+        names.arg= c("Q3","Q5","Q6","Q9","Q10")
+      )
 ```
 
 ![](Final_project_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
 
-**There does seem to be a slight skew in the distribution of
-participant’s gender towards the Male gender (One subject did not
-answer the gender question)**
-
 ``` r
-ggplot(data_full) + geom_bar(aes(x = Gender))
+d2$Warning_Flag[d2$assignment == 0] <- "No"
+d2$Warning_Flag[d2$assignment == 1] <- "Yes"
+
+dfm <- melt(d2[,c('Warning_Flag','countQ3','countQ5','countQ6','countQ9','countQ10')],id.vars = 1)
+levels(dfm$variable) = c("Q3","Q5","Q6","Q9","Q10")
+
+p <- ggplot(dfm,aes(x = variable,y = value)) + 
+  geom_bar(aes(fill = Warning_Flag),stat = "identity", width=0.7, position=position_dodge(width=0.8)) +
+  ggtitle("Figure2. General warning effect on scores for each tweet ") +
+  ylab("Percentage score for correct answer") + 
+  xlab("Question Number") + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  scale_fill_manual(values = c("blue","gold"))
+p
 ```
 
-![](Final_project_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
+![](Final_project_files/figure-gfm/unnamed-chunk-20-2.png)<!-- -->
 
-**Within each gender category, we see that the party affiliation is
-approximately evenly distributed.**
+  - \*\*Score on qestion 10 is collinear with the scores on other
+    questions. Running regression with the fixed effects of question 10
+    leads to
+singularities.
 
-``` r
-data_full[, .N, by=.(Gender,Party)]
-```
-
-    ##    Gender      Party  N
-    ## 1: Female   Democrat 90
-    ## 2: Female Republican 37
-    ## 3: Female      Other 21
-    ## 4:   Male      Other 34
-    ## 5:   Male   Democrat 82
-    ## 6:   Male Republican 47
-    ## 7:          Democrat  2
+<!-- end list -->
 
 ``` r
-ggplot(data_full) + geom_bar(aes(x = Gender,fill=Party))
+mod1 <- lm(score_false ~ assignment+score_TestQ3+score_TestQ5+score_TestQ6, data = data_full)
+se_custom1 <- compute_robust_se(mod1)
+
+stargazer(mod1,type="text",se=list(se_custom1))
 ```
 
-![](Final_project_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+    ## 
+    ## ===============================================
+    ##                         Dependent variable:    
+    ##                     ---------------------------
+    ##                             score_false        
+    ## -----------------------------------------------
+    ## assignment                   0.190***          
+    ##                               (0.057)          
+    ##                                                
+    ## score_TestQ3                 1.700***          
+    ##                               (0.120)          
+    ##                                                
+    ## score_TestQ5                 1.300***          
+    ##                               (0.065)          
+    ##                                                
+    ## score_TestQ6                 1.500***          
+    ##                               (0.120)          
+    ##                                                
+    ## Constant                     0.340***          
+    ##                               (0.080)          
+    ##                                                
+    ## -----------------------------------------------
+    ## Observations                    313            
+    ## R2                             0.900           
+    ## Adjusted R2                    0.900           
+    ## Residual Std. Error      0.520 (df = 308)      
+    ## F Statistic          703.000*** (df = 4; 308)  
+    ## ===============================================
+    ## Note:               *p<0.1; **p<0.05; ***p<0.01
+
+``` r
+# mod1 <- lm(score_TestQ1 ~ assignment, data = data_full)
+# mod2 <- lm(score_TestQ2 ~ assignment, data = data_full)
+# mod3 <- lm(score_TestQ3 ~ assignment, data = data_full)
+# mod4 <- lm(score_TestQ4 ~ assignment, data = data_full)
+# mod5 <- lm(score_TestQ5 ~ assignment, data = data_full)
+# mod6 <- lm(score_TestQ6 ~ assignment, data = data_full)
+# mod7 <- lm(score_TestQ7 ~ assignment, data = data_full)
+# mod8 <- lm(score_TestQ8 ~ assignment, data = data_full)
+# mod9 <- lm(score_TestQ9 ~ assignment, data = data_full)
+# mod10 <- lm(score_TestQ10 ~ assignment, data = data_full)
+mod11 <- lm(score_false ~ assignment*Ethnicity+TestQ3+TestQ5+TestQ6, data_full)
+mod12 <- lm(score_false ~ assignment*Gender+TestQ3+TestQ5+TestQ6, data_full)
+mod13 <- lm(score_false ~ assignment*Education+TestQ3+TestQ5+TestQ6, data_full)
+mod14 <- lm(score_false ~ assignment*factor(Income)+TestQ3+TestQ5+TestQ6, data_full)
+
+#stargazer(mod1,mod2,mod3,mod4,mod5,mod6,mod7,mod8,mod9,mod10,mod11,type="text")
+stargazer(mod11,mod12,mod13,mod14,type="text")
+```
+
+    ## 
+    ## ================================================================================================================================================
+    ##                                                                                    Dependent variable:                                          
+    ##                                           ------------------------------------------------------------------------------------------------------
+    ##                                                                                        score_false                                              
+    ##                                                      (1)                      (2)                       (3)                       (4)           
+    ## ------------------------------------------------------------------------------------------------------------------------------------------------
+    ## assignment                                          0.010                   0.240***                 0.290***                  0.270***         
+    ##                                                    (0.140)                  (0.082)                   (0.090)                   (0.091)         
+    ##                                                                                                                                                 
+    ## EthnicityBlack / African                          -0.610***                                                                                     
+    ##                                                    (0.180)                                                                                      
+    ##                                                                                                                                                 
+    ## EthnicityCaucasian                                 -0.190                                                                                       
+    ##                                                    (0.120)                                                                                      
+    ##                                                                                                                                                 
+    ## EthnicityHispanic / Latinx                         -0.250                                                                                       
+    ##                                                    (0.170)                                                                                      
+    ##                                                                                                                                                 
+    ## EthnicityNative American                           -0.390                                                                                       
+    ##                                                    (0.240)                                                                                      
+    ##                                                                                                                                                 
+    ## EthnicityOther                                      0.120                                                                                       
+    ##                                                    (0.380)                                                                                      
+    ##                                                                                                                                                 
+    ## GenderFemale                                                                 0.470                                                              
+    ##                                                                             (0.380)                                                             
+    ##                                                                                                                                                 
+    ## GenderMale                                                                   0.400                                                              
+    ##                                                                             (0.370)                                                             
+    ##                                                                                                                                                 
+    ## EducationGraduate degree                                                                               0.140                                    
+    ##                                                                                                       (0.098)                                   
+    ##                                                                                                                                                 
+    ## EducationHigh school graduate                                                                          0.001                                    
+    ##                                                                                                       (0.180)                                   
+    ##                                                                                                                                                 
+    ## EducationLess than high school                                                                        -0.140                                    
+    ##                                                                                                       (0.370)                                   
+    ##                                                                                                                                                 
+    ## EducationSome college                                                                                  0.059                                    
+    ##                                                                                                       (0.120)                                   
+    ##                                                                                                                                                 
+    ## 250000                                                                                                                           0.120          
+    ##                                                                                                                                 (0.140)         
+    ##                                                                                                                                                 
+    ## 250000                                                                                                                           0.170          
+    ##                                                                                                                                 (0.140)         
+    ##                                                                                                                                                 
+    ## 150000                                                                                                                          -0.021          
+    ##                                                                                                                                 (0.095)         
+    ##                                                                                                                                                 
+    ## TestQ3Yes                                         -1.700***                -1.700***                 -1.700***                 -1.700***        
+    ##                                                    (0.092)                  (0.090)                   (0.092)                   (0.091)         
+    ##                                                                                                                                                 
+    ## TestQ5Yes                                         -1.300***                -1.300***                 -1.300***                 -1.300***        
+    ##                                                    (0.062)                  (0.063)                   (0.063)                   (0.064)         
+    ##                                                                                                                                                 
+    ## TestQ6Yes                                         -1.500***                -1.500***                 -1.500***                 -1.500***        
+    ##                                                    (0.093)                  (0.092)                   (0.093)                   (0.094)         
+    ##                                                                                                                                                 
+    ## assignment:EthnicityBlack / African               0.820***                                                                                      
+    ##                                                    (0.260)                                                                                      
+    ##                                                                                                                                                 
+    ## assignment:EthnicityCaucasian                       0.130                                                                                       
+    ##                                                    (0.150)                                                                                      
+    ##                                                                                                                                                 
+    ## assignment:EthnicityHispanic / Latinx              0.510*                                                                                       
+    ##                                                    (0.280)                                                                                      
+    ##                                                                                                                                                 
+    ## assignment:EthnicityNative American                 0.280                                                                                       
+    ##                                                    (0.310)                                                                                      
+    ##                                                                                                                                                 
+    ## assignment:EthnicityOther                          -0.170                                                                                       
+    ##                                                    (0.450)                                                                                      
+    ##                                                                                                                                                 
+    ## assignment:GenderFemale                                                      -0.085                                                             
+    ##                                                                             (0.120)                                                             
+    ##                                                                                                                                                 
+    ## assignment:GenderMale                                                                                                                           
+    ##                                                                                                                                                 
+    ##                                                                                                                                                 
+    ## assignment:EducationGraduate degree                                                                   -0.200                                    
+    ##                                                                                                       (0.140)                                   
+    ##                                                                                                                                                 
+    ## assignment:EducationHigh school graduate                                                              -0.140                                    
+    ##                                                                                                       (0.240)                                   
+    ##                                                                                                                                                 
+    ## assignment:EducationLess than high school                                                             -0.190                                    
+    ##                                                                                                       (0.530)                                   
+    ##                                                                                                                                                 
+    ## assignment:EducationSome college                                                                      -0.140                                    
+    ##                                                                                                       (0.170)                                   
+    ##                                                                                                                                                 
+    ## 250000                                                                                                                          -0.250          
+    ##                                                                                                                                 (0.210)         
+    ##                                                                                                                                                 
+    ## 250000                                                                                                                          -0.270          
+    ##                                                                                                                                 (0.200)         
+    ##                                                                                                                                                 
+    ## 150000                                                                                                                          -0.053          
+    ##                                                                                                                                 (0.130)         
+    ##                                                                                                                                                 
+    ## Constant                                          5.000***                  4.400***                 4.800***                  4.800***         
+    ##                                                    (0.110)                  (0.380)                   (0.069)                   (0.070)         
+    ##                                                                                                                                                 
+    ## ------------------------------------------------------------------------------------------------------------------------------------------------
+    ## Observations                                         313                      313                       313                       313           
+    ## R2                                                  0.910                    0.900                     0.900                     0.900          
+    ## Adjusted R2                                         0.900                    0.900                     0.900                     0.900          
+    ## Residual Std. Error                           0.510 (df = 298)          0.520 (df = 305)         0.520 (df = 300)          0.520 (df = 302)     
+    ## F Statistic                               207.000*** (df = 14; 298) 401.000*** (df = 7; 305) 232.000*** (df = 12; 300) 280.000*** (df = 10; 302)
+    ## ================================================================================================================================================
+    ## Note:                                                                                                                *p<0.1; **p<0.05; ***p<0.01
+
+  - **The SEs don’t appear to be changing with different question fixed
+    effects but the magnitude of the coefficient is changing. We will
+    exploring cummulating the fixed effects from false questions.**
+
+<!-- end list -->
+
+``` r
+mod11a <- lm(score_true ~ assignment+TestQ3+Mturk+captcha, data_full)
+mod11b <- lm(score_true ~ assignment+TestQ3+TestQ5+Mturk+captcha, data_full)
+mod11c <- lm(score_true ~ assignment+TestQ3+TestQ5+TestQ6+Mturk+captcha, data_full)
+mod11d <- lm(score_true ~ assignment+TestQ3+TestQ5+TestQ6+TestQ9+Mturk+captcha, data_full)
+mod11e <- lm(score_true ~ assignment+TestQ3+TestQ5+TestQ6+TestQ9+TestQ10+Mturk+captcha, data_full)
+
+stargazer(mod11a,mod11b,mod11c,mod11d,mod11e,type="text")
+```
+
+    ## 
+    ## ========================================================================================================================================
+    ##                                                                     Dependent variable:                                                 
+    ##                     --------------------------------------------------------------------------------------------------------------------
+    ##                                                                          score_true                                                     
+    ##                               (1)                     (2)                    (3)                    (4)                    (5)          
+    ## ----------------------------------------------------------------------------------------------------------------------------------------
+    ## assignment                  -0.190*                 -0.190*                -0.200*                -0.220*                -0.210*        
+    ##                             (0.110)                 (0.110)                (0.110)                (0.110)                (0.110)        
+    ##                                                                                                                                         
+    ## TestQ3Yes                  0.560***                0.550***                0.450**                0.500***               0.460**        
+    ##                             (0.160)                 (0.170)                (0.180)                (0.190)                (0.200)        
+    ##                                                                                                                                         
+    ## TestQ5Yes                                            0.090                  0.074                  0.095                  0.075         
+    ##                                                     (0.120)                (0.120)                (0.120)                (0.130)        
+    ##                                                                                                                                         
+    ## TestQ6Yes                                                                   0.220                  0.260                  0.240         
+    ##                                                                            (0.180)                (0.180)                (0.180)        
+    ##                                                                                                                                         
+    ## TestQ9Yes                                                                                          -0.170                 -0.200        
+    ##                                                                                                   (0.170)                (0.170)        
+    ##                                                                                                                                         
+    ## TestQ10Yes                                                                                                                0.170         
+    ##                                                                                                                          (0.170)        
+    ##                                                                                                                                         
+    ## Mturk                        0.047                   0.044                  0.038                  0.044                  0.032         
+    ##                             (0.140)                 (0.140)                (0.140)                (0.140)                (0.140)        
+    ##                                                                                                                                         
+    ## captcha                    -0.400**                -0.360**                -0.320*                -0.330**               -0.300*        
+    ##                             (0.160)                 (0.160)                (0.170)                (0.170)                (0.170)        
+    ##                                                                                                                                         
+    ## Constant                   3.700***                3.700***                3.600***               3.600***               3.600***       
+    ##                             (0.200)                 (0.220)                (0.220)                (0.220)                (0.220)        
+    ##                                                                                                                                         
+    ## ----------------------------------------------------------------------------------------------------------------------------------------
+    ## Observations                  313                     313                    313                    313                    313          
+    ## R2                           0.140                   0.140                  0.140                  0.150                  0.150         
+    ## Adjusted R2                  0.130                   0.130                  0.130                  0.130                  0.130         
+    ## Residual Std. Error    0.980 (df = 308)        0.980 (df = 307)        0.980 (df = 306)       0.980 (df = 305)       0.980 (df = 304)   
+    ## F Statistic         12.000*** (df = 4; 308) 10.000*** (df = 5; 307) 8.600*** (df = 6; 306) 7.600*** (df = 7; 305) 6.700*** (df = 8; 304)
+    ## ========================================================================================================================================
+    ## Note:                                                                                                        *p<0.1; **p<0.05; ***p<0.01
 
 **Our dataset does appear to consist mostly of people with atleast a
 college degree or higher and the participants mostly belong to the 21-40
@@ -1132,28 +1278,103 @@ bucket.**
 ggplot(data_full) + geom_bar(aes(x = Education,fill=Age_bin))
 ```
 
-![](Final_project_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
+![](Final_project_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+
+``` r
+mod7 <- lm(score_false ~ assignment*factor(Party)+factor(Gender)+assignment*factor(Age_bin)+Mturk+captcha, data_full)
+mod8 <- lm(score_false ~ assignment*factor(Age_bin)+assignment*factor(Party)+Mturk+captcha, data_full)
+se_custom7 <- compute_robust_se(mod7)
+se_custom8 <- compute_robust_se(mod8)
+stargazer(mod7,mod8,type="text",se=list(se_custom7,se_custom8))
+```
+
+    ## 
+    ## ====================================================================================
+    ##                                                   Dependent variable:               
+    ##                                    -------------------------------------------------
+    ##                                                       score_false                   
+    ##                                              (1)                      (2)           
+    ## ------------------------------------------------------------------------------------
+    ## assignment                                 -0.780**                -0.950***        
+    ##                                            (0.350)                  (0.320)         
+    ##                                                                                     
+    ## factor(Party)Other                          0.280                    0.290          
+    ##                                            (0.230)                  (0.230)         
+    ##                                                                                     
+    ## factor(Party)Republican                    -0.510**                 -0.510**        
+    ##                                            (0.260)                  (0.260)         
+    ##                                                                                     
+    ## factor(Gender)Female                      -0.810***                                 
+    ##                                            (0.190)                                  
+    ##                                                                                     
+    ## factor(Gender)Male                        -0.560***                                 
+    ##                                            (0.200)                                  
+    ##                                                                                     
+    ## factor(Age_bin)21-40                        -0.240                   -0.350         
+    ##                                            (0.270)                  (0.280)         
+    ##                                                                                     
+    ## factor(Age_bin)41-60                        -0.360                   -0.480         
+    ##                                            (0.320)                  (0.320)         
+    ##                                                                                     
+    ## factor(Age_bin)61+                          -0.600                   -0.800         
+    ##                                            (0.590)                  (0.590)         
+    ##                                                                                     
+    ## Mturk                                       -0.085                   -0.086         
+    ##                                            (0.130)                  (0.130)         
+    ##                                                                                     
+    ## captcha                                    2.200***                 2.100***        
+    ##                                            (0.190)                  (0.200)         
+    ##                                                                                     
+    ## assignment:factor(Party)Other               0.160                    0.200          
+    ##                                            (0.300)                  (0.300)         
+    ##                                                                                     
+    ## assignment:factor(Party)Republican          0.068                    0.074          
+    ##                                            (0.350)                  (0.350)         
+    ##                                                                                     
+    ## assignment:factor(Age_bin)21-40            0.780**                  0.950***        
+    ##                                            (0.360)                  (0.330)         
+    ##                                                                                     
+    ## assignment:factor(Age_bin)41-60            0.880**                  1.100***        
+    ##                                            (0.400)                  (0.370)         
+    ##                                                                                     
+    ## assignment:factor(Age_bin)61+               0.480                    0.720          
+    ##                                            (0.710)                  (0.700)         
+    ##                                                                                     
+    ## Constant                                   3.200***                 2.700***        
+    ##                                            (0.340)                  (0.330)         
+    ##                                                                                     
+    ## ------------------------------------------------------------------------------------
+    ## Observations                                 313                      313           
+    ## R2                                          0.490                    0.480          
+    ## Adjusted R2                                 0.460                    0.460          
+    ## Residual Std. Error                    1.200 (df = 297)         1.200 (df = 299)    
+    ## F Statistic                        19.000*** (df = 15; 297) 22.000*** (df = 13; 299)
+    ## ====================================================================================
+    ## Note:                                                    *p<0.1; **p<0.05; ***p<0.01
 
 ``` r
 ggplot(mutate(data_full, Age = fct_infreq(Age_bin))) + geom_bar(aes(x = Age_bin))
 ```
 
-![](Final_project_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+![](Final_project_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
 
 ``` r
-data_mod[, .N, by=.(Party,Age_bin)]
+data_full[, .N, by=.(Party,Age_bin)]
 ```
 
-    ##         Party Age_bin N
-    ## 1:   Democrat   21-40 7
-    ## 2:      Other   21-40 7
-    ## 3:              21-40 2
-    ## 4: Republican     61+ 1
-    ## 5: Republican   21-40 4
-    ## 6:   Democrat    0-20 2
-    ## 7:      Other     61+ 1
-    ## 8: Republican    0-20 1
-    ## 9:   Democrat   41-60 1
+    ##          Party Age_bin   N
+    ##  1:   Democrat   21-40 126
+    ##  2: Republican   21-40  52
+    ##  3:      Other   21-40  31
+    ##  4: Republican   41-60  26
+    ##  5:      Other   41-60  20
+    ##  6:   Democrat   41-60  37
+    ##  7:   Democrat     61+   8
+    ##  8: Republican     61+   5
+    ##  9:   Democrat    0-20   3
+    ## 10:      Other     61+   1
+    ## 11:      Other    0-20   3
+    ## 12: Republican    0-20   1
 
 In terms of ethinicity of the randomly sampled subjects, the majority
 were Caucasian followed by approximately equal counts of Hispanic and
@@ -1175,149 +1396,368 @@ data_full[, .N, by=Ethnicity]
 ggplot(mutate(data_full, Ethnicity = fct_infreq(Ethnicity))) + geom_bar(aes(x = Ethnicity))
 ```
 
-![](Final_project_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
+![](Final_project_files/figure-gfm/unnamed-chunk-28-1.png)<!-- -->
 
 ``` r
-compute_robust_ci<- function(mod,type="HC",clustering = FALSE,data=NA) { 
-  coefs <- names(mod$coefficients)
-  if (clustering){
-    # calculate robust clustered standard errors 
-    robust_se <- sqrt(diag(vcovCL(mod,cluster = data,type=type))) 
-  }
-  else{
-    # calculate robust standard errors without clustering
-    robust_se <- sqrt(diag(vcovHC(mod,type=type)))  
-  }
-  ci_ll <- NA
-  ci_ul <- NA
-  for(i in 1:length(coefs)){
-    ci_ll[i] <- mod$coefficients[[coefs[i]]] - 1.96 * robust_se[i]
-    ci_ul[i] <- mod$coefficients[[coefs[i]]] + 1.96 * robust_se[i]
-  }
-    ci_custom <- matrix(c(ci_ll,ci_ul), nrow = length(coefs), byrow = FALSE)
-    return(ci_custom)
-}
-
-compute_robust_se<- function(mod,type="HC",clustering = FALSE,data=NA) { 
-  coefs <- names(mod$coefficients)
-  if (clustering){
-    # calculate robust clustered standard errors 
-    robust_se <- sqrt(diag(vcovCL(mod,cluster = data,type=type))) 
-  }
-  else{
-    # calculate robust standard errors without clustering
-    robust_se <- sqrt(diag(vcovHC(mod,type=type)))  
-  }
-  
-    return(robust_se)
-}
+dt <- data_full[, .(mean_score_by_Ethnicity = mean(score_false)), by=Ethnicity]
+dt$Gender[dt$Gender == ''] <- "Other"
+ggplot(dt, aes(x = Ethnicity, y = mean_score_by_Ethnicity)) +
+  geom_bar(aes(Ethnicity), stat="identity", width = 0.5) + 
+  ggtitle("Figure X. Mean scores by Ethnicity") + 
+  ylab("Score on False Tweets") + xlab("Ethnicity")   + 
+  theme(plot.title = element_text(hjust = 0.5)) 
 ```
 
-``` r
-mod1 <- lm(score ~ assignment, data_full)
-mod2 <- lm(score ~ assignment+factor(Party)*factor(Gender)+factor(Ethnicity)*factor(Gender)+factor(Age_bin), data_full)
-ci_custom1 <- compute_robust_ci(mod1,type="HC3")
-ci_custom2 <- compute_robust_ci(mod2,type="HC3")
+![](Final_project_files/figure-gfm/unnamed-chunk-29-1.png)<!-- -->
 
-stargazer(mod1,mod2, type="text",ci.custom=list(ci_custom1,ci_custom2))
+``` r
+mod9 <- lm(score_false ~ assignment*Age_bin+Gender+Party+Ethnicity + Mturk+captcha, data_full)
+mod10 <- lm(score_false ~ assignment*Ethnicity*Age_bin + Party+Gender+Mturk+captcha, data_full)
+se_custom9 <- compute_robust_se(mod9)
+se_custom10 <- compute_robust_se(mod10)
+stargazer(mod9,mod10,type="text",se=list(se_custom9,se_custom10)
+          )
 ```
 
     ## 
     ## ===================================================================================================
-    ##                                                                     Dependent variable:            
-    ##                                                         -------------------------------------------
-    ##                                                                            score                   
-    ##                                                                 (1)                   (2)          
+    ##                                                                  Dependent variable:               
+    ##                                                    ------------------------------------------------
+    ##                                                                      score_false                   
+    ##                                                              (1)                      (2)          
     ## ---------------------------------------------------------------------------------------------------
-    ## assignment                                                    -0.120                -0.140         
-    ##                                                           (-0.480, 0.240)       (-0.490, 0.210)    
+    ## assignment                                                 -0.660*                 -0.770**        
+    ##                                                            (0.350)                  (0.320)        
     ##                                                                                                    
-    ## factor(Party)Other                                                                  0.760**        
-    ##                                                                                 (0.110, 1.400)     
+    ## Age_bin21-40                                                -0.180                  -0.490         
+    ##                                                            (0.280)                  (0.360)        
     ##                                                                                                    
-    ## factor(Party)Republican                                                            -0.580**        
-    ##                                                                                (-1.100, -0.023)    
+    ## Age_bin41-60                                                -0.390                 -1.500**        
+    ##                                                            (0.320)                  (0.660)        
     ##                                                                                                    
-    ## factor(Gender)Female                                                                 0.650         
-    ##                                                                                 (-2.400, 3.700)    
+    ## Age_bin61+                                                  -0.420                   0.360         
+    ##                                                            (0.530)                  (0.710)        
     ##                                                                                                    
-    ## factor(Gender)Male                                                                   0.130         
-    ##                                                                                 (-2.900, 3.200)    
+    ## GenderFemale                                              -0.720***                -0.620***       
+    ##                                                            (0.160)                  (0.160)        
     ##                                                                                                    
-    ## factor(Ethnicity)Black / African                                                    -0.430         
-    ##                                                                                 (-1.400, 0.580)    
+    ## GenderMale                                                 -0.420**                -0.400**        
+    ##                                                            (0.170)                  (0.170)        
     ##                                                                                                    
-    ## factor(Ethnicity)Caucasian                                                          -1.000         
-    ##                                                                                 (-5.300, 3.300)    
+    ## PartyOther                                                 0.340**                  0.390**        
+    ##                                                            (0.160)                  (0.150)        
     ##                                                                                                    
-    ## factor(Ethnicity)Hispanic / Latinx                                                  -0.380         
-    ##                                                                                 (-1.400, 0.610)    
+    ## PartyRepublican                                            -0.450**                -0.390**        
+    ##                                                            (0.190)                  (0.190)        
     ##                                                                                                    
-    ## factor(Ethnicity)Native American                                                    -0.770         
-    ##                                                                                 (-2.000, 0.450)    
+    ## EthnicityBlack / African                                    -0.090                 -0.850**        
+    ##                                                            (0.330)                  (0.400)        
     ##                                                                                                    
-    ## factor(Ethnicity)Other                                                              -0.180         
-    ##                                                                                 (-2.000, 1.700)    
+    ## EthnicityCaucasian                                          0.200                   -0.390         
+    ##                                                            (0.160)                  (0.290)        
     ##                                                                                                    
-    ## factor(Age_bin)21-40                                                                -0.250         
-    ##                                                                                 (-1.400, 0.940)    
+    ## EthnicityHispanic / Latinx                                  -0.360                 -2.600***       
+    ##                                                            (0.330)                  (0.820)        
     ##                                                                                                    
-    ## factor(Age_bin)41-60                                                                -0.280         
-    ##                                                                                 (-1.500, 0.940)    
+    ## EthnicityNative American                                   -0.710*                 -2.600***       
+    ##                                                            (0.390)                  (0.820)        
     ##                                                                                                    
-    ## factor(Age_bin)61+                                                                  -0.680         
-    ##                                                                                 (-2.100, 0.770)    
+    ## EthnicityOther                                              -0.320                  -0.092         
+    ##                                                            (0.410)                  (0.360)        
     ##                                                                                                    
-    ## factor(Party)Other:factor(Gender)Female                                             -0.360         
-    ##                                                                                 (-1.400, 0.660)    
+    ## Mturk                                                       -0.150                  -0.230         
+    ##                                                            (0.140)                  (0.140)        
     ##                                                                                                    
-    ## factor(Party)Republican:factor(Gender)Female                                        -0.440         
-    ##                                                                                 (-1.300, 0.410)    
+    ## captcha                                                    2.000***                1.900***        
+    ##                                                            (0.200)                  (0.210)        
     ##                                                                                                    
-    ## factor(Party)Other:factor(Gender)Male                                                              
+    ## assignment:EthnicityBlack / African                                                 0.850**        
+    ##                                                                                     (0.400)        
+    ##                                                                                                    
+    ## assignment:EthnicityCaucasian                                                       -0.230         
+    ##                                                                                     (0.320)        
+    ##                                                                                                    
+    ## assignment:EthnicityHispanic / Latinx                                               -0.500         
+    ##                                                                                     (0.690)        
+    ##                                                                                                    
+    ## assignment:EthnicityNative American                                                 2.200*         
+    ##                                                                                     (1.200)        
+    ##                                                                                                    
+    ## assignment:EthnicityOther                                                           -0.440         
+    ##                                                                                     (0.650)        
+    ##                                                                                                    
+    ## assignment:Age_bin21-40                                     0.700*                  0.880**        
+    ##                                                            (0.390)                  (0.420)        
+    ##                                                                                                    
+    ## assignment:Age_bin41-60                                    0.840**                  1.800**        
+    ##                                                            (0.420)                  (0.730)        
+    ##                                                                                                    
+    ## assignment:Age_bin61+                                       0.380                   -0.360         
+    ##                                                            (0.700)                  (0.700)        
+    ##                                                                                                    
+    ## EthnicityBlack / African:Age_bin21-40                                                0.750         
+    ##                                                                                     (0.620)        
+    ##                                                                                                    
+    ## EthnicityCaucasian:Age_bin21-40                                                      0.510         
+    ##                                                                                     (0.410)        
+    ##                                                                                                    
+    ## EthnicityHispanic / Latinx:Age_bin21-40                                            2.400***        
+    ##                                                                                     (0.910)        
+    ##                                                                                                    
+    ## EthnicityNative American:Age_bin21-40                                                1.600         
+    ##                                                                                     (0.980)        
+    ##                                                                                                    
+    ## EthnicityOther:Age_bin21-40                                                                        
     ##                                                                                                    
     ##                                                                                                    
-    ## factor(Party)Republican:factor(Gender)Male                                                         
+    ## EthnicityBlack / African:Age_bin41-60                                               -0.071         
+    ##                                                                                     (0.710)        
+    ##                                                                                                    
+    ## EthnicityCaucasian:Age_bin41-60                                                     1.600**        
+    ##                                                                                     (0.680)        
+    ##                                                                                                    
+    ## EthnicityHispanic / Latinx:Age_bin41-60                                             2.100*         
+    ##                                                                                     (1.100)        
+    ##                                                                                                    
+    ## EthnicityNative American:Age_bin41-60                                              2.500***        
+    ##                                                                                     (0.970)        
+    ##                                                                                                    
+    ## EthnicityOther:Age_bin41-60                                                                        
     ##                                                                                                    
     ##                                                                                                    
-    ## factor(Gender)Female:factor(Ethnicity)Black / African                               -0.530         
-    ##                                                                                 (-2.100, 1.100)    
+    ## EthnicityBlack / African:Age_bin61+                                                1.000***        
+    ##                                                                                    (0.00000)       
     ##                                                                                                    
-    ## factor(Gender)Male:factor(Ethnicity)Black / African                                                
+    ## EthnicityCaucasian:Age_bin61+                                                        0.074         
+    ##                                                                                     (0.560)        
     ##                                                                                                    
-    ##                                                                                                    
-    ## factor(Gender)Female:factor(Ethnicity)Caucasian                                      0.630         
-    ##                                                                                 (-3.700, 4.900)    
-    ##                                                                                                    
-    ## factor(Gender)Male:factor(Ethnicity)Caucasian                                        1.200         
-    ##                                                                                 (-3.100, 5.500)    
-    ##                                                                                                    
-    ## factor(Gender)Female:factor(Ethnicity)Hispanic / Latinx                             -1.000         
-    ##                                                                                 (-2.700, 0.610)    
-    ##                                                                                                    
-    ## factor(Gender)Male:factor(Ethnicity)Hispanic / Latinx                                              
+    ## EthnicityHispanic / Latinx:Age_bin61+                                                              
     ##                                                                                                    
     ##                                                                                                    
-    ## factor(Gender)Female:factor(Ethnicity)Native American                               -0.710         
-    ##                                                                                 (-2.600, 1.200)    
-    ##                                                                                                    
-    ## factor(Gender)Male:factor(Ethnicity)Native American                                                
+    ## EthnicityNative American:Age_bin61+                                                                
     ##                                                                                                    
     ##                                                                                                    
-    ## factor(Gender)Female:factor(Ethnicity)Other                                         -1.100         
-    ##                                                                                 (-3.600, 1.500)    
-    ##                                                                                                    
-    ## factor(Gender)Male:factor(Ethnicity)Other                                                          
+    ## EthnicityOther:Age_bin61+                                                                          
     ##                                                                                                    
     ##                                                                                                    
-    ## Constant                                                     7.200***              7.400***        
-    ##                                                           (6.900, 7.400)        (4.100, 11.000)    
+    ## assignment:EthnicityBlack / African:Age_bin21-40                                   -2.600***       
+    ##                                                                                     (0.690)        
+    ##                                                                                                    
+    ## assignment:EthnicityCaucasian:Age_bin21-40                                           0.230         
+    ##                                                                                     (0.480)        
+    ##                                                                                                    
+    ## assignment:EthnicityHispanic / Latinx:Age_bin21-40                                                 
+    ##                                                                                                    
+    ##                                                                                                    
+    ## assignment:EthnicityNative American:Age_bin21-40                                    -1.900         
+    ##                                                                                     (1.500)        
+    ##                                                                                                    
+    ## assignment:EthnicityOther:Age_bin21-40                                                             
+    ##                                                                                                    
+    ##                                                                                                    
+    ## assignment:EthnicityBlack / African:Age_bin41-60                                     0.300         
+    ##                                                                                     (0.830)        
+    ##                                                                                                    
+    ## assignment:EthnicityCaucasian:Age_bin41-60                                          -0.900         
+    ##                                                                                     (0.770)        
+    ##                                                                                                    
+    ## assignment:EthnicityHispanic / Latinx:Age_bin41-60                                                 
+    ##                                                                                                    
+    ##                                                                                                    
+    ## assignment:EthnicityNative American:Age_bin41-60                                                   
+    ##                                                                                                    
+    ##                                                                                                    
+    ## assignment:EthnicityOther:Age_bin41-60                                                             
+    ##                                                                                                    
+    ##                                                                                                    
+    ## assignment:EthnicityBlack / African:Age_bin61+                                                     
+    ##                                                                                                    
+    ##                                                                                                    
+    ## assignment:EthnicityCaucasian:Age_bin61+                                                           
+    ##                                                                                                    
+    ##                                                                                                    
+    ## assignment:EthnicityHispanic / Latinx:Age_bin61+                                                   
+    ##                                                                                                    
+    ##                                                                                                    
+    ## assignment:EthnicityNative American:Age_bin61+                                                     
+    ##                                                                                                    
+    ##                                                                                                    
+    ## assignment:EthnicityOther:Age_bin61+                                                               
+    ##                                                                                                    
+    ##                                                                                                    
+    ## Constant                                                   3.100***                3.500***        
+    ##                                                            (0.280)                  (0.340)        
     ##                                                                                                    
     ## ---------------------------------------------------------------------------------------------------
-    ## Observations                                                    313                   313          
-    ## R2                                                             0.001                 0.170         
-    ## Adjusted R2                                                   -0.002                 0.110         
-    ## Residual Std. Error                                      1.600 (df = 311)      1.500 (df = 291)    
-    ## F Statistic                                             0.420 (df = 1; 311) 2.800*** (df = 21; 291)
+    ## Observations                                                 313                      313          
+    ## R2                                                          0.510                    0.530         
+    ## Adjusted R2                                                 0.480                    0.470         
+    ## Residual Std. Error                                    1.200 (df = 294)        1.200 (df = 274)    
+    ## F Statistic                                        17.000*** (df = 18; 294) 8.200*** (df = 38; 274)
     ## ===================================================================================================
     ## Note:                                                                   *p<0.1; **p<0.05; ***p<0.01
+
+``` r
+mod1a <- lm(score_true ~ assignment, data_full)
+mod2a <- lm(score_true ~ assignment+Mturk, data_full)
+mod3a <- lm(score_true ~ assignment+Mturk+captcha+Age_bin+Party+Gender+Ethnicity, data_full)
+ci_custom1a <- compute_robust_ci(mod1a)
+ci_custom2a <- compute_robust_ci(mod2a)
+ci_custom3a <- compute_robust_ci(mod3a)
+stargazer(mod1a,mod2a,mod3a, type="text",ci.custom = list(ci_custom1a,ci_custom2a,ci_custom3a))
+```
+
+    ## 
+    ## ============================================================================================
+    ##                                                   Dependent variable:                       
+    ##                            -----------------------------------------------------------------
+    ##                                                       score_true                            
+    ##                                    (1)                  (2)                    (3)          
+    ## --------------------------------------------------------------------------------------------
+    ## assignment                       -0.180               -0.180                 -0.150         
+    ##                              (-0.410, 0.051)      (-0.410, 0.050)        (-0.380, 0.075)    
+    ##                                                                                             
+    ## Mturk                                                 0.340**                 0.050         
+    ##                                                   (0.072, 0.610)         (-0.310, 0.410)    
+    ##                                                                                             
+    ## captcha                                                                     -0.600***       
+    ##                                                                         (-0.890, -0.320)    
+    ##                                                                                             
+    ## Age_bin21-40                                                                 -0.190         
+    ##                                                                          (-0.670, 0.280)    
+    ##                                                                                             
+    ## Age_bin41-60                                                                 -0.300         
+    ##                                                                          (-0.800, 0.200)    
+    ##                                                                                             
+    ## Age_bin61+                                                                   -0.560         
+    ##                                                                          (-1.400, 0.260)    
+    ##                                                                                             
+    ## PartyOther                                                                    0.085         
+    ##                                                                          (-0.230, 0.400)    
+    ##                                                                                             
+    ## PartyRepublican                                                              -0.067         
+    ##                                                                          (-0.350, 0.210)    
+    ##                                                                                             
+    ## GenderFemale                                                                  1.100         
+    ##                                                                          (0.750, 1.400)     
+    ##                                                                                             
+    ## GenderMale                                                                    1.000         
+    ##                                                                          (0.740, 1.300)     
+    ##                                                                                             
+    ## EthnicityBlack / African                                                     -0.084         
+    ##                                                                          (-0.640, 0.470)    
+    ##                                                                                             
+    ## EthnicityCaucasian                                                            0.098         
+    ##                                                                          (-0.240, 0.440)    
+    ##                                                                                             
+    ## EthnicityHispanic / Latinx                                                    0.280         
+    ##                                                                          (-0.190, 0.750)    
+    ##                                                                                             
+    ## EthnicityNative American                                                     0.710**        
+    ##                                                                          (0.120, 1.300)     
+    ##                                                                                             
+    ## EthnicityOther                                                               -0.160         
+    ##                                                                          (-0.890, 0.570)    
+    ##                                                                                             
+    ## Constant                        3.600***             3.400***               3.100***        
+    ##                              (3.500, 3.800)       (3.100, 3.600)         (2.500, 3.700)     
+    ##                                                                                             
+    ## --------------------------------------------------------------------------------------------
+    ## Observations                       313                  313                    313          
+    ## R2                                0.007                0.028                  0.140         
+    ## Adjusted R2                       0.004                0.021                  0.094         
+    ## Residual Std. Error         1.100 (df = 311)     1.000 (df = 310)       1.000 (df = 297)    
+    ## F Statistic                2.300 (df = 1; 311) 4.400** (df = 2; 310) 3.200*** (df = 15; 297)
+    ## ============================================================================================
+    ## Note:                                                            *p<0.1; **p<0.05; ***p<0.01
+
+``` r
+mod4a <- lm(score_true ~ assignment*factor(Gender)+factor(Party)+Mturk+captcha, data_full)
+mod5a <- lm(score_true ~ assignment*factor(Party)+factor(Gender)+Mturk+captcha, data_full)
+mod6a <- lm(score_true ~ assignment*factor(Gender)*factor(Party)+Mturk+captcha, data_full)
+ci_custom4a <- compute_robust_ci(mod4a)
+ci_custom5a <- compute_robust_ci(mod5a)
+ci_custom6a <- compute_robust_ci(mod6a)
+
+se_custom4a <- compute_robust_se(mod4a)
+se_custom5a <- compute_robust_se(mod5a)
+se_custom6a <- compute_robust_se(mod6a)
+
+stargazer(mod4a,mod5a,mod6a,type="text",se=list(se_custom4a,se_custom5a,se_custom6a))
+```
+
+    ## 
+    ## =============================================================================================================================
+    ##                                                                                  Dependent variable:                         
+    ##                                                         ---------------------------------------------------------------------
+    ##                                                                                      score_true                              
+    ##                                                                  (1)                    (2)                     (3)          
+    ## -----------------------------------------------------------------------------------------------------------------------------
+    ## assignment                                                      -0.150                 0.022                  -0.012         
+    ##                                                                (0.160)                (0.150)                 (0.220)        
+    ##                                                                                                                              
+    ## factor(Gender)Female                                           1.100***               1.200***               1.100***        
+    ##                                                                (0.220)                (0.150)                 (0.280)        
+    ##                                                                                                                              
+    ## factor(Gender)Male                                             1.100***               1.200***               1.100***        
+    ##                                                                (0.150)                (0.140)                 (0.160)        
+    ##                                                                                                                              
+    ## factor(Party)Other                                              0.059                  0.170                   0.140         
+    ##                                                                (0.150)                (0.220)                 (0.330)        
+    ##                                                                                                                              
+    ## factor(Party)Republican                                         -0.051                 0.220                   0.280         
+    ##                                                                (0.150)                (0.180)                 (0.260)        
+    ##                                                                                                                              
+    ## Mturk                                                           0.038                  0.046                   0.071         
+    ##                                                                (0.150)                (0.150)                 (0.150)        
+    ##                                                                                                                              
+    ## captcha                                                       -0.720***              -0.710***               -0.710***       
+    ##                                                                (0.130)                (0.130)                 (0.130)        
+    ##                                                                                                                              
+    ## assignment:factor(Gender)Female                                 -0.045                                         0.060         
+    ##                                                                (0.230)                                        (0.300)        
+    ##                                                                                                                              
+    ## assignment:factor(Gender)Male                                                                                                
+    ##                                                                                                                              
+    ##                                                                                                                              
+    ## assignment:factor(Party)Other                                                          -0.210                  0.100         
+    ##                                                                                       (0.310)                 (0.430)        
+    ##                                                                                                                              
+    ## assignment:factor(Party)Republican                                                    -0.580**                -0.550         
+    ##                                                                                       (0.270)                 (0.380)        
+    ##                                                                                                                              
+    ## factor(Gender)Female:factor(Party)Other                                                                        0.078         
+    ##                                                                                                               (0.420)        
+    ##                                                                                                                              
+    ## factor(Gender)Male:factor(Party)Other                                                                                        
+    ##                                                                                                                              
+    ##                                                                                                                              
+    ## factor(Gender)Female:factor(Party)Republican                                                                  -0.120         
+    ##                                                                                                               (0.350)        
+    ##                                                                                                                              
+    ## factor(Gender)Male:factor(Party)Republican                                                                                   
+    ##                                                                                                                              
+    ##                                                                                                                              
+    ## assignment:factor(Gender)Female:factor(Party)Other                                                            -0.920         
+    ##                                                                                                               (0.570)        
+    ##                                                                                                                              
+    ## assignment:factor(Gender)Male:factor(Party)Other                                                                             
+    ##                                                                                                                              
+    ##                                                                                                                              
+    ## assignment:factor(Gender)Female:factor(Party)Republican                                                       -0.056         
+    ##                                                                                                               (0.540)        
+    ##                                                                                                                              
+    ## assignment:factor(Gender)Male:factor(Party)Republican                                                                        
+    ##                                                                                                                              
+    ##                                                                                                                              
+    ## Constant                                                       3.000***               2.800***               2.800***        
+    ##                                                                (0.220)                (0.210)                 (0.270)        
+    ##                                                                                                                              
+    ## -----------------------------------------------------------------------------------------------------------------------------
+    ## Observations                                                     313                    313                     313          
+    ## R2                                                              0.120                  0.130                   0.140         
+    ## Adjusted R2                                                     0.091                  0.100                   0.097         
+    ## Residual Std. Error                                        1.000 (df = 304)       1.000 (df = 303)       1.000 (df = 298)    
+    ## F Statistic                                             4.900*** (df = 8; 304) 4.900*** (df = 9; 303) 3.400*** (df = 14; 298)
+    ## =============================================================================================================================
+    ## Note:                                                                                             *p<0.1; **p<0.05; ***p<0.01

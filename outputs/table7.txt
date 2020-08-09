@@ -1,0 +1,46 @@
+
+Table 7. Treatment effect of warning flag on true tweet score with Age terms
+=========================================================================
+                                          Outcome Variable               
+                           ----------------------------------------------
+                                        Score on True Tweets             
+                                      Marginal effects of Age            
+-------------------------------------------------------------------------
+Warning Flag                                   0.350                     
+                                              (0.340)                    
+                                                                         
+Age (21-40)                                    0.071                     
+                                              (0.240)                    
+                                                                         
+Age (41-60)                                    -0.100                    
+                                              (0.280)                    
+                                                                         
+Age (61+)                                      0.130                     
+                                              (0.440)                    
+                                                                         
+Mturk Participant                              0.092                     
+                                              (0.160)                    
+                                                                         
+Captcha Verified                             -0.660***                   
+                                              (0.140)                    
+                                                                         
+Warning Flag X Age (21-40)                     -0.550                    
+                                              (0.370)                    
+                                                                         
+Warning Flag X Age (41-60)                     -0.440                    
+                                              (0.400)                    
+                                                                         
+Warning Flag X Age (61+)                       -1.000                    
+                                              (0.700)                    
+                                                                         
+Constant                                      4.000***                   
+                                              (0.240)                    
+                                                                         
+-------------------------------------------------------------------------
+Question Fixed Effects                           No                      
+Observations                                    313                      
+R2                                             0.120                     
+Adjusted R2                                    0.089                     
+=========================================================================
+Note:                      *p<0.1; **p<0.05; ***p<0.01                   
+                           Regression models with robust standard errors.

@@ -1,0 +1,32 @@
+
+Table 3. Treatment effect of warning flag on true tweet score with question fixed effects
+===============================================================================
+                                            Outcome Variable                   
+                         ------------------------------------------------------
+                                          Score on True Tweets                 
+-------------------------------------------------------------------------------
+Warning Flag                                    -0.230**                       
+                                                (0.099)                        
+                                                                               
+Q4 Correct                                      1.100***                       
+                                                (0.130)                        
+                                                                               
+Mturk Participant                                -0.009                        
+                                                (0.130)                        
+                                                                               
+Captcha Verified                               -0.710***                       
+                                                (0.110)                        
+                                                                               
+Constant                                        3.300***                       
+                                                (0.190)                        
+                                                                               
+-------------------------------------------------------------------------------
+Question 4 Fixed Effects                          Yes                          
+Observations                                      313                          
+R2                                               0.300                         
+Adjusted R2                                      0.290                         
+===============================================================================
+Note:                    *p<0.1; **p<0.05; ***p<0.01                           
+                         Regression models with robust standard errors.        
+                         Model contains question fixed effects for true tweets.
+                         Effect is significant with question 4 fixed effect    

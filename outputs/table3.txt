@@ -1,0 +1,46 @@
+
+Table 3. Treatment effect of warning flag on false tweet score with Age terms
+======================================================================
+                                       Outcome Variable               
+                        ----------------------------------------------
+                                    Score on False Tweets             
+                                   Marginal effects of Age            
+----------------------------------------------------------------------
+Warning Flag                              -0.860***                   
+                                           (0.130)                    
+                                                                      
+MTurk Participant                          -0.440**                   
+                                           (0.180)                    
+                                                                      
+Captcha Verified                           -0.550**                   
+                                           (0.230)                    
+                                                                      
+Age_bin61+                                 -1.000*                    
+                                           (0.570)                    
+                                                                      
+Mturk                                       -0.130                    
+                                           (0.140)                    
+                                                                      
+captcha                                    2.300***                   
+                                           (0.190)                    
+                                                                      
+assignment:Age_bin21-40                    0.950***                   
+                                           (0.220)                    
+                                                                      
+assignment:Age_bin41-60                    1.000***                   
+                                           (0.280)                    
+                                                                      
+assignment:Age_bin61+                       0.740                     
+                                           (0.710)                    
+                                                                      
+Constant                                   2.600***                   
+                                           (0.200)                    
+                                                                      
+----------------------------------------------------------------------
+Question Fixed Effects                        No                      
+Observations                                 313                      
+R2                                          0.460                     
+Adjusted R2                                 0.440                     
+======================================================================
+Note:                   *p<0.1; **p<0.05; ***p<0.01                   
+                        Regression models with robust standard errors.
