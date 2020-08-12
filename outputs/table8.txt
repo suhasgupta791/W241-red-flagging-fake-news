@@ -1,5 +1,5 @@
 
-Table 8. Treatment effect of warning flag on true tweet score with Education interaction terms
+Treatment effect of warning flag on true tweet score with Education interaction terms
 ===================================================================================
                                                     Outcome Variable               
                                      ----------------------------------------------

@@ -1,80 +1,49 @@
 
-Table 2. Treatment effect of warning flag on false tweet score with Gender and Party interaction terms
-=================================================================================================================================
-                                                                            Outcome Variable                                     
-                                        -----------------------------------------------------------------------------------------
-                                                                          Score on False Tweets                                  
-                                        Marginal effects of Gender Marginal effects of Party Gender and Party Interaction Effects
-                                                   (1)                        (2)                            (3)                 
----------------------------------------------------------------------------------------------------------------------------------
-Warning Flag                                      -0.038                    -0.037                          -0.130               
-                                                 (0.190)                    (0.170)                        (0.280)               
-                                                                                                                                 
-MTurk Participant                               -1.100***                                                 -0.950***              
-                                                 (0.290)                                                   (0.340)               
-                                                                                                                                 
-Captcha Verified                                -0.670***                                                 -0.700***              
-                                                 (0.220)                                                   (0.220)               
-                                                                                                                                 
-PartyOther                                                                   0.280                          0.210                
-                                                                            (0.230)                        (0.230)               
-                                                                                                                                 
-PartyRepublican                                                            -0.540**                         -0.310               
-                                                                            (0.260)                        (0.350)               
-                                                                                                                                 
-Mturk                                             -0.180                    -0.120                          -0.110               
-                                                 (0.120)                    (0.120)                        (0.120)               
-                                                                                                                                 
-captcha                                          2.300***                  2.100***                        2.100***              
-                                                 (0.190)                    (0.190)                        (0.190)               
-                                                                                                                                 
-assignment:GenderFemale                           0.180                                                     0.160                
-                                                 (0.280)                                                   (0.350)               
-                                                                                                                                 
-assignment:GenderMale                                                                                                            
-                                                                                                                                 
-                                                                                                                                 
-assignment:PartyOther                                                        0.250                          0.350                
-                                                                            (0.300)                        (0.360)               
-                                                                                                                                 
-assignment:PartyRepublican                                                   0.120                          -0.037               
-                                                                            (0.350)                        (0.470)               
-                                                                                                                                 
-GenderFemale:PartyOther                                                                                     0.120                
-                                                                                                           (0.490)               
-                                                                                                                                 
-GenderMale:PartyOther                                                                                                            
-                                                                                                                                 
-                                                                                                                                 
-GenderFemale:PartyRepublican                                                                                -0.500               
-                                                                                                           (0.490)               
-                                                                                                                                 
-GenderMale:PartyRepublican                                                                                                       
-                                                                                                                                 
-                                                                                                                                 
-assignment:GenderFemale:PartyOther                                                                          -0.270               
-                                                                                                           (0.630)               
-                                                                                                                                 
-assignment:GenderMale:PartyOther                                                                                                 
-                                                                                                                                 
-                                                                                                                                 
-assignment:GenderFemale:PartyRepublican                                                                     0.340                
-                                                                                                           (0.710)               
-                                                                                                                                 
-assignment:GenderMale:PartyRepublican                                                                                            
-                                                                                                                                 
-                                                                                                                                 
-Constant                                         3.000***                  2.300***                        3.100***              
-                                                 (0.290)                    (0.240)                        (0.310)               
-                                                                                                                                 
----------------------------------------------------------------------------------------------------------------------------------
-Question Fixed Effects                              No                        No                              No                 
-Observations                                       313                        313                            313                 
-R2                                                0.460                      0.470                          0.490                
-Adjusted R2                                       0.450                      0.460                          0.460                
-=================================================================================================================================
-Note:                                   *p<0.1; **p<0.05; ***p<0.01                                                              
-                                        Regression models with robust standard errors.                                           
-                                        First column includes interaction with gender only                                       
-                                        Second column includes interacton with party only.                                       
-                                        Third column includes interaction with Gender and Party                                  
+Marginal treatment effect of warning flag on false tweet score with Gender and Party interaction terms
+====================================================================================
+                                                  Outcome Variable                  
+                                 ---------------------------------------------------
+                                                Score on False Tweets               
+                                       Gender Effect              Party Effect      
+                                            (1)                       (2)           
+------------------------------------------------------------------------------------
+Warning Flag                               -0.038                    -0.037         
+                                          (0.190)                   (0.170)         
+                                                                                    
+Gender(Female)                           -1.100***                                  
+                                          (0.290)                                   
+                                                                                    
+Gender(Male)                                                         0.280          
+                                                                    (0.230)         
+                                                                                    
+Party(Other)                                                        -0.540**        
+                                                                    (0.260)         
+                                                                                    
+Party(Republican)                          -0.180                    -0.120         
+                                          (0.120)                   (0.120)         
+                                                                                    
+MTurk Participant                         2.300***                  2.100***        
+                                          (0.190)                   (0.190)         
+                                                                                    
+Captcha Verified                           0.180                                    
+                                          (0.280)                                   
+                                                                                    
+Warnining Flag X Female                                              0.250          
+                                                                    (0.300)         
+                                                                                    
+Warning Flag X Party(Other)                                          0.120          
+                                                                    (0.350)         
+                                                                                    
+Warning Flag X Party(Republican)          3.000***                  2.300***        
+                                          (0.290)                   (0.240)         
+                                                                                    
+------------------------------------------------------------------------------------
+Question Fixed Effects                       No                        No           
+Observations                                313                       313           
+R2                                         0.460                     0.470          
+Adjusted R2                                0.450                     0.460          
+====================================================================================
+Note:                            *p<0.1; **p<0.05; ***p<0.01                        
+                                 Regression models with robust standard errors.     
+                                 First column includes interaction with gender only 
+                                 Second column includes interacton with party only. 

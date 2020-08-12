@@ -1,32 +1,35 @@
 
-Table 1. Treatment effect of warning flag on false tweet score
-==============================================================================================================================
-                                                                  Outcome Variable                                            
-                       -------------------------------------------------------------------------------------------------------
-                                                                Score on False Tweets                                         
-                                ATE(no indicator)                 ATE(Mturk indicator)                 Baseline model         
-                                       (1)                                 (2)                               (3)              
-------------------------------------------------------------------------------------------------------------------------------
-Warning Flag                          0.062                               0.056                             0.061             
-                                     (0.180)                             (0.170)                           (0.140)            
-                                                                                                                              
-MTurk Participant                                                       -1.200***                          -0.180             
-                                                                         (0.150)                           (0.120)            
-                                                                                                                              
-Captcha Verified                                                                                          2.300***            
-                                                                                                           (0.190)            
-                                                                                                                              
-Constant                            3.500***                            4.400***                          2.100***            
-                                     (0.130)                             (0.130)                           (0.220)            
-                                                                                                                              
-------------------------------------------------------------------------------------------------------------------------------
-Question Fixed Effects                 No                                  No                                No               
-Observations                           313                                 313                               313              
-R2                                   0.0004                               0.096                             0.450             
-Adjusted R2                          -0.003                               0.090                             0.440             
-==============================================================================================================================
-Note:                  *p<0.1; **p<0.05; ***p<0.01                                                                            
-                       Regression models with robust standard errors.                                                         
-                       Warning Flag is the treatment and outcome variable is participant on false tweet questions in survey.  
-                       Respondents in treatment saw the flag and those in control didn't see any warning.                     
-                       Baseline mode is the third column in table with indicator variables for Mturk and BOT verification     
+Treatment effect of warning flag on false tweet score
+===================================================================================
+                                             Outcome Variable                      
+                       ------------------------------------------------------------
+                                          Score on False Tweets                    
+                         ATE(no indicator)   ATE(Mturk indicator)  Baseline model  
+                                (1)                  (2)                 (3)       
+-----------------------------------------------------------------------------------
+Warning Flag                   0.062                0.056               0.061      
+                              (0.180)              (0.170)             (0.140)     
+                                                                                   
+MTurk Participant                                 -1.200***            -0.180      
+                                                   (0.150)             (0.120)     
+                                                                                   
+Captcha Verified                                                      2.300***     
+                                                                       (0.190)     
+                                                                                   
+Constant                     3.500***              4.400***           2.100***     
+                              (0.130)              (0.130)             (0.220)     
+                                                                                   
+-----------------------------------------------------------------------------------
+Question Fixed Effects          No                    No                 No        
+Observations                    313                  313                 313       
+R2                            0.0004                0.096               0.450      
+Adjusted R2                   -0.003                0.090               0.440      
+===================================================================================
+Note:                  *p<0.1; **p<0.05; ***p<0.01                                 
+                       Regression models with robust standard errors.              
+                       Warning Flag is the treatment and outcome variable is       
+                       participant on false tweet questions in survey.             
+                       Respondents in treatment saw the flag and those in control  
+                       didn't see any warning.                                     
+                       Baseline mode is the third column in table with indicator   
+                       variables for Mturk and BOT verification                    

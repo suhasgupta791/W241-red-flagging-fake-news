@@ -266,11 +266,14 @@ stargazer(mod1,mod2,mod3, type="latex",se = list(se_custom1,se_custom2,se_custom
           dep.var.caption = "Outcome Variable", dep.var.labels = "Score on False Tweets",
           column.labels = c("ATE(no indicator)", "ATE(Mturk indicator)", "Baseline model"),
           add.lines = list(c("Question Fixed Effects", rep("No",5))),
-          title="Table 1. Treatment effect of warning flag on false tweet score",
+          title="Treatment effect of warning flag on false tweet score",
           notes = c("Regression models with robust standard errors.",
-                    "Warning Flag is the treatment and outcome variable is participant on false tweet questions in survey.",
-                    "Respondents in treatment saw the flag and those in control didn't see any warning.",
-                    "Baseline mode is the third column in table with indicator variables for Mturk and BOT verification"),
+                    "Warning Flag is the treatment and outcome variable is",
+                     "participant on false tweet questions in survey.",
+                    "Respondents in treatment saw the flag and those in control",
+                     "didn't see any warning.",
+                    "Baseline mode is the third column in table with indicator",
+                    "variables for Mturk and BOT verification"),
           notes.align = "l",
           out = "outputs/table1.txt"
           )
@@ -330,18 +333,6 @@ p6 <- ggplot(dt, aes(x = Party, y = mean_score_by_party,label=sprintf("%0.2f", r
         theme_classic() 
 p6
 
-dt <- data_full[, .(mean_score_by_party = mean(score_false)), by=Party]
-dt$Party[dt$Party == ''] <- "Other"
-p6 <- ggplot(dt, aes(x = Party, y = mean_score_by_party,label=sprintf("%0.2f", round(mean_score_by_party, digits = 2)))) +
-        geom_bar(aes(Party), col = "gray", fill= c("blue","gold","gray"),stat="identity", width = 0.5) + 
-        geom_text(size=6, col = c("white","black","black"),vjust=1.5, hjust=0.5) +
-        ggtitle("Figure 5. Mean scores by Party") + 
-        ylab("Score on False Tweets") + xlab("Party")   + 
-        theme(plot.title = element_text(hjust = 0.5)) + 
-        theme_classic() 
-p6
-
-
 # Save images
 ggsave("outputs/fig3.png", plot=p3, device="png")
 ggsave("outputs/fig4.png", plot=p4, device="png")
@@ -349,8 +340,7 @@ ggsave("outputs/fig5.png", plot=p5, device="png")
 ggsave("outputs/fig6.png", plot=p6, device="png")
 ```
   
-  Based on the above point estimates, we are motivated to test the interaction effects gender, party affiliation and age on our outcome variable (score on false tweet detection). Some research has shown that false (especially negative) news coverage may be targeted towards female viewers more than men and there is tendency to believe in different kind of false news based on a person's gender [1]. In our survey, we have attempted to include tweets from political, scienctific and general US recent affairs which makes us hypothesize that the warning flag for false tweets may have different marginal effects on subjects aligning with different political parties. 
-  Table 2 summarizes the regression result with interaction terms with gender and party and shows that there is not statistically significant marginal effect of showing the warning flag on accurate detection of false twitter posts.
+  Based on the above point estimates, we are motivated to test the interaction effects gender, party affiliation and age on our outcome variable (score on false tweet detection). Some research has shown that false (especially negative) news coverage may be targeted towards female viewers more than men and there is tendency to believe in different kind of false news based on a person's gender [1]. In our survey, we have attempted to include tweets from political, scienctific and general US recent affairs which makes us hypothesize that the warning flag for false tweets may have different marginal effects on subjects aligning with different political parties. Table 2 summarizes the regression result with interaction terms with gender and party and shows that there is not statistically significant marginal effect of showing the warning flag on accurate detection of false twitter posts.
 
 ```{r, table2, results="asis",echo=FALSE}
 mod4 <- lm(score_false ~ assignment*Gender+Mturk+captcha, data_full)
@@ -364,23 +354,28 @@ se_custom4 <- compute_robust_se(mod4)
 se_custom5 <- compute_robust_se(mod5)
 se_custom6 <- compute_robust_se(mod6)
 
-stargazer(mod4,mod5,mod6,type="latex",se=list(se_custom4,se_custom5,se_custom6),
-          covariate.labels = c("Warning Flag", "MTurk Participant","Captcha Verified"),
+stargazer(mod4,mod5,type="latex",se=list(se_custom4,se_custom5,se_custom6),
+          covariate.labels = c("Warning Flag", "Gender(Female)", "Gender(Male)", "Party(Other)", "Party(Republican)", "MTurk Participant","Captcha Verified", "Warnining Flag X Female",
+                               "Warning Flag X Party(Other)", "Warning Flag X Party(Republican)"),
+          # omit = c("GenderFemale", "GenderMale", "PartyOther", "PartyRepublican", "Mturk", "captcha", "Constant"),
+          omit = c("GenderMale"),
           omit.stat = c("f","ser"),
           dep.var.caption = "Outcome Variable", dep.var.labels = "Score on False Tweets",
-          column.labels = c("Marginal effects of Gender", "Marginal effects of Party", "Gender and Party Interaction Effects"),
+          column.labels = c("Gender Effect", "Party Effect", "Gender and Party Interaction"),
           add.lines = list(c("Question Fixed Effects", rep("No",3))),
-          title="Table 2. Treatment effect of warning flag on false tweet score with Gender and Party interaction terms",
+          title="Marginal treatment effect of warning flag on false tweet score with Gender and Party interaction terms",
           notes = c("Regression models with robust standard errors.",
                     "First column includes interaction with gender only",
-                    "Second column includes interacton with party only.",
-                    "Third column includes interaction with Gender and Party"),
+                    "Second column includes interacton with party only."
+                    ),
           notes.align = "l",
           out = "outputs/table2.txt"
           )
 ```
 
+
   Next we analyze the age and education co-variates collected during the experiment. It has been shown that older people (65+) tend to share more fake news on social media than people younger in age [2].There is also research indicating that people with higher education are less affected by fake news on social media [3]. Figure 7 shows the distribution of different age groups in our experiment's data set. We have a large representation of respondents within the 21-40 age group followed by the 41-60 group. The 61 and older as well as less than 20 years age are not well represented in our survey results. This skew will reduce the power of the experiment while trying to determine the marginal effects of treatment within the different age groups. Figure 8 reveals that the data set has a high representation of subjets with college education and graduate degrees while lower education categories are not well represented. This is indicative of the fact that the recruits for the experiment were from experimenters personal and professional network (who are likely have graduate degress) and from mechanical turk based only in the United States (who have mostly a minimum college education). Figure 9 shows similar data regarding education statistics among survey respondents from Amazon's mechanical turk only. Figure 10 shows that the mean score is highest for respondents in the age 0-20 group and there is not a large difference in the other age groups. Figure 11 shows that for Mechanical Turk participants, the score is higher for the education category of _some college_ while for non Mechanical Turk respondents the highest score was achieved by people with a graduate degree. This in line with the distribution of respondents between the two types of survey respondents.
+  
   
 ```{r, figure_7_to_10, echo=FALSE}
 # Age distribution
@@ -446,24 +441,25 @@ se_custom7 <- compute_robust_se(mod7)
 se_custom8 <- compute_robust_se(mod8)
 
 stargazer(mod7,type="latex",se=list(se_custom7),
-          covariate.labels = c("Warning Flag", "MTurk Participant","Captcha Verified"),
+          covariate.labels = c("Warning Flag", "Age(21-40)", "Age(41-60)", "Age(61+)", "MTurk Participant","Captcha Verified", "Warning Flag X Age(21-40)", "Warning Flag X Age(41-60)", "Warning Flag X Age(61+)"),
           omit.stat = c("f","ser"),
           dep.var.caption = "Outcome Variable", dep.var.labels = "Score on False Tweets",
           column.labels = c("Marginal effects of Age", "Marginal effects of Education"),
           add.lines = list(c("Question Fixed Effects", rep("No",3))),
-          title="Table 3. Treatment effect of warning flag on false tweet score with Age terms",
+          title="Treatment effect of warning flag on false tweet score with Age terms",
           notes = c("Regression models with robust standard errors."),
           notes.align = "l",
           out = "outputs/table3.txt"
           )
 
 stargazer(mod8,type="latex",se=list(se_custom8),
-          covariate.labels = c("Warning Flag", "MTurk Participant","Captcha Verified"),
+          covariate.labels = c("Warning Flag", "Graduate Degree", "High School Grad", "Less than high school", "Some college", "MTurk Participant","Captcha Verified",
+            "Warning Flag X Graduate Degree", "Warning Flag X High school grad", "Warning Flag X Less than high school", "Warning Flag X some college"),
           omit.stat = c("f","ser"),
           dep.var.caption = "Outcome Variable", dep.var.labels = "Score on False Tweets",
           column.labels = c("Marginal effects of Age", "Marginal effects of Education"),
           add.lines = list(c("Question Fixed Effects", rep("No",3))),
-          title="Table 4. Treatment effect of warning flag on false tweet score with Education interaction terms",
+          title="Treatment effect of warning flag on false tweet score with Education interaction terms",
           notes = c("Regression models with robust standard errors."),
           notes.align = "l",
           out = "outputs/table4.txt"
@@ -539,7 +535,7 @@ stargazer(mod9,type="latex",se=list(se_custom9),
           omit.stat = c("f","ser"),
           dep.var.caption = "Outcome Variable", dep.var.labels = "Score on False Tweets",
           add.lines = list(c("Question Fixed Effects", rep("Yes"))),
-          title="Table 5. Treatment effect of warning flag on false tweet score with question fixed effects",
+          title="Treatment effect of warning flag on false tweet score with question fixed effects",
           notes = c("Regression models with robust standard errors.",
                     "Model contains question fixed effects for false tweets.",
                     "Effect is highly significant for a warning flag's ability to detect false tweets"),
@@ -567,11 +563,11 @@ stargazer(mod10,mod11,mod12, type="latex",se = list(se_custom10,se_custom11,se_c
           dep.var.caption = "Outcome Variable", dep.var.labels = "Score on True Tweets",
           column.labels = c("ATE(no indicator)", "ATE(Mturk indicator)", "Spillover Baseline(Mturk + Captcha"),
           add.lines = list(c("Question Fixed Effects", rep("No",5))),
-          title="Table 6. Treatment effect of warning flag on true tweet score",
-          notes = c("Regression models with robust standard errors.",
-                    "Warning Flag is the treatment and outcome variable is participant on true tweet questions in survey.",
-                    "Respondents in treatment saw the flag and those in control didn't see any warning.",
-                    "Baseline mode is the third column in table with indicator variables for Mturk and BOT verification"),
+          title="Treatment effect of warning flag on true tweet score.",
+          notes = c("Warning Flag is the treatment and outcome variable is participant on true tweet", 
+                "questions in survey. Respondents in treatment saw the flag and those", 
+                "in control didn't see any warning. Baseline mode is the third column",
+                "in table with indicator variables for Mturk and BOT verification"),
           notes.align = "l",
           out = "outputs/table6.txt"
           )
@@ -589,7 +585,7 @@ stargazer(mod13,type="latex",se=list(se_custom13),
           dep.var.caption = "Outcome Variable", dep.var.labels = "Score on True Tweets",
           column.labels = c("Marginal effects of Age", "Marginal effects of Education"),
           add.lines = list(c("Question Fixed Effects", rep("No",3))),
-          title="Table 7. Treatment effect of warning flag on true tweet score with Age terms",
+          title="Treatment effect of warning flag on true tweet score with Age terms",
           notes = c("Regression models with robust standard errors."),
           notes.align = "l",
           out = "outputs/table7.txt"
@@ -602,7 +598,7 @@ stargazer(mod14,type="latex",se=list(se_custom14),
           dep.var.caption = "Outcome Variable", dep.var.labels = "Score on True Tweets",
           column.labels = c("Marginal effects of Age", "Marginal effects of Education"),
           add.lines = list(c("Question Fixed Effects", rep("No",3))),
-          title="Table 8. Treatment effect of warning flag on true tweet score with Education interaction terms",
+          title="Treatment effect of warning flag on true tweet score with Education interaction terms",
           notes = c("Regression models with robust standard errors."),
           notes.align = "l",
           out = "outputs/table8.txt"

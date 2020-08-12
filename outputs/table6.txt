@@ -1,32 +1,32 @@
 
-Table 6. Treatment effect of warning flag on true tweet score
-=============================================================================================================================
-                                                                  Outcome Variable                                           
-                       ------------------------------------------------------------------------------------------------------
-                                                                Score on True Tweets                                         
-                               ATE(no indicator)               ATE(Mturk indicator)        Spillover Baseline(Mturk + Captcha
-                                      (1)                               (2)                               (3)                
------------------------------------------------------------------------------------------------------------------------------
-Warning Flag                        -0.180                            -0.180                             -0.180              
-                                    (0.120)                           (0.120)                           (0.110)              
-                                                                                                                             
-MTurk Participant                                                     0.340**                            0.042               
-                                                                      (0.140)                           (0.150)              
-                                                                                                                             
-Captcha Verified                                                                                       -0.690***             
-                                                                                                        (0.130)              
-                                                                                                                             
-Constant                           3.600***                          3.400***                           4.100***             
-                                    (0.084)                           (0.130)                           (0.180)              
-                                                                                                                             
------------------------------------------------------------------------------------------------------------------------------
-Question Fixed Effects                No                                No                                 No                
-Observations                          313                               313                               313                
-R2                                   0.007                             0.028                             0.110               
-Adjusted R2                          0.004                             0.021                             0.098               
-=============================================================================================================================
-Note:                  *p<0.1; **p<0.05; ***p<0.01                                                                           
-                       Regression models with robust standard errors.                                                        
-                       Warning Flag is the treatment and outcome variable is participant on true tweet questions in survey.  
-                       Respondents in treatment saw the flag and those in control didn't see any warning.                    
-                       Baseline mode is the third column in table with indicator variables for Mturk and BOT verification    
+Treatment effect of warning flag on true tweet score.
+========================================================================================================
+                                                       Outcome Variable                                 
+                       ---------------------------------------------------------------------------------
+                                                     Score on True Tweets                               
+                          ATE(no indicator)     ATE(Mturk indicator)  Spillover Baseline(Mturk + Captcha
+                                 (1)                    (2)                          (3)                
+--------------------------------------------------------------------------------------------------------
+Warning Flag                   -0.180                  -0.180                       -0.180              
+                               (0.120)                (0.120)                      (0.110)              
+                                                                                                        
+MTurk Participant                                     0.340**                       0.042               
+                                                      (0.140)                      (0.150)              
+                                                                                                        
+Captcha Verified                                                                  -0.690***             
+                                                                                   (0.130)              
+                                                                                                        
+Constant                      3.600***                3.400***                     4.100***             
+                               (0.084)                (0.130)                      (0.180)              
+                                                                                                        
+--------------------------------------------------------------------------------------------------------
+Question Fixed Effects           No                      No                           No                
+Observations                     313                    313                          313                
+R2                              0.007                  0.028                        0.110               
+Adjusted R2                     0.004                  0.021                        0.098               
+========================================================================================================
+Note:                  *p<0.1; **p<0.05; ***p<0.01                                                      
+                       Warning Flag is the treatment and outcome variable is participant on true tweet  
+                       questions in survey. Respondents in treatment saw the flag and those             
+                       in control didn't see any warning. Baseline mode is the third column             
+                       in table with indicator variables for Mturk and BOT verification                 

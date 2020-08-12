@@ -1,5 +1,5 @@
 
-Table 7. Treatment effect of warning flag on true tweet score with Age terms
+Treatment effect of warning flag on true tweet score with Age terms
 =========================================================================
                                           Outcome Variable               
                            ----------------------------------------------

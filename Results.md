@@ -96,7 +96,7 @@ is present.
 
 % Table created by stargazer v.5.2.2 by Marek Hlavac, Harvard
 University. E-mail: hlavac at fas.harvard.edu % Date and time: Tue, Aug
-11, 2020 - 20:02:34
+11, 2020 - 21:52:40
 
 Figure 3 shows that distribution of gender among our survey participants
 while Figure 4 shows breaks the party affiliation by gender among our
@@ -112,7 +112,7 @@ tweets correctly is substantially for *Other* party affiliates followed
 by Democrats and Republicans in
 order.
 
-![](Results_files/figure-gfm/figure3_4_5_6-1.png)<!-- -->![](Results_files/figure-gfm/figure3_4_5_6-2.png)<!-- -->![](Results_files/figure-gfm/figure3_4_5_6-3.png)<!-- -->![](Results_files/figure-gfm/figure3_4_5_6-4.png)<!-- -->![](Results_files/figure-gfm/figure3_4_5_6-5.png)<!-- -->
+![](Results_files/figure-gfm/figure3_4_5_6-1.png)<!-- -->![](Results_files/figure-gfm/figure3_4_5_6-2.png)<!-- -->![](Results_files/figure-gfm/figure3_4_5_6-3.png)<!-- -->![](Results_files/figure-gfm/figure3_4_5_6-4.png)<!-- -->
 
     ## Saving 7 x 5 in image
     ## Saving 7 x 5 in image
@@ -135,7 +135,7 @@ flag on accurate detection of false twitter posts.
 
 % Table created by stargazer v.5.2.2 by Marek Hlavac, Harvard
 University. E-mail: hlavac at fas.harvard.edu % Date and time: Tue, Aug
-11, 2020 - 20:02:37
+11, 2020 - 21:52:42
 
 Next we analyze the age and education co-variates collected during the
 experiment. It has been shown that older people (65+) tend to share more
@@ -182,11 +182,11 @@ flag on ability to detect false tweets.
 
 % Table created by stargazer v.5.2.2 by Marek Hlavac, Harvard
 University. E-mail: hlavac at fas.harvard.edu % Date and time: Tue, Aug
-11, 2020 - 20:02:40
+11, 2020 - 21:52:45
 
 % Table created by stargazer v.5.2.2 by Marek Hlavac, Harvard
 University. E-mail: hlavac at fas.harvard.edu % Date and time: Tue, Aug
-11, 2020 - 20:02:41
+11, 2020 - 21:52:46
 
 Now we proceed to test fixed question effects. Our survey has twitter
 posts *(tweets)* covering politics, science and general US current
@@ -222,7 +222,7 @@ about the tweets and the false contect that might be present in them.
 
 % Table created by stargazer v.5.2.2 by Marek Hlavac, Harvard
 University. E-mail: hlavac at fas.harvard.edu % Date and time: Tue, Aug
-11, 2020 - 20:02:42
+11, 2020 - 21:52:47
 
 ## Spillover Effects
 
@@ -247,15 +247,15 @@ determine a statistical effect.
 
 % Table created by stargazer v.5.2.2 by Marek Hlavac, Harvard
 University. E-mail: hlavac at fas.harvard.edu % Date and time: Tue, Aug
-11, 2020 - 20:02:42
+11, 2020 - 21:52:47
 
 % Table created by stargazer v.5.2.2 by Marek Hlavac, Harvard
 University. E-mail: hlavac at fas.harvard.edu % Date and time: Tue, Aug
-11, 2020 - 20:02:42
+11, 2020 - 21:52:47
 
 % Table created by stargazer v.5.2.2 by Marek Hlavac, Harvard
 University. E-mail: hlavac at fas.harvard.edu % Date and time: Tue, Aug
-11, 2020 - 20:02:43
+11, 2020 - 21:52:48
 
 Lastly, we test the spillover treatment effect with question fixed
 effects using regression in Table 9. We find from Table 9 that the only
@@ -275,4 +275,4 @@ was presented to survey takers.
 
 % Table created by stargazer v.5.2.2 by Marek Hlavac, Harvard
 University. E-mail: hlavac at fas.harvard.edu % Date and time: Tue, Aug
-11, 2020 - 20:02:44
+11, 2020 - 21:52:49
