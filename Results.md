@@ -53,6 +53,8 @@ warning flag is present (from 7.16 to 7.05 out of a scale of 10).
 
 ![](Results_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
 
+    ## Saving 7 x 5 in image
+
 Figure 2. beraks down the point sample mean scores on false and true
 tweets in the presence and absence of warning flags. We see from this
 figure that for false tweets, the presence of a flag increases the
@@ -90,22 +92,24 @@ is present.
 
 ![](Results_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
 
+    ## Saving 7 x 5 in image
+
 % Table created by stargazer v.5.2.2 by Marek Hlavac, Harvard
-University. E-mail: hlavac at fas.harvard.edu % Date and time: Sun, Aug
-09, 2020 - 15:33:52
+University. E-mail: hlavac at fas.harvard.edu % Date and time: Tue, Aug
+11, 2020 - 20:02:34
 
 Figure 3 shows that distribution of gender among our survey participants
 while Figure 4 shows breaks the party affiliation by gender among our
 survey respondents. We see a fairly balanced distributed between Male
 and Female survey respondents. The distribution of male and female
-respondents by party affiliation (Figure 4) also appears to be well
-balanced for all three party affiliations. We find however, that the
-distribution is skewed towards the number of democratic party
-affiliation compared to Republicans or *Other*. Figure 5 indicates that
-the mean score for detecting the false tweets in the survey is slightly
-better for males versus females. Figure 6, shows that the mean scores
-for detecting false tweets correctly is substantially for *Other* party
-affiliates followed by Democrats and Republicans in
+respondents by party affiliation also appears to be failry well balanced
+for all three party affiliations. We find however, that the distribution
+is skewed towards the number of democratic party affiliation compared to
+Republicans or *Other*. Figure 5 indicates that the mean score for
+detecting the false tweets in the survey is slightly better for males
+versus females. Figure 6, shows that the mean scores for detecting false
+tweets correctly is substantially for *Other* party affiliates followed
+by Democrats and Republicans in
 order.
 
 ![](Results_files/figure-gfm/figure3_4_5_6-1.png)<!-- -->![](Results_files/figure-gfm/figure3_4_5_6-2.png)<!-- -->![](Results_files/figure-gfm/figure3_4_5_6-3.png)<!-- -->![](Results_files/figure-gfm/figure3_4_5_6-4.png)<!-- -->![](Results_files/figure-gfm/figure3_4_5_6-5.png)<!-- -->
@@ -115,8 +119,8 @@ order.
     ## Saving 7 x 5 in image
     ## Saving 7 x 5 in image
 
-Based on the above point sample data analysis, we are motivated to test
-the interaction effects gender, party affiliation and age on our outcome
+Based on the above point estimates, we are motivated to test the
+interaction effects gender, party affiliation and age on our outcome
 variable (score on false tweet detection). Some research has shown that
 false (especially negative) news coverage may be targeted towards female
 viewers more than men and there is tendency to believe in different kind
@@ -130,8 +134,8 @@ is not statistically significant marginal effect of showing the warning
 flag on accurate detection of false twitter posts.
 
 % Table created by stargazer v.5.2.2 by Marek Hlavac, Harvard
-University. E-mail: hlavac at fas.harvard.edu % Date and time: Sun, Aug
-09, 2020 - 15:33:54
+University. E-mail: hlavac at fas.harvard.edu % Date and time: Tue, Aug
+11, 2020 - 20:02:37
 
 Next we analyze the age and education co-variates collected during the
 experiment. It has been shown that older people (65+) tend to share more
@@ -150,13 +154,15 @@ represented. This is indicative of the fact that the recruits for the
 experiment were from experimenters personal and professional network
 (who are likely have graduate degress) and from mechanical turk based
 only in the United States (who have mostly a minimum college education).
-Figure 10 shows that the mean score is highest for respondents in the
-age 0-20 group and there is not a large difference in the other age
-groups. Figure 11 shows that for Mechanical Turk participants, the score
-is higher for the education category of *some college* while for non
-Mechanical Turk respondents the highest score was achieved by people
-with a graduate degree. This in line with the distribution of
-respondents between the two types of survey
+Figure 9 shows similar data regarding education statistics among survey
+respondents from Amazon’s mechanical turk only. Figure 10 shows that the
+mean score is highest for respondents in the age 0-20 group and there is
+not a large difference in the other age groups. Figure 11 shows that for
+Mechanical Turk participants, the score is higher for the education
+category of *some college* while for non Mechanical Turk respondents the
+highest score was achieved by people with a graduate degree. This in
+line with the distribution of respondents between the two types of
+survey
 respondents.
 
 ![](Results_files/figure-gfm/figure_7_to_10-1.png)<!-- -->![](Results_files/figure-gfm/figure_7_to_10-2.png)<!-- -->![](Results_files/figure-gfm/figure_7_to_10-3.png)<!-- -->![](Results_files/figure-gfm/figure_7_to_10-4.png)<!-- -->![](Results_files/figure-gfm/figure_7_to_10-5.png)<!-- -->
@@ -175,12 +181,12 @@ or age have any statistically significant marginal effects of warning
 flag on ability to detect false tweets.
 
 % Table created by stargazer v.5.2.2 by Marek Hlavac, Harvard
-University. E-mail: hlavac at fas.harvard.edu % Date and time: Sun, Aug
-09, 2020 - 15:33:58
+University. E-mail: hlavac at fas.harvard.edu % Date and time: Tue, Aug
+11, 2020 - 20:02:40
 
 % Table created by stargazer v.5.2.2 by Marek Hlavac, Harvard
-University. E-mail: hlavac at fas.harvard.edu % Date and time: Sun, Aug
-09, 2020 - 15:33:58
+University. E-mail: hlavac at fas.harvard.edu % Date and time: Tue, Aug
+11, 2020 - 20:02:41
 
 Now we proceed to test fixed question effects. Our survey has twitter
 posts *(tweets)* covering politics, science and general US current
@@ -215,8 +221,8 @@ about the tweets and the false contect that might be present in them.
     ## Saving 7 x 5 in image
 
 % Table created by stargazer v.5.2.2 by Marek Hlavac, Harvard
-University. E-mail: hlavac at fas.harvard.edu % Date and time: Sun, Aug
-09, 2020 - 15:33:59
+University. E-mail: hlavac at fas.harvard.edu % Date and time: Tue, Aug
+11, 2020 - 20:02:42
 
 ## Spillover Effects
 
@@ -240,33 +246,33 @@ of interaction terms that are being considered in the regression to
 determine a statistical effect.
 
 % Table created by stargazer v.5.2.2 by Marek Hlavac, Harvard
-University. E-mail: hlavac at fas.harvard.edu % Date and time: Sun, Aug
-09, 2020 - 15:33:59
+University. E-mail: hlavac at fas.harvard.edu % Date and time: Tue, Aug
+11, 2020 - 20:02:42
 
 % Table created by stargazer v.5.2.2 by Marek Hlavac, Harvard
-University. E-mail: hlavac at fas.harvard.edu % Date and time: Sun, Aug
-09, 2020 - 15:34:00
+University. E-mail: hlavac at fas.harvard.edu % Date and time: Tue, Aug
+11, 2020 - 20:02:42
 
 % Table created by stargazer v.5.2.2 by Marek Hlavac, Harvard
-University. E-mail: hlavac at fas.harvard.edu % Date and time: Sun, Aug
-09, 2020 - 15:34:00
+University. E-mail: hlavac at fas.harvard.edu % Date and time: Tue, Aug
+11, 2020 - 20:02:43
 
 Lastly, we test the spillover treatment effect with question fixed
-effects in Tables 9 and 10. We find from Table 10 that the only question
-that has a significant effect on the score of true tweet is Question 4
-**\[-0.23 (0.099)\]**. Question 4 in the survey asked participants about
-a tweet containing data, from National Center for Education Statistics,
-about proficiency of 8th graders in US history. The tweet said that only
-15% of 8th graders are proficient in US history (which is a true fact).
-The presence of a warning flag seems to reduce people’s ability to
-correctly identify this statistic as true by an average 23% (SE: 9.9%)
-compared to when no warning flag about fake news was presented to survey
-takers.
+effects using regression in Table 9. We find from Table 9 that the only
+question that has a significant effect on the score of true tweet is
+Question 4 **\[-0.23 (0.099)\]**. Question 4 in the survey asked
+participants about a tweet containing data, from National Center for
+Education Statistics, about proficiency of 8th graders in US history.
+The tweet said that only 15% of 8th graders are proficient in US history
+(which is a true fact). The presence of a warning flag seems to reduce
+people’s ability to correctly identify this statistic as true by an
+average 23% (SE: 9.9%) compared to when no warning flag about fake news
+was presented to survey takers.
 
 ![](Results_files/figure-gfm/fig12-1.png)<!-- -->
 
     ## Saving 7 x 5 in image
 
 % Table created by stargazer v.5.2.2 by Marek Hlavac, Harvard
-University. E-mail: hlavac at fas.harvard.edu % Date and time: Sun, Aug
-09, 2020 - 15:34:01
+University. E-mail: hlavac at fas.harvard.edu % Date and time: Tue, Aug
+11, 2020 - 20:02:44

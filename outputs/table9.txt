@@ -1,5 +1,5 @@
 
-Table 3. Treatment effect of warning flag on true tweet score with question fixed effects
+Table 9. Treatment effect of warning flag on true tweet score with question fixed effects
 ===============================================================================
                                             Outcome Variable                   
                          ------------------------------------------------------

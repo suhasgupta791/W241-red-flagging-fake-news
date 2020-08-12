@@ -220,6 +220,7 @@ p <- ggplot(dfm,aes(x = Assignment,y = Score,label=sprintf("%0.2f", round(Score,
       xlab("Survey Group")
   
 p + theme(plot.title = element_text(hjust = 0.5)) + theme_classic() 
+ggsave("outputs/fig1.png", plot=p, device="png")
 
 ```
   
@@ -234,9 +235,9 @@ dfm <- rename(dfm,
        Score = value)
 levels(dfm$Score_Type) = c("True Tweets", "False Tweets")
 dfm
-p <- ggplot(dfm,aes(x = Score_Type,y = Score, label=sprintf("%0.2f", round(Score, digits = 2)))) + 
+p2 <- ggplot(dfm,aes(x = Score_Type,y = Score, label=sprintf("%0.2f", round(Score, digits = 2)))) + 
   geom_bar(aes(fill = Warning_Flag),col = "gray",stat = "identity", width=0.7, position=position_dodge(width=0.8)) +
-  geom_text(size=6, color=c("white","black","white","black"), vjust=c(2.5,0.5,1,1.8), hjust=c(1.6,-0.6,1.6,-0.6)) +
+  geom_text(size=6, color=c("black","white","black","white"), vjust=c(1.5,1.4,1.4,1.5), hjust=c(-0.6,1.6,-0.6,1.6)) +
   ggtitle("Figure 2. General warning effect on true and false tweets") +
   ylab("Average score for tweet accuracy detection") + 
   xlab("Type of tweet") + 
@@ -244,7 +245,9 @@ p <- ggplot(dfm,aes(x = Score_Type,y = Score, label=sprintf("%0.2f", round(Score
   theme_classic() + 
   scale_fill_manual(values = c("blue","gold"))
 
-p
+p2
+ggsave("outputs/fig2.png", plot=p2, device="png")
+
 ```
   
 ```{r, table1, results="asis", echo=FALSE}
@@ -274,7 +277,7 @@ stargazer(mod1,mod2,mod3, type="latex",se = list(se_custom1,se_custom2,se_custom
 
 ```
 
-Figure 3 shows that distribution of gender among our survey participants while Figure 4 shows breaks the party affiliation by gender among our survey respondents. We see a fairly balanced distributed between Male and Female survey respondents. The distribution of male and female respondents by party affiliation (Figure 4) also appears to be well balanced for all three party affiliations. We find however, that the distribution is skewed towards the number of democratic party affiliation compared to Republicans or _Other_. Figure 5 indicates that the mean score for detecting the false tweets in the survey is slightly better for males versus females. Figure 6, shows that the mean scores for detecting false tweets correctly is substantially for _Other_ party affiliates followed by Democrats and Republicans in order.
+Figure 3 shows that distribution of gender among our survey participants while Figure 4 shows breaks the party affiliation by gender among our survey respondents. We see a fairly balanced distributed between Male and Female survey respondents. The distribution of male and female respondents by party affiliation also appears to be failry well balanced for all three party affiliations. We find however, that the distribution is skewed towards the number of democratic party affiliation compared to Republicans or _Other_. Figure 5 indicates that the mean score for detecting the false tweets in the survey is slightly better for males versus females. Figure 6, shows that the mean scores for detecting false tweets correctly is substantially for _Other_ party affiliates followed by Democrats and Republicans in order.
 
 ```{r, figure3_4_5_6, echo=FALSE}
 
@@ -297,7 +300,7 @@ dt$Gender[dt$Gender == ''] <- "Unanswered"
 
 p4 <- ggplot(dt, aes(x = Party, y = count)) +
   geom_bar(aes(fill=Gender), col = "gray",stat="identity", width = 0.5) + 
-  ggtitle("Figure 6. Gender distribution by party affiliation") +
+  ggtitle("Figure 4. Gender distribution by party affiliation") +
   ylab("Count") + xlab("Gender") + 
   theme(plot.title = element_text(hjust = 0.5)) +
   theme_classic() +
@@ -321,7 +324,7 @@ dt$Party[dt$Party == ''] <- "Other"
 p6 <- ggplot(dt, aes(x = Party, y = mean_score_by_party,label=sprintf("%0.2f", round(mean_score_by_party, digits = 2)))) +
         geom_bar(aes(Party), col = "gray", fill= c("blue","gold","gray"),stat="identity", width = 0.5) + 
         geom_text(size=6, col = c("white","black","black"),vjust=1.5, hjust=0.5) +
-        ggtitle("Figure 5. Mean scores by Party") + 
+        ggtitle("Figure 6. Mean scores by Party") + 
         ylab("Score on False Tweets") + xlab("Party")   + 
         theme(plot.title = element_text(hjust = 0.5)) + 
         theme_classic() 
@@ -346,7 +349,7 @@ ggsave("outputs/fig5.png", plot=p5, device="png")
 ggsave("outputs/fig6.png", plot=p6, device="png")
 ```
   
-  Based on the above point sample data analysis, we are motivated to test the interaction effects gender, party affiliation and age on our outcome variable (score on false tweet detection). Some research has shown that false (especially negative) news coverage may be targeted towards female viewers more than men and there is tendency to believe in different kind of false news based on a person's gender [1]. In our survey, we have attempted to include tweets from political, scienctific and general US recent affairs which makes us hypothesize that the warning flag for false tweets may have different marginal effects on subjects aligning with different political parties. 
+  Based on the above point estimates, we are motivated to test the interaction effects gender, party affiliation and age on our outcome variable (score on false tweet detection). Some research has shown that false (especially negative) news coverage may be targeted towards female viewers more than men and there is tendency to believe in different kind of false news based on a person's gender [1]. In our survey, we have attempted to include tweets from political, scienctific and general US recent affairs which makes us hypothesize that the warning flag for false tweets may have different marginal effects on subjects aligning with different political parties. 
   Table 2 summarizes the regression result with interaction terms with gender and party and shows that there is not statistically significant marginal effect of showing the warning flag on accurate detection of false twitter posts.
 
 ```{r, table2, results="asis",echo=FALSE}
@@ -377,8 +380,7 @@ stargazer(mod4,mod5,mod6,type="latex",se=list(se_custom4,se_custom5,se_custom6),
           )
 ```
 
-  Next we analyze the age and education co-variates collected during the experiment. It has been shown that older people (65+) tend to share more fake news on social media than people younger in age [2].There is also research indicating that people with higher education are less affected by fake news on social media [3]. Figure 7 shows the distribution of different age groups in our experiment's data set. We have a large representation of respondents within the 21-40 age group followed by the 41-60 group. The 61 and older as well as less than 20 years age are not well represented in our survey results. This skew will reduce the power of the experiment while trying to determine the marginal effects of treatment within the different age groups. Figure 8 reveals that the data set has a high representation of subjets with college education and graduate degrees while lower education categories are not well represented. This is indicative of the fact that the recruits for the experiment were from experimenters personal and professional network (who are likely have graduate degress) and from mechanical turk based only in the United States (who have mostly a minimum college education).
-  Figure 10 shows that the mean score is highest for respondents in the age 0-20 group and there is not a large difference in the other age groups. Figure 11 shows that for Mechanical Turk participants, the score is higher for the education category of _some college_ while for non Mechanical Turk respondents the highest score was achieved by people with a graduate degree. This in line with the distribution of respondents between the two types of survey respondents.
+  Next we analyze the age and education co-variates collected during the experiment. It has been shown that older people (65+) tend to share more fake news on social media than people younger in age [2].There is also research indicating that people with higher education are less affected by fake news on social media [3]. Figure 7 shows the distribution of different age groups in our experiment's data set. We have a large representation of respondents within the 21-40 age group followed by the 41-60 group. The 61 and older as well as less than 20 years age are not well represented in our survey results. This skew will reduce the power of the experiment while trying to determine the marginal effects of treatment within the different age groups. Figure 8 reveals that the data set has a high representation of subjets with college education and graduate degrees while lower education categories are not well represented. This is indicative of the fact that the recruits for the experiment were from experimenters personal and professional network (who are likely have graduate degress) and from mechanical turk based only in the United States (who have mostly a minimum college education). Figure 9 shows similar data regarding education statistics among survey respondents from Amazon's mechanical turk only. Figure 10 shows that the mean score is highest for respondents in the age 0-20 group and there is not a large difference in the other age groups. Figure 11 shows that for Mechanical Turk participants, the score is higher for the education category of _some college_ while for non Mechanical Turk respondents the highest score was achieved by people with a graduate degree. This in line with the distribution of respondents between the two types of survey respondents.
   
 ```{r, figure_7_to_10, echo=FALSE}
 # Age distribution
@@ -607,7 +609,7 @@ stargazer(mod14,type="latex",se=list(se_custom14),
           )
 ```
 
-Lastly, we test the spillover treatment effect with question fixed effects in Tables 9 and 10. We find from Table 10 that the only question that has a significant effect on the score of true tweet is Question 4 **[-0.23 (0.099)]**. Question 4 in the survey asked participants about a tweet containing data, from National Center for Education Statistics, about proficiency of 8th graders in US history. The tweet said that only 15% of 8th graders are proficient in US history (which is a true fact). The presence of a warning flag seems to reduce people's ability to correctly identify this statistic as true by an average 23% (SE: 9.9%) compared to when no warning flag about fake news was presented to survey takers.
+Lastly, we test the spillover treatment effect with question fixed effects using regression in Table 9. We find from Table 9 that the only question that has a significant effect on the score of true tweet is Question 4 **[-0.23 (0.099)]**. Question 4 in the survey asked participants about a tweet containing data, from National Center for Education Statistics, about proficiency of 8th graders in US history. The tweet said that only 15% of 8th graders are proficient in US history (which is a true fact). The presence of a warning flag seems to reduce people's ability to correctly identify this statistic as true by an average 23% (SE: 9.9%) compared to when no warning flag about fake news was presented to survey takers.
 
 ```{r, fig12, results = "asis",echo=FALSE}
 dfm <- melt(d2[,c('Warning_Flag','countQ1','countQ2','countQ4','countQ7','countQ8')],id.vars = 1)
@@ -615,7 +617,7 @@ levels(dfm$variable) = c("Q1","Q2","Q4","Q7","Q8")
 
 p13 <- ggplot(dfm,aes(x = variable,y = value)) + 
   geom_bar(aes(fill = Warning_Flag),stat = "identity", width=0.7, position=position_dodge(width=0.8)) +
-  ggtitle("Figure 12. General warning effect on scores for each true tweet ") +
+  ggtitle("Figure 13. General warning effect on scores for each true tweet ") +
   ylab("Count of correct answers per question") + 
   xlab("Question Number") + 
   theme(plot.title = element_text(hjust = 0.5)) + 
@@ -634,7 +636,7 @@ stargazer(mod15,type="latex",se=list(se_custom15),
           omit.stat = c("f","ser"),
           dep.var.caption = "Outcome Variable", dep.var.labels = "Score on True Tweets",
           add.lines = list(c("Question 4 Fixed Effects", "Yes")),
-          title="Table 3. Treatment effect of warning flag on true tweet score with question fixed effects",
+          title="Table 9. Treatment effect of warning flag on true tweet score with question fixed effects",
           notes = c("Regression models with robust standard errors.",
                     "Model contains question fixed effects for true tweets.",
                     "Effect is significant with question 4 fixed effect"),
